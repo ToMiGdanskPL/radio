@@ -75,8 +75,8 @@
         }
 
         .station-btn img {
-            width: 42px;
-            height: 42px;
+            width: 48px;
+            height: 48px;
             border-radius: 8px;
             object-fit: contain;
         }
@@ -156,7 +156,7 @@
         <div class="stations-grid" id="stations-container"></div>
 
         <!-- Odnośnik/Element audio -->
-        <audio id="audio-player"></audio>
+        <audio id="audio-player" crossorigin="anonymous"></audio>
 
         <!-- Przyciski nawigacyjne -->
         <div class="controls">
@@ -166,41 +166,62 @@
         </div>
 
         <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.2</div>
+        <div class="version-footer">Wersja 1.0.3</div>
     </div>
 
     <script>
-        // Funkcja generująca ikonki SVG z poprawnym kodowaniem UTF-8
-        function generateStationIconSVG(text) {
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0f172a"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#3b82f6" font-family="sans-serif" font-size="18" font-weight="bold">${text}</text></svg>`;
-            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        // Generowanie wysokiej jakości obrazka PNG 512x512 via HTML Canvas (naprawia wyświetlanie w iOS Dynamic Island)
+        function generateStationCanvasIcon(text) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Tło okładki
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, 512, 512);
+
+            // Akcentowany napis
+            ctx.fillStyle = '#3b82f6';
+            ctx.font = 'bold 110px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 256, 256);
+
+            return canvas.toDataURL('image/png');
         }
 
         // Lista stacji radiowych
-        const stations = [
-            { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: generateStationIconSVG("RMF") },
-            { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: generateStationIconSVG("ZET") },
-            { name: "VOX FM", url: "https://ic2.smcdn.pl/3140-1.mp3", logo: generateStationIconSVG("VOX") },
-            { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: generateStationIconSVG("PLUS") },
-            { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: generateStationIconSVG("RG") },
-            { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: generateStationIconSVG("RZP") },
-            { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", logo: generateStationIconSVG("MUZO") },
-            { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", logo: generateStationIconSVG("TOK") },
-            { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", logo: generateStationIconSVG("ESKA") },
-            { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", logo: generateStationIconSVG("GO") },
-            { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", logo: generateStationIconSVG("ROCK") },
-            { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", logo: generateStationIconSVG("ANTY") },
-            { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", logo: generateStationIconSVG("POG") },
-            { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", logo: generateStationIconSVG("KASZ") },
-            { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", logo: generateStationIconSVG("CHILL") },
-            { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", logo: generateStationIconSVG("YANO") },
-            { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", logo: generateStationIconSVG("80s") },
-            { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", logo: generateStationIconSVG("LOVE") },
-            { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconSVG("Y-RCK") },
-            { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconSVG("XMAS") },
-            { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconSVG("EDM") },
-            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconSVG("CLUB") }
+        const rawStations = [
+            { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", tag: "RMF" },
+            { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", tag: "ZET" },
+            { name: "VOX FM", url: "https://ic2.smcdn.pl/3140-1.mp3", tag: "VOX" },
+            { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", tag: "PLUS" },
+            { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", tag: "RG" },
+            { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", tag: "RZP" },
+            { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", tag: "MUZO" },
+            { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", tag: "TOK" },
+            { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", tag: "ESKA" },
+            { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", tag: "GO" },
+            { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", tag: "ROCK" },
+            { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", tag: "ANTY" },
+            { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", tag: "POG" },
+            { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", tag: "KASZ" },
+            { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", tag: "CHILL" },
+            { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", tag: "YANO" },
+            { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", tag: "80s" },
+            { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", tag: "LOVE" },
+            { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", tag: "Y-RCK" },
+            { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", tag: "XMAS" },
+            { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", tag: "EDM" },
+            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", tag: "CLUB" }
         ];
+
+        // Inicjalizacja obrazków stacji
+        const stations = rawStations.map(s => ({
+            ...s,
+            logo: generateStationCanvasIcon(s.tag)
+        }));
 
         let currentStationIndex = -1;
         let isPlaying = false;
@@ -233,29 +254,37 @@
             });
         }
 
-        // Integracja ze sterowaniem systemowym iOS (Dynamic Island / ekran blokady)
+        // Konfiguracja Media Session API i wymuszenie przycisków Prev/Next na iOS
         function updateMediaSession() {
             if ('mediaSession' in navigator && currentStationIndex !== -1) {
                 const station = stations[currentStationIndex];
+
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: station.name,
-                    artist: "Radio Internetowe",
-                    album: "Live Stream",
+                    artist: "Radio Online",
+                    album: "Na żywo",
                     artwork: [
-                        { src: station.logo, sizes: '96x96', type: 'image/svg+xml' },
-                        { src: station.logo, sizes: '128x128', type: 'image/svg+xml' }
+                        { src: station.logo, sizes: '512x512', type: 'image/png' }
                     ]
                 });
 
-                // Przypisanie akcji systemowych
-                navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
-                navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+                // Włączamy akcje Poprzednia i Następna
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
-                
-                // Zastąpienie przeskakiwania o 10s akcją zmiany stacji
-                try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
+                navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
+                navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+
+                // Usuwamy akcje przeskakiwania (seek), żeby iOS wyświetlił strzałki przełączania stacji
+                try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekforward', null); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekto', null); } catch(e){}
+
+                // Ustawiamy brak czasu trwania, wymuszając widok streamu na żywo
+                if ('setPositionState' in navigator.mediaSession) {
+                    try {
+                        navigator.mediaSession.setPositionState();
+                    } catch(e){}
+                }
             }
         }
 
