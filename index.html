@@ -47,6 +47,7 @@
             color: var(--text-color);
         }
 
+        /* Lista stacji */
         .stations-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -84,6 +85,7 @@
             background-color: #475569;
         }
 
+        /* Aktywny przycisk stacji */
         .station-btn.active {
             background-color: var(--active-color);
             color: #ffffff;
@@ -91,6 +93,7 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
         }
 
+        /* Panel sterowania odtwarzaczem */
         .controls {
             display: flex;
             justify-content: center;
@@ -127,12 +130,14 @@
             background-color: #d97706;
         }
 
+        /* Stopka z wersją */
         .version-footer {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 10px;
         }
 
+        /* Customowy scrollbar dla listy stacji */
         .stations-grid::-webkit-scrollbar {
             width: 6px;
         }
@@ -147,17 +152,21 @@
     <div class="container">
         <h1>Wybierz stację radiową</h1>
 
+        <!-- Lista przycisków stacji radiowych -->
         <div class="stations-grid" id="stations-container"></div>
 
-        <audio id="audio-player" crossorigin="anonymous" preload="none"></audio>
+        <!-- Odnośnik/Element audio -->
+        <audio id="audio-player" crossorigin="anonymous" preload="auto"></audio>
 
+        <!-- Przyciski nawigacyjne -->
         <div class="controls">
             <button class="control-btn" id="prev-btn">Poprzednia</button>
             <button class="control-btn" id="play-pause-btn">Play</button>
             <button class="control-btn" id="next-btn">Następna</button>
         </div>
 
-        <div class="version-footer">Wersja 1.0.8</div>
+        <!-- Informacja o wersji -->
+        <div class="version-footer">Wersja 1.0.9</div>
     </div>
 
     <script>
@@ -239,22 +248,13 @@
             });
         }
 
-        // Konfiguracja MediaSession wymuszająca strzałki przełączania utworu w Dynamic Island
         function setupMediaSession() {
             if ('mediaSession' in navigator) {
-                // Jawnie rejestrujemy tylko akcje zmiany utworu
+                // Dokładnie taka rejestracja jak w aplikacji Kostki
                 navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
-
-                // Celowe usunięcie uchwytów przewijania w systemie iOS
-                const unsupportedActions = ['seekbackward', 'seekforward', 'seekto', 'stop'];
-                unsupportedActions.forEach(action => {
-                    try {
-                        navigator.mediaSession.setActionHandler(action, null);
-                    } catch (e) {}
-                });
             }
         }
 
@@ -262,21 +262,15 @@
             if ('mediaSession' in navigator && currentStationIndex !== -1) {
                 const station = stations[currentStationIndex];
 
+                // Udajemy, że to piosenka z playlisty (album: Stacja X z Y) - kluczowe dla iOS Dynamic Island!
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: station.name,
                     artist: "Radio Internetowe",
-                    album: "Na Żywo",
+                    album: `Stacja ${currentStationIndex + 1} z ${stations.length}`,
                     artwork: [
                         { src: station.logo, sizes: '512x512', type: 'image/png' }
                     ]
                 });
-
-                // Sygnał dla iOS, że odtwarzanie jest nieskończonym strumieniem na żywo
-                if ('setPositionState' in navigator.mediaSession) {
-                    try {
-                        navigator.mediaSession.setPositionState();
-                    } catch (e) {}
-                }
             }
         }
 
@@ -284,19 +278,21 @@
             currentStationIndex = index;
             const station = stations[currentStationIndex];
 
+            // 1. Przypisanie nowego źródła
+            audioPlayer.src = station.url;
+            
+            // 2. Aktualizacja metadanych i UI
             updateMediaSessionMetadata();
             updateUI();
 
-            audioPlayer.src = station.url;
-            audioPlayer.load();
-
+            // 3. Wymuszenie odtwarzania
             const playPromise = audioPlayer.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     isPlaying = true;
                     updateUI();
                 }).catch(err => {
-                    console.log("Error playing audio:", err);
+                    console.log("Play error:", err);
                     isPlaying = false;
                     updateUI();
                 });
@@ -348,6 +344,17 @@
             let newIndex = (currentStationIndex === -1 || currentStationIndex >= stations.length - 1) ? 0 : currentStationIndex + 1;
             selectStation(newIndex);
         }
+
+        // Zdarzenia zapobiegające zrywaniu sesji w tle na iOS
+        audioPlayer.addEventListener('ended', () => {
+            if (isPlaying) audioPlayer.play();
+        });
+
+        audioPlayer.addEventListener('error', () => {
+            if (isPlaying && currentStationIndex !== -1) {
+                setTimeout(() => selectStation(currentStationIndex), 1000);
+            }
+        });
 
         playPauseBtn.onclick = togglePlayPause;
         prevBtn.onclick = playPrevStation;
