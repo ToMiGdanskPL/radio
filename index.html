@@ -2,366 +2,297 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Radio Internetowe</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #3b82f6;
-            --active-color: #10b981;
-            --text-color: #f8fafc;
-            --text-secondary: #94a3b8;
-        }
-
         * {
             box-sizing: border-box;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: #1E1E1E;
+            color: #E5E5EA;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            color: var(--text-color);
-        }
-
-        /* Lista stacji */
-        .stations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            margin-bottom: 30px;
-            max-height: 350px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .station-btn {
-            background-color: #334155;
-            color: var(--text-color);
-            border: 2px solid transparent;
-            padding: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
+        #app-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .station-btn img {
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
-            object-fit: contain;
-        }
-
-        .station-btn:hover {
-            background-color: #475569;
-        }
-
-        /* Aktywny przycisk stacji */
-        .station-btn.active {
-            background-color: var(--active-color);
-            color: #ffffff;
-            border-color: #059669;
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
-        }
-
-        /* Panel sterowania odtwarzaczem */
-        .controls {
-            display: flex;
+            width: 100vw;
+            height: 100vh;
+            padding: 16px;
+            gap: 12px;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            border-top: 1px solid #334155;
-            padding-top: 25px;
-            margin-bottom: 15px;
         }
-
-        .control-btn {
-            background-color: var(--accent-color);
+        .radio-panel {
+            background: #2D2D30;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .radio-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+        }
+        .stations-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            width: 100%;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .btn-station {
+            background-color: #3A3A3C;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            flex: 0 0 auto;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-station.active-station {
+            background-color: #30D158;
+            color: #000;
+            font-weight: bold;
+        }
+        button {
+            background-color: #0A84FF;
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9rem;
+            padding: 12px;
+            border-radius: 8px;
             font-weight: 600;
-            transition: background-color 0.2s;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-media {
             flex: 1;
         }
-
-        .control-btn:hover {
-            background-color: #2563eb;
+        .btn-play-state {
+            background-color: #30D158;
+            color: #000;
         }
-
-        #play-pause-btn {
-            background-color: #f59e0b;
-            flex: 1.2;
+        .btn-stop-state {
+            background-color: #FF3B30;
+            color: #FFF;
         }
-
-        #play-pause-btn:hover {
-            background-color: #d97706;
+        .app-title {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #0A84FF;
+            margin-bottom: 8px;
         }
-
-        /* Stopka z wersją */
-        .version-footer {
+        .version-badge {
+            text-align: center;
             font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 10px;
-        }
-
-        /* Customowy scrollbar dla listy stacji */
-        .stations-grid::-webkit-scrollbar {
-            width: 6px;
-        }
-        .stations-grid::-webkit-scrollbar-thumb {
-            background-color: #475569;
-            border-radius: 4px;
+            color: #8E8E93;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Wybierz stację radiową</h1>
+    <div id="app-container">
+        <div class="radio-panel">
+            <div class="app-title">📻 Radio Internetowe</div>
+            
+            <div class="radio-row">
+                <div class="stations-scroll" id="stationsList"></div>
+            </div>
+            
+            <div class="radio-row">
+                <button id="btnPrev" class="btn-media" onclick="prevStation()">⏮️ Poprzednia</button>
+                <button id="btnPlay" class="btn-media btn-play-state" onclick="togglePlay()">▶ Play</button>
+                <button id="btnNext" class="btn-media" onclick="nextStation()">Następna ⏭️</button>
+            </div>
 
-        <!-- Lista przycisków stacji radiowych -->
-        <div class="stations-grid" id="stations-container"></div>
-
-        <!-- Odnośnik/Element audio -->
-        <audio id="audio-player" crossorigin="anonymous" preload="auto"></audio>
-
-        <!-- Przyciski nawigacyjne -->
-        <div class="controls">
-            <button class="control-btn" id="prev-btn">Poprzednia</button>
-            <button class="control-btn" id="play-pause-btn">Play</button>
-            <button class="control-btn" id="next-btn">Następna</button>
+            <div class="version-badge">Wersja 1.1.0</div>
         </div>
-
-        <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.9</div>
     </div>
 
-    <script>
-        function generateStationCanvasIcon(text) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 512;
-            canvas.height = 512;
-            const ctx = canvas.getContext('2d');
+    <audio id="audioPlayer" preload="none"></audio>
 
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, 0, 512, 512);
+<script>
+    function generateStationIconSVG(text) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+            <rect width="512" height="512" fill="#0A84FF" rx="100"/>
+            <circle cx="256" cy="256" r="180" fill="#1E1E1E"/>
+            <text x="50%" y="54%" font-family="Arial, sans-serif" font-size="110" font-weight="bold" fill="#30D158" text-anchor="middle" dominant-baseline="middle">${text}</text>
+        </svg>`;
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+    }
 
-            ctx.fillStyle = '#3b82f6';
-            ctx.font = 'bold 110px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(text, 256, 256);
+    var STATIONS = [
+        { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: generateStationIconSVG("RMF") },
+        { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: generateStationIconSVG("ZET") },
+        { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: generateStationIconSVG("PLUS") },
+        { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: generateStationIconSVG("RG") },
+        { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: generateStationIconSVG("RZP") },
+        { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", logo: generateStationIconSVG("MUZO") },
+        { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", logo: generateStationIconSVG("TOK") },
+        { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", logo: generateStationIconSVG("ESKA") },
+        { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", logo: generateStationIconSVG("GO") },
+        { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", logo: generateStationIconSVG("ROCK") },
+        { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", logo: generateStationIconSVG("ANTY") },
+        { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", logo: generateStationIconSVG("POG") },
+        { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", logo: generateStationIconSVG("KASZ") },
+        { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", logo: generateStationIconSVG("CHILL") },
+        { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", logo: generateStationIconSVG("YANO") },
+        { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", logo: generateStationIconSVG("80s") },
+        { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", logo: generateStationIconSVG("LOVE") },
+        { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconSVG("Y-RCK") },
+        { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconSVG("XMAS") },
+        { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconSVG("EDM") },
+        { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", tag: "CLUB", logo: generateStationIconSVG("CLUB") }
+    ];
 
-            return canvas.toDataURL('image/png');
-        }
+    var currentStationIdx = 0;
+    const audio = document.getElementById("audioPlayer");
 
-        const rawStations = [
-            { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", tag: "RMF" },
-            { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", tag: "ZET" },
-            { name: "VOX FM", url: "https://ic2.smcdn.pl/3140-1.mp3", tag: "VOX" },
-            { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", tag: "PLUS" },
-            { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", tag: "RG" },
-            { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", tag: "RZP" },
-            { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", tag: "MUZO" },
-            { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", tag: "TOK" },
-            { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", tag: "ESKA" },
-            { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", tag: "GO" },
-            { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", tag: "ROCK" },
-            { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", tag: "ANTY" },
-            { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", tag: "POG" },
-            { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", tag: "KASZ" },
-            { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", tag: "CHILL" },
-            { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", tag: "YANO" },
-            { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", tag: "80s" },
-            { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", tag: "LOVE" },
-            { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", tag: "Y-RCK" },
-            { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", tag: "XMAS" },
-            { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", tag: "EDM" },
-            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", tag: "CLUB" }
-        ];
-
-        const stations = rawStations.map(s => ({
-            ...s,
-            logo: generateStationCanvasIcon(s.tag)
-        }));
-
-        let currentStationIndex = -1;
-        let isPlaying = false;
-
-        const audioPlayer = document.getElementById('audio-player');
-        const stationsContainer = document.getElementById('stations-container');
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-
-        function initStations() {
-            stationsContainer.innerHTML = '';
-            stations.forEach((station, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'station-btn';
-                
-                const img = document.createElement('img');
-                img.src = station.logo;
-                img.alt = station.name;
-
-                const textSpan = document.createElement('span');
-                textSpan.innerText = station.name;
-
-                btn.appendChild(img);
-                btn.appendChild(textSpan);
-
-                btn.onclick = () => selectStation(index);
-                stationsContainer.appendChild(btn);
-            });
-        }
-
-        function setupMediaSession() {
-            if ('mediaSession' in navigator) {
-                // Dokładnie taka rejestracja jak w aplikacji Kostki
-                navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
-                navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
-                navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
-                navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
-            }
-        }
-
-        function updateMediaSessionMetadata() {
-            if ('mediaSession' in navigator && currentStationIndex !== -1) {
-                const station = stations[currentStationIndex];
-
-                // Udajemy, że to piosenka z playlisty (album: Stacja X z Y) - kluczowe dla iOS Dynamic Island!
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: station.name,
-                    artist: "Radio Internetowe",
-                    album: `Stacja ${currentStationIndex + 1} z ${stations.length}`,
-                    artwork: [
-                        { src: station.logo, sizes: '512x512', type: 'image/png' }
-                    ]
-                });
-            }
-        }
-
-        function selectStation(index) {
-            currentStationIndex = index;
-            const station = stations[currentStationIndex];
-
-            // 1. Przypisanie nowego źródła
-            audioPlayer.src = station.url;
+    function setupMediaSessionHandlers() {
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', function() { togglePlay(); });
+            navigator.mediaSession.setActionHandler('pause', function() { togglePlay(); });
             
-            // 2. Aktualizacja metadanych i UI
-            updateMediaSessionMetadata();
-            updateUI();
+            // Wymuszenie ikon poprzedni / następny utwór zamiast przewijania
+            navigator.mediaSession.setActionHandler('previoustrack', function() { prevStation(); });
+            navigator.mediaSession.setActionHandler('nexttrack', function() { nextStation(); });
+            
+            // Jawne wyłączenie przycisków przeskakiwania sekundowego (seek)
+            try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch (e) {}
+            try { navigator.mediaSession.setActionHandler('seekforward', null); } catch (e) {}
+            try { navigator.mediaSession.setActionHandler('seekto', null); } catch (e) {}
+        }
+    }
 
-            // 3. Wymuszenie odtwarzania
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    isPlaying = true;
-                    updateUI();
-                }).catch(err => {
-                    console.log("Play error:", err);
-                    isPlaying = false;
-                    updateUI();
-                });
-            }
+    function updateMediaSession() {
+        if (!('mediaSession' in navigator)) return;
+        const station = STATIONS[currentStationIdx];
+        
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: station.name,
+            artist: "Radio Internetowe",
+            album: "Radio na żywo",
+            artwork: [
+                { src: station.logo, sizes: '512x512', type: 'image/svg+xml' }
+            ]
+        });
+        
+        navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
+    }
+
+    function renderStationButtons() {
+        const container = document.getElementById("stationsList");
+        container.innerHTML = "";
+
+        STATIONS.forEach((st, idx) => {
+            const btn = document.createElement("button");
+            const isActive = (idx === currentStationIdx);
+            btn.className = "btn-station" + (isActive ? " active-station" : "");
+            btn.innerText = st.name;
+            btn.onclick = function() { selectAndPlayStation(idx); };
+            container.appendChild(btn);
+        });
+
+        const activeBtn = container.querySelector('.active-station');
+        if (activeBtn) {
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    }
+
+    function selectAndPlayStation(idx) {
+        if (idx < 0) idx = STATIONS.length - 1;
+        if (idx >= STATIONS.length) idx = 0;
+        
+        currentStationIdx = idx;
+        const btnPlay = document.getElementById("btnPlay");
+
+        try {
+            audio.pause();
+            audio.removeAttribute('src');
+            audio.load();
+        } catch (e) {
+            console.log("Reset error:", e);
         }
 
-        function updateUI() {
-            const buttons = stationsContainer.querySelectorAll('.station-btn');
-            buttons.forEach((btn, idx) => {
-                if (idx === currentStationIndex) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+        audio.src = STATIONS[currentStationIdx].url;
+        audio.load();
+
+        setupMediaSessionHandlers();
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                btnPlay.innerText = "⏹️ Stop";
+                btnPlay.className = "btn-media btn-stop-state";
+                updateMediaSession();
+                renderStationButtons();
+            }).catch(err => {
+                console.log("Błąd odtwarzania:", err);
+                btnPlay.innerText = "▶ Play";
+                btnPlay.className = "btn-media btn-play-state";
+                updateMediaSession();
+                renderStationButtons();
             });
-
-            playPauseBtn.innerText = isPlaying ? "Pauza" : "Play";
         }
+    }
 
-        function togglePlayPause() {
-            if (currentStationIndex === -1) {
-                selectStation(0);
-                return;
+    function togglePlay() {
+        const btn = document.getElementById("btnPlay");
+
+        if (audio.paused) {
+            if (!audio.src || audio.src === "" || audio.src === window.location.href) {
+                audio.src = STATIONS[currentStationIdx].url;
             }
-
-            if (isPlaying) {
-                audioPlayer.pause();
-                isPlaying = false;
-            } else {
-                audioPlayer.play().then(() => {
-                    isPlaying = true;
-                    updateUI();
-                }).catch(() => {
-                    isPlaying = false;
-                    updateUI();
-                });
-            }
-            updateUI();
+            audio.load();
+            setupMediaSessionHandlers();
+            audio.play().then(() => {
+                btn.innerText = "⏹️ Stop";
+                btn.className = "btn-media btn-stop-state";
+                updateMediaSession();
+                renderStationButtons();
+            }).catch(err => console.log("Błąd:", err));
+        } else {
+            audio.pause();
+            audio.currentTime = 0;
+            btn.innerText = "▶ Play";
+            btn.className = "btn-media btn-play-state";
+            updateMediaSession();
+            renderStationButtons();
         }
+    }
 
-        function playPrevStation() {
-            if (stations.length === 0) return;
-            let newIndex = currentStationIndex <= 0 ? stations.length - 1 : currentStationIndex - 1;
-            selectStation(newIndex);
-        }
+    function prevStation() {
+        let newIdx = currentStationIdx - 1;
+        if (newIdx < 0) newIdx = STATIONS.length - 1;
+        selectAndPlayStation(newIdx);
+    }
 
-        function playNextStation() {
-            if (stations.length === 0) return;
-            let newIndex = (currentStationIndex === -1 || currentStationIndex >= stations.length - 1) ? 0 : currentStationIndex + 1;
-            selectStation(newIndex);
-        }
+    function nextStation() {
+        let newIdx = currentStationIdx + 1;
+        if (newIdx >= STATIONS.length) newIdx = 0;
+        selectAndPlayStation(newIdx);
+    }
 
-        // Zdarzenia zapobiegające zrywaniu sesji w tle na iOS
-        audioPlayer.addEventListener('ended', () => {
-            if (isPlaying) audioPlayer.play();
-        });
-
-        audioPlayer.addEventListener('error', () => {
-            if (isPlaying && currentStationIndex !== -1) {
-                setTimeout(() => selectStation(currentStationIndex), 1000);
-            }
-        });
-
-        playPauseBtn.onclick = togglePlayPause;
-        prevBtn.onclick = playPrevStation;
-        nextBtn.onclick = playNextStation;
-
-        initStations();
-        setupMediaSession();
-    </script>
+    renderStationButtons();
+</script>
 </body>
 </html>
