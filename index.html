@@ -47,15 +47,48 @@
         h1 {
             font-size: 1.4rem;
             color: var(--text-color);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Status & Wizualizator */
+        .status-container {
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .status-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .visualizer-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 4px;
+            height: 25px;
+            width: 100%;
+        }
+
+        .bar {
+            width: 4px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            transition: height 0.05s ease;
         }
 
         .stations-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 12px;
-            margin-bottom: 30px;
-            max-height: 350px;
+            margin-bottom: 20px;
+            max-height: 300px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -93,14 +126,44 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
         }
 
+        /* Opcje dodatkowe (Timer) */
+        .extra-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #0f172a55;
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        .timer-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .timer-select {
+            background-color: #334155;
+            color: var(--text-color);
+            border: 1px solid #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
         .controls {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
             border-top: 1px solid #334155;
-            padding-top: 25px;
-            padding-bottom: 25px;
+            padding-top: 20px;
+            padding-bottom: 20px;
             border-bottom: 1px solid #334155;
         }
 
@@ -134,7 +197,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
@@ -160,7 +223,25 @@
     <div class="container">
         <h1>Radio internetowe</h1>
 
+        <div class="status-container">
+            <div class="status-text" id="status-text">Wybierz stację</div>
+            <div class="visualizer-container" id="visualizer"></div>
+        </div>
+
         <div class="stations-grid" id="stations-container"></div>
+
+        <div class="extra-controls">
+            <div class="timer-group">
+                <label for="sleep-timer">Wyłącznik czasowy:</label>
+                <select id="sleep-timer" class="timer-select">
+                    <option value="0">Wyłączony</option>
+                    <option value="15">15 min</option>
+                    <option value="30">30 min</option>
+                    <option value="60">60 min</option>
+                </select>
+            </div>
+            <span id="timer-display" style="font-size: 0.8rem; color: #10b981;"></span>
+        </div>
 
         <audio id="audio-player" crossorigin="anonymous" preload="none"></audio>
 
@@ -171,7 +252,7 @@
         </div>
 
         <div class="footer">
-            <span class="app-version">Wersja 1.0.5</span>
+            <span class="app-version">v1.0.5</span>
             <span>Created by ToMi</span>
         </div>
     </div>
@@ -223,12 +304,32 @@
 
         let currentStationIndex = -1;
         let isPlaying = false;
+        let reconnectAttempts = 0;
+        let sleepTimerTimeout = null;
+        let sleepTimerInterval = null;
+
+        // Audio Context & Vizualizer
+        let audioCtx, analyser, source;
+        const NUM_BARS = 16;
+        let visualizerAnimId = null;
 
         const audioPlayer = document.getElementById('audio-player');
         const stationsContainer = document.getElementById('stations-container');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
+        const statusText = document.getElementById('status-text');
+        const visualizer = document.getElementById('visualizer');
+        const sleepTimerSelect = document.getElementById('sleep-timer');
+        const timerDisplay = document.getElementById('timer-display');
+
+        // Inicjalizacja wizualizatora w DOM
+        for (let i = 0; i < NUM_BARS; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            visualizer.appendChild(bar);
+        }
+        const bars = visualizer.querySelectorAll('.bar');
 
         function initStations() {
             stationsContainer.innerHTML = '';
@@ -249,6 +350,61 @@
                 btn.onclick = () => selectStation(index);
                 stationsContainer.appendChild(btn);
             });
+        }
+
+        // Web Audio API & Visualizer Logic
+        function setupAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64;
+                try {
+                    source = audioCtx.createMediaElementSource(audioPlayer);
+                    source.connect(analyser);
+                    analyser.connect(audioCtx.destination);
+                } catch(e) {
+                    // W przypadku ograniczeń CORS
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function updateVisualizer() {
+            if (!isPlaying) {
+                bars.forEach(bar => bar.style.height = '3px');
+                return;
+            }
+
+            if (analyser) {
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(dataArray);
+
+                let hasData = false;
+                for (let i = 0; i < NUM_BARS; i++) {
+                    const val = dataArray[i] || 0;
+                    if (val > 0) hasData = true;
+                    const height = Math.max(3, (val / 255) * 25);
+                    bars[i].style.height = `${height}px`;
+                }
+
+                // Fallback dla strumieni blokujących analizę częstotliwości (CORS)
+                if (!hasData) {
+                    bars.forEach((bar, i) => {
+                        const randomHeight = Math.floor(Math.random() * 20) + 4;
+                        bar.style.height = `${randomHeight}px`;
+                    });
+                }
+            } else {
+                bars.forEach((bar) => {
+                    const randomHeight = Math.floor(Math.random() * 20) + 4;
+                    bar.style.height = `${randomHeight}px`;
+                });
+            }
+
+            visualizerAnimId = requestAnimationFrame(updateVisualizer);
         }
 
         function setupMediaSession() {
@@ -287,15 +443,23 @@
             currentStationIndex = index;
             const station = stations[currentStationIndex];
 
+            reconnectAttempts = 0;
+            setupAudioContext();
+
+            statusText.innerText = "Łączenie: " + station.name;
             audioPlayer.src = station.url;
 
             audioPlayer.play().then(() => {
                 isPlaying = true;
+                statusText.innerText = station.name;
                 updateUI();
                 updateMediaSessionMetadata();
+                cancelAnimationFrame(visualizerAnimId);
+                updateVisualizer();
             }).catch(error => {
                 console.log("Błąd odtwarzania:", error);
                 isPlaying = false;
+                statusText.innerText = "Błąd połączenia";
                 updateUI();
                 updateMediaSessionMetadata();
             });
@@ -325,18 +489,27 @@
                 return;
             }
 
+            setupAudioContext();
+
             if (isPlaying) {
                 audioPlayer.pause();
                 isPlaying = false;
+                statusText.innerText = "Zatrzymano";
                 updateUI();
                 updateMediaSessionMetadata();
+                cancelAnimationFrame(visualizerAnimId);
+                bars.forEach(bar => bar.style.height = '3px');
             } else {
                 audioPlayer.play().then(() => {
                     isPlaying = true;
+                    statusText.innerText = stations[currentStationIndex].name;
                     updateUI();
                     updateMediaSessionMetadata();
+                    cancelAnimationFrame(visualizerAnimId);
+                    updateVisualizer();
                 }).catch(() => {
                     isPlaying = false;
+                    statusText.innerText = "Błąd połączenia";
                     updateUI();
                     updateMediaSessionMetadata();
                 });
@@ -355,16 +528,80 @@
             selectStation(newIndex);
         }
 
+        // Auto-Reconnect Logic
+        audioPlayer.onerror = () => {
+            if (currentStationIndex !== -1 && reconnectAttempts < 5) {
+                reconnectAttempts++;
+                statusText.innerText = `Ponowne łączenie (${reconnectAttempts}/5)...`;
+                setTimeout(() => {
+                    audioPlayer.src = stations[currentStationIndex].url;
+                    audioPlayer.play().then(() => {
+                        isPlaying = true;
+                        statusText.innerText = stations[currentStationIndex].name;
+                        updateUI();
+                        updateMediaSessionMetadata();
+                    }).catch(() => {});
+                }, 3000);
+            } else if (reconnectAttempts >= 5) {
+                statusText.innerText = "Brak połączenia ze strumieniem";
+                isPlaying = false;
+                updateUI();
+            }
+        };
+
+        // Sleep Timer Logic
+        sleepTimerSelect.onchange = () => {
+            clearTimeout(sleepTimerTimeout);
+            clearInterval(sleepTimerInterval);
+            timerDisplay.innerText = "";
+
+            const minutes = parseInt(sleepTimerSelect.value);
+            if (minutes > 0) {
+                let secondsLeft = minutes * 60;
+
+                const updateTimerDisplay = () => {
+                    const m = Math.floor(secondsLeft / 60);
+                    const s = secondsLeft % 60;
+                    timerDisplay.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                };
+
+                updateTimerDisplay();
+
+                sleepTimerInterval = setInterval(() => {
+                    secondsLeft--;
+                    if (secondsLeft <= 0) {
+                        clearInterval(sleepTimerInterval);
+                    } else {
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+
+                sleepTimerTimeout = setTimeout(() => {
+                    if (isPlaying) {
+                        togglePlayPause();
+                    }
+                    sleepTimerSelect.value = "0";
+                    timerDisplay.innerText = "";
+                    statusText.innerText = "Wyłączono (Timer)";
+                }, minutes * 60 * 1000);
+            }
+        };
+
         audioPlayer.onplay = () => {
             isPlaying = true;
+            statusText.innerText = stations[currentStationIndex].name;
             updateUI();
             updateMediaSessionMetadata();
+            cancelAnimationFrame(visualizerAnimId);
+            updateVisualizer();
         };
 
         audioPlayer.onpause = () => {
             isPlaying = false;
             updateUI();
             updateMediaSessionMetadata();
+            cancelAnimationFrame(visualizerAnimId);
+            bars.forEach(bar => bar.style.height = '3px');
         };
 
         playPauseBtn.onclick = togglePlayPause;
