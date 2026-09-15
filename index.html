@@ -166,11 +166,11 @@
         </div>
 
         <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.6</div>
+        <div class="version-footer">Wersja 1.0.7</div>
     </div>
 
     <script>
-        // Generowanie czystych PNG dla ikony w wysokiej rozdzielczości
+        // Generowanie spójnych ikonek Canvas dla iOS
         function generateStationCanvasIcon(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
@@ -249,21 +249,19 @@
             });
         }
 
+        // Podpięcie sterowania systemowego z dynamicznym przechwytywaniem akcji
         function setupMediaSession() {
             if ('mediaSession' in navigator) {
-                // Rejestrujemy główne akcje
                 navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+                
+                // Przechwytujemy standardowe akcje zmiany utworów
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
 
-                // Jawne wyłączenie akcji przewijania (zmusza iOS do pokazania strzałek nast/poprz)
-                const disableActions = ['seekbackward', 'seekforward', 'seekto', 'stop'];
-                disableActions.forEach(action => {
-                    try {
-                        navigator.mediaSession.setActionHandler(action, null);
-                    } catch (e) {}
-                });
+                // Kluczowe dla iOS: jeśli system pokaże przyciski przeskakiwania (-10 / +10), też przełączą stację
+                try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
             }
         }
 
@@ -274,7 +272,7 @@
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: station.name,
                     artist: "Radio Internetowe",
-                    album: "Live Stream",
+                    album: "Na żywo",
                     artwork: [
                         { src: station.logo, sizes: '512x512', type: 'image/png' }
                     ]
@@ -286,20 +284,20 @@
             currentStationIndex = index;
             const station = stations[currentStationIndex];
 
-            // 1. Najpierw aktualizujemy metadane systemowe dla iOS
             updateMediaSessionMetadata();
             updateUI();
 
-            // 2. Podmieniamy strumień i natychmiast wywołujemy odtwarzanie
+            // Bezpieczna zmiana źródła bez zgubienia kontekstu odtwarzacza w tle
             audioPlayer.src = station.url;
-            
+            audioPlayer.load();
+
             const playPromise = audioPlayer.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     isPlaying = true;
                     updateUI();
                 }).catch(err => {
-                    console.log("Błąd odtwarzania strumienia:", err);
+                    console.log("Błąd odtwarzania:", err);
                     isPlaying = false;
                     updateUI();
                 });
@@ -331,6 +329,9 @@
             } else {
                 audioPlayer.play().then(() => {
                     isPlaying = true;
+                    updateUI();
+                }).catch(() => {
+                    isPlaying = false;
                     updateUI();
                 });
             }
