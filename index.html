@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Internetowe</title>
+    <title>Radio Internetowe v1.0.4</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -41,19 +41,27 @@
             padding: 30px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             text-align: center;
+            position: relative;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            font-size: 1.4rem;
             color: var(--text-color);
         }
 
-        .now-playing {
-            font-size: 0.9rem;
+        .app-version {
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            margin-bottom: 25px;
-            min-height: 1.2em;
+            background: #334155;
+            padding: 3px 8px;
+            border-radius: 6px;
         }
 
         .stations-grid {
@@ -83,10 +91,9 @@
         }
 
         .station-btn img {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            object-fit: contain;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
         }
 
         .station-btn:hover {
@@ -147,8 +154,10 @@
 <body>
 
     <div class="container">
-        <h1>Wybierz stację radiową</h1>
-        <div class="now-playing" id="now-playing">Nie wybrano stacji</div>
+        <div class="header-info">
+            <h1>Radio Internetowe</h1>
+            <span class="app-version">v1.0.4</span>
+        </div>
 
         <div class="stations-grid" id="stations-container"></div>
 
@@ -162,30 +171,51 @@
     </div>
 
     <script>
-        const fallbackIcon = "https://cdn-icons-png.flaticon.com/512/3082/3082383.png";
+        // Generowanie czystego obrazu PNG za pomocą Canvas (rozwiązuje problem z zepsutym logo w iOS)
+        function generateStationIconPNG(text) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Tło
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 512, 512, 64);
+            ctx.fill();
+
+            // Tekst
+            ctx.fillStyle = '#3b82f6';
+            ctx.font = 'bold 180px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 256, 260);
+
+            return canvas.toDataURL('image/png');
+        }
 
         const stations = [
-            { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: "https://www.rmf.fm/img/logo_rmf.png" },
-            { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: "https://www.radiozet.pl/extension/zet_theme/design/zet_theme/images/logo_zet.png" },
-            { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: fallbackIcon },
-            { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: fallbackIcon },
-            { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: fallbackIcon },
-            { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", logo: fallbackIcon },
-            { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", logo: fallbackIcon },
-            { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", logo: fallbackIcon },
-            { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", logo: fallbackIcon },
-            { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", logo: fallbackIcon },
-            { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", logo: fallbackIcon },
-            { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", logo: fallbackIcon },
-            { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", logo: fallbackIcon },
-            { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", logo: fallbackIcon },
-            { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", logo: fallbackIcon },
-            { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", logo: fallbackIcon },
-            { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", logo: fallbackIcon },
-            { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: fallbackIcon },
-            { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: fallbackIcon },
-            { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: fallbackIcon },
-            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: fallbackIcon }
+            { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: generateStationIconPNG("RMF") },
+            { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: generateStationIconPNG("ZET") },
+            { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: generateStationIconPNG("PLUS") },
+            { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: generateStationIconPNG("RG") },
+            { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: generateStationIconPNG("RZP") },
+            { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", logo: generateStationIconPNG("MUZO") },
+            { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", logo: generateStationIconPNG("TOK") },
+            { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", logo: generateStationIconPNG("ESKA") },
+            { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", logo: generateStationIconPNG("GO") },
+            { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", logo: generateStationIconPNG("ROCK") },
+            { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", logo: generateStationIconPNG("ANTY") },
+            { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", logo: generateStationIconPNG("POG") },
+            { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", logo: generateStationIconPNG("KASZ") },
+            { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", logo: generateStationIconPNG("CHILL") },
+            { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", logo: generateStationIconPNG("YANO") },
+            { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", logo: generateStationIconPNG("80s") },
+            { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", logo: generateStationIconPNG("LOVE") },
+            { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconPNG("Y-RCK") },
+            { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconPNG("XMAS") },
+            { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconPNG("EDM") },
+            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconPNG("CLUB") }
         ];
 
         let currentStationIndex = -1;
@@ -196,7 +226,6 @@
         const playPauseBtn = document.getElementById('play-pause-btn');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
-        const nowPlayingText = document.getElementById('now-playing');
 
         function initStations() {
             stationsContainer.innerHTML = '';
@@ -207,7 +236,6 @@
                 const img = document.createElement('img');
                 img.src = station.logo;
                 img.alt = station.name;
-                img.onerror = () => { img.src = fallbackIcon; };
 
                 const textSpan = document.createElement('span');
                 textSpan.innerText = station.name;
@@ -222,10 +250,15 @@
 
         function setupMediaSession() {
             if ('mediaSession' in navigator) {
+                // Rejestracja zdarzeń przełączania stacji
                 navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
+
+                // Przypisanie gestów przewijania w wyspie do zmiany stacji (na przypadek, gdy iOS wymusi ikony 10s)
+                try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
             }
         }
 
@@ -254,14 +287,13 @@
             const station = stations[currentStationIndex];
 
             audioPlayer.src = station.url;
-            audioPlayer.load();
 
             audioPlayer.play().then(() => {
                 isPlaying = true;
                 updateUI();
                 updateMediaSessionMetadata();
             }).catch(error => {
-                console.log("Błąd automatycznego odtwarzania:", error);
+                console.log("Błąd odtwarzania:", error);
                 isPlaying = false;
                 updateUI();
                 updateMediaSessionMetadata();
@@ -280,10 +312,8 @@
             });
 
             if (currentStationIndex !== -1) {
-                nowPlayingText.innerText = "Grasz: " + stations[currentStationIndex].name;
                 playPauseBtn.innerText = isPlaying ? "Pauza" : "Play";
             } else {
-                nowPlayingText.innerText = "Wybierz stację z listy";
                 playPauseBtn.innerText = "Play";
             }
         }
