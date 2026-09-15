@@ -43,15 +43,8 @@
 
         h1 {
             font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--text-color);
-        }
-
-        .now-playing {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
             margin-bottom: 25px;
-            min-height: 1.2em;
+            color: var(--text-color);
         }
 
         /* Lista stacji */
@@ -60,7 +53,7 @@
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 12px;
             margin-bottom: 30px;
-            max-height: 300px;
+            max-height: 350px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -69,12 +62,22 @@
             background-color: #334155;
             color: var(--text-color);
             border: 2px solid transparent;
-            padding: 12px;
+            padding: 10px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .station-btn img {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
         }
 
         .station-btn:hover {
@@ -97,6 +100,7 @@
             gap: 15px;
             border-top: 1px solid #334155;
             padding-top: 25px;
+            margin-bottom: 15px;
         }
 
         .control-btn {
@@ -116,12 +120,6 @@
             background-color: #2563eb;
         }
 
-        .control-btn:disabled {
-            background-color: #475569;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
         #play-pause-btn {
             background-color: #f59e0b;
             flex: 1.2;
@@ -129,6 +127,13 @@
 
         #play-pause-btn:hover {
             background-color: #d97706;
+        }
+
+        /* Stopka z wersją */
+        .version-footer {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
         }
 
         /* Customowy scrollbar dla listy stacji */
@@ -145,7 +150,6 @@
 
     <div class="container">
         <h1>Wybierz stację radiową</h1>
-        <div class="now-playing" id="now-playing">Nie wybrano stacji</div>
 
         <!-- Lista przycisków stacji radiowych -->
         <div class="stations-grid" id="stations-container"></div>
@@ -159,32 +163,44 @@
             <button class="control-btn" id="play-pause-btn">Play</button>
             <button class="control-btn" id="next-btn">Następna</button>
         </div>
+
+        <!-- Informacja o wersji -->
+        <div class="version-footer">Wersja 1.0.0</div>
     </div>
 
     <script>
-        // Lista stacji radiowych z bezpośrednimi strumieniami sygnału (MP3/AAC)
+        // Funkcja generująca ikonki SVG Data URI w locie
+        function generateStationIconSVG(text) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+                <rect width="64" height="64" rx="12" fill="#0f172a"/>
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#3b82f6" font-family="sans-serif" font-size="20" font-weight="bold">${text}</text>
+            </svg>`;
+            return `data:image/svg+xml;base64,${btoa(svg)}`;
+        }
+
+        // Lista stacji radiowych
         const stations = [
-        { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: generateStationIconSVG("RMF") },
-        { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: generateStationIconSVG("ZET") },
-        { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: generateStationIconSVG("PLUS") },
-        { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: generateStationIconSVG("RG") },
-        { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: generateStationIconSVG("RZP") },
-        { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", logo: generateStationIconSVG("MUZO") },
-        { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", logo: generateStationIconSVG("TOK") },
-        { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", logo: generateStationIconSVG("ESKA") },
-        { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", logo: generateStationIconSVG("GO") },
-        { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", logo: generateStationIconSVG("ROCK") },
-        { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", logo: generateStationIconSVG("ANTY") },
-        { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", logo: generateStationIconSVG("POG") },
-        { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", logo: generateStationIconSVG("KASZ") },
-        { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", logo: generateStationIconSVG("CHILL") },
-        { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", logo: generateStationIconSVG("YANO") },
-        { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", logo: generateStationIconSVG("80s") },
-        { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", logo: generateStationIconSVG("LOVE") },
-        { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconSVG("Y-RCK") },
-        { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconSVG("XMAS") },
-        { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconSVG("EDM") },
-        { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconSVG("CLUB") }
+            { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: generateStationIconSVG("RMF") },
+            { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: generateStationIconSVG("ZET") },
+            { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: generateStationIconSVG("PLUS") },
+            { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: generateStationIconSVG("RG") },
+            { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: generateStationIconSVG("RZP") },
+            { name: "Muzo FM", url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv", logo: generateStationIconSVG("MUZO") },
+            { name: "TOK FM", url: "https://radiostream.pl/tuba10-1.mp3", logo: generateStationIconSVG("TOK") },
+            { name: "Eska Trójmiasto", url: "https://ic2.smcdn.pl/2110-1.mp3", logo: generateStationIconSVG("ESKA") },
+            { name: "Eska GO", url: "https://ic2.smcdn.pl/6200-1.mp3", logo: generateStationIconSVG("GO") },
+            { name: "Eska Rock", url: "https://ic2.smcdn.pl/3990-1.aac", logo: generateStationIconSVG("ROCK") },
+            { name: "Antyradio", url: "https://an05.cdn.eurozet.pl/ant-waw.mp3", logo: generateStationIconSVG("ANTY") },
+            { name: "Radio Pogoda", url: "https://radiostream.pl/tuba145-1.mp3", logo: generateStationIconSVG("POG") },
+            { name: "Radio Kaszëbë", url: "https://stream4.nadaje.com:10125/kaszebe128", logo: generateStationIconSVG("KASZ") },
+            { name: "Chillout Zone", url: "https://stream-uk1.radioparadise.com/aac-320", logo: generateStationIconSVG("CHILL") },
+            { name: "Radio Yanosik", url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv", logo: generateStationIconSVG("YANO") },
+            { name: "Radio Yanosik '80", url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv", logo: generateStationIconSVG("80s") },
+            { name: "Radio Yanosik Love", url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv", logo: generateStationIconSVG("LOVE") },
+            { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconSVG("Y-RCK") },
+            { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconSVG("XMAS") },
+            { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconSVG("EDM") },
+            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconSVG("CLUB") }
         ];
 
         let currentStationIndex = -1;
@@ -195,7 +211,6 @@
         const playPauseBtn = document.getElementById('play-pause-btn');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
-        const nowPlayingText = document.getElementById('now-playing');
 
         // Generowanie przycisków stacji
         function initStations() {
@@ -203,7 +218,17 @@
             stations.forEach((station, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'station-btn';
-                btn.innerText = station.name;
+                
+                const img = document.createElement('img');
+                img.src = station.logo;
+                img.alt = station.name;
+
+                const textSpan = document.createElement('span');
+                textSpan.innerText = station.name;
+
+                btn.appendChild(img);
+                btn.appendChild(textSpan);
+
                 btn.onclick = () => selectStation(index);
                 stationsContainer.appendChild(btn);
             });
@@ -227,9 +252,8 @@
                 });
         }
 
-        // Aktualizacja wyglądu interfejsu (kolory, opisy, przyciski)
+        // Aktualizacja wyglądu interfejsu
         function updateUI() {
-            // Zmiana koloru aktywnego przycisku
             const buttons = stationsContainer.querySelectorAll('.station-btn');
             buttons.forEach((btn, idx) => {
                 if (idx === currentStationIndex) {
@@ -239,20 +263,12 @@
                 }
             });
 
-            // Aktualizacja tekstu Play/Pauza i statusu
-            if (currentStationIndex !== -1) {
-                nowPlayingText.innerText = "Grasz: " + stations[currentStationIndex].name;
-                playPauseBtn.innerText = isPlaying ? "Pauza" : "Play";
-            } else {
-                nowPlayingText.innerText = "Wybierz stację z listy";
-                playPauseBtn.innerText = "Play";
-            }
+            playPauseBtn.innerText = isPlaying ? "Pauza" : "Play";
         }
 
         // Obsługa Play / Pauza
         playPauseBtn.onclick = () => {
             if (currentStationIndex === -1) {
-                // Jeśli nic nie wybrano, włącz pierwszą stację
                 selectStation(0);
                 return;
             }
