@@ -156,7 +156,7 @@
         <div class="stations-grid" id="stations-container"></div>
 
         <!-- Odnośnik/Element audio -->
-        <audio id="audio-player" crossorigin="anonymous" preload="auto"></audio>
+        <audio id="audio-player" crossorigin="anonymous" preload="metadata"></audio>
 
         <!-- Przyciski nawigacyjne -->
         <div class="controls">
@@ -166,11 +166,11 @@
         </div>
 
         <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.4</div>
+        <div class="version-footer">Wersja 1.0.5</div>
     </div>
 
     <script>
-        // Generowanie wysokiej jakości obrazka PNG 512x512 via HTML Canvas
+        // Generowanie czystych PNG dla ikony w wysokiej rozdzielczości
         function generateStationCanvasIcon(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
@@ -189,7 +189,6 @@
             return canvas.toDataURL('image/png');
         }
 
-        // Lista stacji radiowych
         const rawStations = [
             { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", tag: "RMF" },
             { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", tag: "ZET" },
@@ -250,29 +249,26 @@
             });
         }
 
-        function setupMediaSessionHandlers() {
+        // Rejestracja MediaSession dedykowana wyłącznie dla iOS
+        function initMediaSession() {
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+                
+                // Rejestrujemy TYLKO previoustrack i nexttrack (bez nadpisywania skoków czasowych null)
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
-
-                try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekforward', null); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekto', null); } catch(e){}
             }
         }
 
-        function updateMediaSessionMetadata() {
+        function updateMetadata() {
             if ('mediaSession' in navigator && currentStationIndex !== -1) {
                 const station = stations[currentStationIndex];
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: station.name,
                     artist: "Radio Internetowe",
-                    album: "Na żywo",
-                    artwork: [
-                        { src: station.logo, sizes: '512x512', type: 'image/png' }
-                    ]
+                    album: "Live Stream",
+                    artwork: [{ src: station.logo, sizes: '512x512', type: 'image/png' }]
                 });
             }
         }
@@ -281,21 +277,18 @@
             currentStationIndex = index;
             const station = stations[currentStationIndex];
 
-            // Aktualizujemy metadane systemowe natychmiast, przed pobraniem strumienia
-            updateMediaSessionMetadata();
+            updateMetadata();
             updateUI();
 
-            audioPlayer.pause();
             audioPlayer.src = station.url;
-            audioPlayer.load();
-
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
+            
+            const promise = audioPlayer.play();
+            if (promise !== undefined) {
+                promise.then(() => {
                     isPlaying = true;
                     updateUI();
-                }).catch(error => {
-                    console.log("Autoplay / Zmiana w tle zablokowana:", error);
+                }).catch(err => {
+                    console.log("Play error:", err);
                     isPlaying = false;
                     updateUI();
                 });
@@ -328,9 +321,6 @@
                 audioPlayer.play().then(() => {
                     isPlaying = true;
                     updateUI();
-                }).catch(() => {
-                    isPlaying = false;
-                    updateUI();
                 });
             }
             updateUI();
@@ -353,7 +343,7 @@
         nextBtn.onclick = playNextStation;
 
         initStations();
-        setupMediaSessionHandlers();
+        initMediaSession();
     </script>
 </body>
 </html>
