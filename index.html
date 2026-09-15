@@ -11,120 +11,129 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        html, body {
-            width: 100%;
-            height: 100%;
+        body {
             margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #1E1E1E;
-            color: #E5E5EA;
+            padding: 20px;
+            background-color: #121212;
+            color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        #app-container {
             display: flex;
             flex-direction: column;
-            width: 100vw;
-            height: 100vh;
-            padding: 16px;
-            gap: 12px;
+            align-items: center;
             justify-content: center;
-            align-items: center;
+            min-height: 100vh;
         }
-        .radio-panel {
-            background: #2D2D30;
-            padding: 16px;
-            border-radius: 12px;
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: #1e1e1e;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            gap: 20px;
         }
-        .radio-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            width: 100%;
+        .app-header {
+            text-align: center;
         }
-        .stations-scroll {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            width: 100%;
-            padding-bottom: 4px;
-            -webkit-overflow-scrolling: touch;
+        .app-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0a84ff;
+        }
+        .app-header p {
+            margin: 4px 0 0 0;
+            font-size: 0.85rem;
+            color: #8e8e93;
+        }
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .stations-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        .stations-grid::-webkit-scrollbar-thumb {
+            background: #3a3a3c;
+            border-radius: 3px;
         }
         .btn-station {
-            background-color: #3A3A3C;
-            color: white;
-            padding: 10px 14px;
-            border-radius: 8px;
+            background: #2c2c2e;
+            color: #ffffff;
+            border: 1px solid #3a3a3c;
+            padding: 12px;
+            border-radius: 12px;
             font-size: 0.9rem;
-            flex: 0 0 auto;
-            border: 1px solid transparent;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 500;
+            transition: all 0.2s ease;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-station:hover {
+            background: #3a3a3c;
         }
         .btn-station.active-station {
-            background-color: #30D158;
-            color: #000;
-            font-weight: bold;
+            background: #30d158;
+            color: #000000;
+            border-color: #30d158;
+            font-weight: 700;
         }
-        button {
-            background-color: #0A84FF;
-            color: white;
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .btn-ctrl {
+            background: #2c2c2e;
+            color: #ffffff;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 600;
-            font-size: 0.95rem;
             cursor: pointer;
-            white-space: nowrap;
-        }
-        .btn-media {
             flex: 1;
+            transition: background 0.2s ease;
+        }
+        .btn-ctrl:active {
+            opacity: 0.8;
         }
         .btn-play-state {
-            background-color: #30D158;
-            color: #000;
+            background: #30d158;
+            color: #000000;
+            flex: 1.5;
         }
         .btn-stop-state {
-            background-color: #FF3B30;
-            color: #FFF;
-        }
-        .app-title {
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #0A84FF;
-            margin-bottom: 8px;
-        }
-        .version-badge {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #8E8E93;
+            background: #ff453a;
+            color: #ffffff;
+            flex: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
-        <div class="radio-panel">
-            <div class="app-title">📻 Radio Internetowe</div>
-            
-            <div class="radio-row">
-                <div class="stations-scroll" id="stationsList"></div>
-            </div>
-            
-            <div class="radio-row">
-                <button id="btnPrev" class="btn-media" onclick="prevStation()">⏮️ Poprzednia</button>
-                <button id="btnPlay" class="btn-media btn-play-state" onclick="togglePlay()">▶ Play</button>
-                <button id="btnNext" class="btn-media" onclick="nextStation()">Następna ⏭️</button>
-            </div>
+    <div class="container">
+        <div class="app-header">
+            <h1>📻 Radio Internetowe</h1>
+            <p>Wersja 1.1.0</p>
+        </div>
 
-            <div class="version-badge">Wersja 1.1.0</div>
+        <div class="stations-grid" id="stationsList"></div>
+
+        <div class="controls">
+            <button class="btn-ctrl" onclick="prevStation()">⏮️ Poprzednia</button>
+            <button id="btnPlay" class="btn-ctrl btn-play-state" onclick="togglePlay()">▶ Play</button>
+            <button class="btn-ctrl" onclick="nextStation()">Następna ⏭️</button>
         </div>
     </div>
 
@@ -161,7 +170,7 @@
         { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconSVG("Y-RCK") },
         { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconSVG("XMAS") },
         { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconSVG("EDM") },
-        { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", tag: "CLUB", logo: generateStationIconSVG("CLUB") }
+        { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconSVG("CLUB") }
     ];
 
     var currentStationIdx = 0;
@@ -171,12 +180,9 @@
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', function() { togglePlay(); });
             navigator.mediaSession.setActionHandler('pause', function() { togglePlay(); });
-            
-            // Wymuszenie ikon poprzedni / następny utwór zamiast przewijania
             navigator.mediaSession.setActionHandler('previoustrack', function() { prevStation(); });
             navigator.mediaSession.setActionHandler('nexttrack', function() { nextStation(); });
             
-            // Jawne wyłączenie przycisków przeskakiwania sekundowego (seek)
             try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch (e) {}
             try { navigator.mediaSession.setActionHandler('seekforward', null); } catch (e) {}
             try { navigator.mediaSession.setActionHandler('seekto', null); } catch (e) {}
@@ -214,7 +220,7 @@
 
         const activeBtn = container.querySelector('.active-station');
         if (activeBtn) {
-            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
 
@@ -242,13 +248,13 @@
         if (playPromise !== undefined) {
             playPromise.then(() => {
                 btnPlay.innerText = "⏹️ Stop";
-                btnPlay.className = "btn-media btn-stop-state";
+                btnPlay.className = "btn-ctrl btn-stop-state";
                 updateMediaSession();
                 renderStationButtons();
             }).catch(err => {
                 console.log("Błąd odtwarzania:", err);
                 btnPlay.innerText = "▶ Play";
-                btnPlay.className = "btn-media btn-play-state";
+                btnPlay.className = "btn-ctrl btn-play-state";
                 updateMediaSession();
                 renderStationButtons();
             });
@@ -266,7 +272,7 @@
             setupMediaSessionHandlers();
             audio.play().then(() => {
                 btn.innerText = "⏹️ Stop";
-                btn.className = "btn-media btn-stop-state";
+                btn.className = "btn-ctrl btn-stop-state";
                 updateMediaSession();
                 renderStationButtons();
             }).catch(err => console.log("Błąd:", err));
@@ -274,7 +280,7 @@
             audio.pause();
             audio.currentTime = 0;
             btn.innerText = "▶ Play";
-            btn.className = "btn-media btn-play-state";
+            btn.className = "btn-ctrl btn-play-state";
             updateMediaSession();
             renderStationButtons();
         }
