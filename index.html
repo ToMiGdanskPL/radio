@@ -47,7 +47,6 @@
             color: var(--text-color);
         }
 
-        /* Lista stacji */
         .stations-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -85,7 +84,6 @@
             background-color: #475569;
         }
 
-        /* Aktywny przycisk stacji */
         .station-btn.active {
             background-color: var(--active-color);
             color: #ffffff;
@@ -93,7 +91,6 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
         }
 
-        /* Panel sterowania odtwarzaczem */
         .controls {
             display: flex;
             justify-content: center;
@@ -130,14 +127,12 @@
             background-color: #d97706;
         }
 
-        /* Stopka z wersją */
         .version-footer {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 10px;
         }
 
-        /* Customowy scrollbar dla listy stacji */
         .stations-grid::-webkit-scrollbar {
             width: 6px;
         }
@@ -152,25 +147,20 @@
     <div class="container">
         <h1>Wybierz stację radiową</h1>
 
-        <!-- Lista przycisków stacji radiowych -->
         <div class="stations-grid" id="stations-container"></div>
 
-        <!-- Odnośnik/Element audio -->
-        <audio id="audio-player" crossorigin="anonymous" preload="auto"></audio>
+        <audio id="audio-player" crossorigin="anonymous" preload="none"></audio>
 
-        <!-- Przyciski nawigacyjne -->
         <div class="controls">
             <button class="control-btn" id="prev-btn">Poprzednia</button>
             <button class="control-btn" id="play-pause-btn">Play</button>
             <button class="control-btn" id="next-btn">Następna</button>
         </div>
 
-        <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.7</div>
+        <div class="version-footer">Wersja 1.0.8</div>
     </div>
 
     <script>
-        // Generowanie spójnych ikonek Canvas dla iOS
         function generateStationCanvasIcon(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
@@ -249,19 +239,22 @@
             });
         }
 
-        // Podpięcie sterowania systemowego z dynamicznym przechwytywaniem akcji
+        // Konfiguracja MediaSession wymuszająca strzałki przełączania utworu w Dynamic Island
         function setupMediaSession() {
             if ('mediaSession' in navigator) {
+                // Jawnie rejestrujemy tylko akcje zmiany utworu
                 navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
-                
-                // Przechwytujemy standardowe akcje zmiany utworów
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
 
-                // Kluczowe dla iOS: jeśli system pokaże przyciski przeskakiwania (-10 / +10), też przełączą stację
-                try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
+                // Celowe usunięcie uchwytów przewijania w systemie iOS
+                const unsupportedActions = ['seekbackward', 'seekforward', 'seekto', 'stop'];
+                unsupportedActions.forEach(action => {
+                    try {
+                        navigator.mediaSession.setActionHandler(action, null);
+                    } catch (e) {}
+                });
             }
         }
 
@@ -272,11 +265,18 @@
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: station.name,
                     artist: "Radio Internetowe",
-                    album: "Na żywo",
+                    album: "Na Żywo",
                     artwork: [
                         { src: station.logo, sizes: '512x512', type: 'image/png' }
                     ]
                 });
+
+                // Sygnał dla iOS, że odtwarzanie jest nieskończonym strumieniem na żywo
+                if ('setPositionState' in navigator.mediaSession) {
+                    try {
+                        navigator.mediaSession.setPositionState();
+                    } catch (e) {}
+                }
             }
         }
 
@@ -287,7 +287,6 @@
             updateMediaSessionMetadata();
             updateUI();
 
-            // Bezpieczna zmiana źródła bez zgubienia kontekstu odtwarzacza w tle
             audioPlayer.src = station.url;
             audioPlayer.load();
 
@@ -297,7 +296,7 @@
                     isPlaying = true;
                     updateUI();
                 }).catch(err => {
-                    console.log("Błąd odtwarzania:", err);
+                    console.log("Error playing audio:", err);
                     isPlaying = false;
                     updateUI();
                 });
