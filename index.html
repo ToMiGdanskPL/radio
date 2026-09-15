@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio internetowe</title>
+    <title>Radio Internetowe</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -75,9 +75,10 @@
         }
 
         .station-btn img {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            object-fit: contain;
         }
 
         .station-btn:hover {
@@ -165,23 +166,21 @@
         </div>
 
         <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.1</div>
+        <div class="version-footer">Wersja 1.0.2</div>
     </div>
 
     <script>
-        // Funkcja generująca ikonki SVG Data URI w locie
+        // Funkcja generująca ikonki SVG z poprawnym kodowaniem UTF-8
         function generateStationIconSVG(text) {
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-                <rect width="64" height="64" rx="12" fill="#0f172a"/>
-                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#3b82f6" font-family="sans-serif" font-size="20" font-weight="bold">${text}</text>
-            </svg>`;
-            return `data:image/svg+xml;base64,${btoa(svg)}`;
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0f172a"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#3b82f6" font-family="sans-serif" font-size="18" font-weight="bold">${text}</text></svg>`;
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
         }
 
         // Lista stacji radiowych
         const stations = [
             { name: "RMF FM", url: "https://rs6-krk2.rmfstream.pl/rmf_fm", logo: generateStationIconSVG("RMF") },
             { name: "Radio ZET", url: "https://zt01.cdn.eurozet.pl/zet-net.mp3", logo: generateStationIconSVG("ZET") },
+            { name: "VOX FM", url: "https://ic2.smcdn.pl/3140-1.mp3", logo: generateStationIconSVG("VOX") },
             { name: "Radio Plus", url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3", logo: generateStationIconSVG("PLUS") },
             { name: "Radio Gdańsk", url: "https://stream.task.gda.pl:8443/rg1", logo: generateStationIconSVG("RG") },
             { name: "Radio Złote Przeboje", url: "https://radiostream.pl/tuba8906-1.mp3", logo: generateStationIconSVG("RZP") },
@@ -200,8 +199,7 @@
             { name: "Radio Yanosik Rock", url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv", logo: generateStationIconSVG("Y-RCK") },
             { name: "Radio Yanosik X-Mas", url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv", logo: generateStationIconSVG("XMAS") },
             { name: "Radio Yanosik EDM", url: "https://stream.rcs.revma.com/s4exa620qxcwv", logo: generateStationIconSVG("EDM") },
-            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconSVG("CLUB") },
-            { name: "VOX FM", url: "https://ic2.smcdn.pl/3990-1.mp3", logo: generateStationIconSVG("VOX") }
+            { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", logo: generateStationIconSVG("CLUB") }
         ];
 
         let currentStationIndex = -1;
@@ -235,6 +233,32 @@
             });
         }
 
+        // Integracja ze sterowaniem systemowym iOS (Dynamic Island / ekran blokady)
+        function updateMediaSession() {
+            if ('mediaSession' in navigator && currentStationIndex !== -1) {
+                const station = stations[currentStationIndex];
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: station.name,
+                    artist: "Radio Internetowe",
+                    album: "Live Stream",
+                    artwork: [
+                        { src: station.logo, sizes: '96x96', type: 'image/svg+xml' },
+                        { src: station.logo, sizes: '128x128', type: 'image/svg+xml' }
+                    ]
+                });
+
+                // Przypisanie akcji systemowych
+                navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
+                navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+                navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
+                navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
+                
+                // Zastąpienie przeskakiwania o 10s akcją zmiany stacji
+                try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
+            }
+        }
+
         // Wybór stacji radiowej
         function selectStation(index) {
             currentStationIndex = index;
@@ -245,6 +269,7 @@
                 .then(() => {
                     isPlaying = true;
                     updateUI();
+                    updateMediaSession();
                 })
                 .catch(error => {
                     console.log("Błąd odtwarzania:", error);
@@ -267,8 +292,7 @@
             playPauseBtn.innerText = isPlaying ? "Pauza" : "Play";
         }
 
-        // Obsługa Play / Pauza
-        playPauseBtn.onclick = () => {
+        function togglePlayPause() {
             if (currentStationIndex === -1) {
                 selectStation(0);
                 return;
@@ -282,27 +306,30 @@
                 isPlaying = true;
             }
             updateUI();
-        };
+        }
 
-        // Obsługa przycisku Poprzednia
-        prevBtn.onclick = () => {
+        function playPrevStation() {
             if (stations.length === 0) return;
             if (currentStationIndex <= 0) {
                 selectStation(stations.length - 1);
             } else {
                 selectStation(currentStationIndex - 1);
             }
-        };
+        }
 
-        // Obsługa przycisku Następna
-        nextBtn.onclick = () => {
+        function playNextStation() {
             if (stations.length === 0) return;
             if (currentStationIndex === -1 || currentStationIndex >= stations.length - 1) {
                 selectStation(0);
             } else {
                 selectStation(currentStationIndex + 1);
             }
-        };
+        }
+
+        // Obsługa kliknięć przycisków
+        playPauseBtn.onclick = togglePlayPause;
+        prevBtn.onclick = playPrevStation;
+        nextBtn.onclick = playNextStation;
 
         // Inicjalizacja przy startie
         initStations();
