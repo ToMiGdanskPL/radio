@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Internetowe v1.0.4</title>
+    <title>Radio internetowe</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -44,24 +44,10 @@
             position: relative;
         }
 
-        .header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
         h1 {
             font-size: 1.4rem;
             color: var(--text-color);
-        }
-
-        .app-version {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: #334155;
-            padding: 3px 8px;
-            border-radius: 6px;
+            margin-bottom: 20px;
         }
 
         .stations-grid {
@@ -114,6 +100,8 @@
             gap: 15px;
             border-top: 1px solid #334155;
             padding-top: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
         }
 
         .control-btn {
@@ -142,6 +130,22 @@
             background-color: #d97706;
         }
 
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .app-version {
+            background: #334155;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
         .stations-grid::-webkit-scrollbar {
             width: 6px;
         }
@@ -154,10 +158,7 @@
 <body>
 
     <div class="container">
-        <div class="header-info">
-            <h1>Radio Internetowe</h1>
-            <span class="app-version">v1.0.4</span>
-        </div>
+        <h1>Radio Internetowe</h1>
 
         <div class="stations-grid" id="stations-container"></div>
 
@@ -168,23 +169,25 @@
             <button class="control-btn" id="play-pause-btn">Play</button>
             <button class="control-btn" id="next-btn">Następna</button>
         </div>
+
+        <div class="footer">
+            <span class="app-version">Wersja 1.0.5</span>
+            <span>Created by ToMi</span>
+        </div>
     </div>
 
     <script>
-        // Generowanie czystego obrazu PNG za pomocą Canvas (rozwiązuje problem z zepsutym logo w iOS)
         function generateStationIconPNG(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
             canvas.height = 512;
             const ctx = canvas.getContext('2d');
 
-            // Tło
             ctx.fillStyle = '#1e293b';
             ctx.beginPath();
             ctx.roundRect(0, 0, 512, 512, 64);
             ctx.fill();
 
-            // Tekst
             ctx.fillStyle = '#3b82f6';
             ctx.font = 'bold 180px sans-serif';
             ctx.textAlign = 'center';
@@ -250,13 +253,11 @@
 
         function setupMediaSession() {
             if ('mediaSession' in navigator) {
-                // Rejestracja zdarzeń przełączania stacji
                 navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
 
-                // Przypisanie gestów przewijania w wyspie do zmiany stacji (na przypadek, gdy iOS wymusi ikony 10s)
                 try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
                 try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
             }
