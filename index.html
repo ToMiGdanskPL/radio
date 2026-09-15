@@ -156,7 +156,7 @@
         <div class="stations-grid" id="stations-container"></div>
 
         <!-- Odnośnik/Element audio -->
-        <audio id="audio-player" crossorigin="anonymous"></audio>
+        <audio id="audio-player" crossorigin="anonymous" preload="auto"></audio>
 
         <!-- Przyciski nawigacyjne -->
         <div class="controls">
@@ -166,22 +166,20 @@
         </div>
 
         <!-- Informacja o wersji -->
-        <div class="version-footer">Wersja 1.0.3</div>
+        <div class="version-footer">Wersja 1.0.4</div>
     </div>
 
     <script>
-        // Generowanie wysokiej jakości obrazka PNG 512x512 via HTML Canvas (naprawia wyświetlanie w iOS Dynamic Island)
+        // Generowanie wysokiej jakości obrazka PNG 512x512 via HTML Canvas
         function generateStationCanvasIcon(text) {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
             canvas.height = 512;
             const ctx = canvas.getContext('2d');
 
-            // Tło okładki
             ctx.fillStyle = '#0f172a';
             ctx.fillRect(0, 0, 512, 512);
 
-            // Akcentowany napis
             ctx.fillStyle = '#3b82f6';
             ctx.font = 'bold 110px sans-serif';
             ctx.textAlign = 'center';
@@ -217,7 +215,6 @@
             { name: "RMF Club EDM", url: "https://rs6-krk2.rmfstream.pl/rmf_club", tag: "CLUB" }
         ];
 
-        // Inicjalizacja obrazków stacji
         const stations = rawStations.map(s => ({
             ...s,
             logo: generateStationCanvasIcon(s.tag)
@@ -232,7 +229,6 @@
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
 
-        // Generowanie przycisków stacji
         function initStations() {
             stationsContainer.innerHTML = '';
             stations.forEach((station, index) => {
@@ -254,60 +250,58 @@
             });
         }
 
-        // Konfiguracja Media Session API i wymuszenie przycisków Prev/Next na iOS
-        function updateMediaSession() {
+        function setupMediaSessionHandlers() {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
+                navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+                navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
+                navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
+
+                try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekforward', null); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekto', null); } catch(e){}
+            }
+        }
+
+        function updateMediaSessionMetadata() {
             if ('mediaSession' in navigator && currentStationIndex !== -1) {
                 const station = stations[currentStationIndex];
-
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: station.name,
-                    artist: "Radio Online",
+                    artist: "Radio Internetowe",
                     album: "Na żywo",
                     artwork: [
                         { src: station.logo, sizes: '512x512', type: 'image/png' }
                     ]
                 });
-
-                // Włączamy akcje Poprzednia i Następna
-                navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
-                navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
-                navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
-                navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
-
-                // Usuwamy akcje przeskakiwania (seek), żeby iOS wyświetlił strzałki przełączania stacji
-                try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekforward', null); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekto', null); } catch(e){}
-
-                // Ustawiamy brak czasu trwania, wymuszając widok streamu na żywo
-                if ('setPositionState' in navigator.mediaSession) {
-                    try {
-                        navigator.mediaSession.setPositionState();
-                    } catch(e){}
-                }
             }
         }
 
-        // Wybór stacji radiowej
         function selectStation(index) {
             currentStationIndex = index;
             const station = stations[currentStationIndex];
 
+            // Aktualizujemy metadane systemowe natychmiast, przed pobraniem strumienia
+            updateMediaSessionMetadata();
+            updateUI();
+
+            audioPlayer.pause();
             audioPlayer.src = station.url;
-            audioPlayer.play()
-                .then(() => {
+            audioPlayer.load();
+
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
                     isPlaying = true;
                     updateUI();
-                    updateMediaSession();
-                })
-                .catch(error => {
-                    console.log("Błąd odtwarzania:", error);
+                }).catch(error => {
+                    console.log("Autoplay / Zmiana w tle zablokowana:", error);
                     isPlaying = false;
                     updateUI();
                 });
+            }
         }
 
-        // Aktualizacja wyglądu interfejsu
         function updateUI() {
             const buttons = stationsContainer.querySelectorAll('.station-btn');
             buttons.forEach((btn, idx) => {
@@ -331,37 +325,35 @@
                 audioPlayer.pause();
                 isPlaying = false;
             } else {
-                audioPlayer.play();
-                isPlaying = true;
+                audioPlayer.play().then(() => {
+                    isPlaying = true;
+                    updateUI();
+                }).catch(() => {
+                    isPlaying = false;
+                    updateUI();
+                });
             }
             updateUI();
         }
 
         function playPrevStation() {
             if (stations.length === 0) return;
-            if (currentStationIndex <= 0) {
-                selectStation(stations.length - 1);
-            } else {
-                selectStation(currentStationIndex - 1);
-            }
+            let newIndex = currentStationIndex <= 0 ? stations.length - 1 : currentStationIndex - 1;
+            selectStation(newIndex);
         }
 
         function playNextStation() {
             if (stations.length === 0) return;
-            if (currentStationIndex === -1 || currentStationIndex >= stations.length - 1) {
-                selectStation(0);
-            } else {
-                selectStation(currentStationIndex + 1);
-            }
+            let newIndex = (currentStationIndex === -1 || currentStationIndex >= stations.length - 1) ? 0 : currentStationIndex + 1;
+            selectStation(newIndex);
         }
 
-        // Obsługa kliknięć przycisków
         playPauseBtn.onclick = togglePlayPause;
         prevBtn.onclick = playPrevStation;
         nextBtn.onclick = playNextStation;
 
-        // Inicjalizacja przy startie
         initStations();
+        setupMediaSessionHandlers();
     </script>
 </body>
 </html>
