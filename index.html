@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio internetowe</title>
+    <title>Radio Internetowe v1.0.6</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -50,7 +50,6 @@
             margin-bottom: 15px;
         }
 
-        /* Status & Wizualizator */
         .status-container {
             min-height: 40px;
             display: flex;
@@ -126,7 +125,6 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
         }
 
-        /* Opcje dodatkowe (Timer) */
         .extra-controls {
             display: flex;
             justify-content: space-between;
@@ -221,7 +219,7 @@
 <body>
 
     <div class="container">
-        <h1>Radio internetowe</h1>
+        <h1>Radio Internetowe</h1>
 
         <div class="status-container">
             <div class="status-text" id="status-text">Wybierz stację</div>
@@ -252,7 +250,7 @@
         </div>
 
         <div class="footer">
-            <span class="app-version">v1.0.5</span>
+            <span class="app-version">v1.0.6</span>
             <span>Created by ToMi</span>
         </div>
     </div>
@@ -308,7 +306,6 @@
         let sleepTimerTimeout = null;
         let sleepTimerInterval = null;
 
-        // Audio Context & Vizualizer
         let audioCtx, analyser, source;
         const NUM_BARS = 16;
         let visualizerAnimId = null;
@@ -323,7 +320,6 @@
         const sleepTimerSelect = document.getElementById('sleep-timer');
         const timerDisplay = document.getElementById('timer-display');
 
-        // Inicjalizacja wizualizatora w DOM
         for (let i = 0; i < NUM_BARS; i++) {
             const bar = document.createElement('div');
             bar.className = 'bar';
@@ -352,7 +348,6 @@
             });
         }
 
-        // Web Audio API & Visualizer Logic
         function setupAudioContext() {
             if (!audioCtx) {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -363,9 +358,7 @@
                     source = audioCtx.createMediaElementSource(audioPlayer);
                     source.connect(analyser);
                     analyser.connect(audioCtx.destination);
-                } catch(e) {
-                    // W przypadku ograniczeń CORS
-                }
+                } catch(e) {}
             }
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -390,9 +383,8 @@
                     bars[i].style.height = `${height}px`;
                 }
 
-                // Fallback dla strumieni blokujących analizę częstotliwości (CORS)
                 if (!hasData) {
-                    bars.forEach((bar, i) => {
+                    bars.forEach((bar) => {
                         const randomHeight = Math.floor(Math.random() * 20) + 4;
                         bar.style.height = `${randomHeight}px`;
                     });
@@ -414,8 +406,9 @@
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
 
-                try { navigator.mediaSession.setActionHandler('seekbackward', () => playPrevStation()); } catch(e){}
-                try { navigator.mediaSession.setActionHandler('seekforward', () => playNextStation()); } catch(e){}
+                // Jawne wyczyszczenie akcji seekbackward/seekforward usuwa ikony "10s" z systemu iOS
+                try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch(e){}
+                try { navigator.mediaSession.setActionHandler('seekforward', null); } catch(e){}
             }
         }
 
@@ -528,7 +521,6 @@
             selectStation(newIndex);
         }
 
-        // Auto-Reconnect Logic
         audioPlayer.onerror = () => {
             if (currentStationIndex !== -1 && reconnectAttempts < 5) {
                 reconnectAttempts++;
@@ -549,7 +541,6 @@
             }
         };
 
-        // Sleep Timer Logic
         sleepTimerSelect.onchange = () => {
             clearTimeout(sleepTimerTimeout);
             clearInterval(sleepTimerInterval);
