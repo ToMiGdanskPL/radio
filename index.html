@@ -82,36 +82,42 @@
             transition: height 0.05s ease;
         }
 
+        /* Zmiana kontenera stacji na listę w pionie */
         .stations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 20px;
             max-height: 300px;
             overflow-y: auto;
             padding-right: 5px;
         }
 
+        /* Przycisk rozciągnięty w poziomie, ikona i tekst obok siebie */
         .station-btn {
             background-color: #334155;
             color: var(--text-color);
             border: 2px solid transparent;
-            padding: 10px;
+            padding: 10px 16px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             transition: all 0.2s ease;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            gap: 8px;
+            justify-content: flex-start;
+            gap: 15px;
+            width: 100%;
+            text-align: left;
         }
 
         .station-btn img {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
+            flex-shrink: 0;
         }
 
         .station-btn:hover {
@@ -406,7 +412,6 @@
                 navigator.mediaSession.setActionHandler('previoustrack', () => playPrevStation());
                 navigator.mediaSession.setActionHandler('nexttrack', () => playNextStation());
 
-                // Jawne wyczyszczenie akcji seekbackward/seekforward usuwa ikony "10s" z systemu iOS
                 try { navigator.mediaSession.setActionHandler('seekbackward', null); } catch(e){}
                 try { navigator.mediaSession.setActionHandler('seekforward', null); } catch(e){}
             }
