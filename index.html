@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b0b0d">
 
-    <title>Radio by ToMi 3.0</title>
+    <title>Radio by ToMi 3.0.1</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -97,6 +97,7 @@
         body {
             margin: 0;
             min-height: 100vh;
+
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
@@ -115,7 +116,9 @@
                 var(--bg);
 
             color: var(--text);
-            padding-bottom: calc(var(--player-height) + 25px);
+
+            padding-bottom:
+                calc(var(--player-height) + 25px);
 
             transition:
                 background .35s ease,
@@ -126,6 +129,7 @@
             content: "";
             position: fixed;
             inset: 0;
+
             pointer-events: none;
             z-index: -1;
 
@@ -177,6 +181,7 @@
             background: rgba(24,24,27,.78);
             backdrop-filter: blur(25px) saturate(150%);
             -webkit-backdrop-filter: blur(25px) saturate(150%);
+
             border: 1px solid var(--border);
         }
 
@@ -190,6 +195,7 @@
             z-index: 40;
 
             background: rgba(11,11,13,.78);
+
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
 
@@ -203,6 +209,7 @@
         .header-inner {
             max-width: 1500px;
             margin: auto;
+
             height: 72px;
 
             display: flex;
@@ -292,6 +299,7 @@
         .main {
             max-width: 1500px;
             margin: auto;
+
             padding: 30px 24px 40px;
         }
 
@@ -312,6 +320,7 @@
 
             width: 100%;
             max-width: 330px;
+
             aspect-ratio: 1;
 
             border-radius: 24px;
@@ -402,6 +411,7 @@
 
             font-size: 12px;
             font-weight: 800;
+
             text-transform: uppercase;
             letter-spacing: .12em;
 
@@ -458,14 +468,235 @@
             max-width: 700px;
         }
 
+
+        /* =====================================================
+           HERO CONTROLS 3.0.1
+           ===================================================== */
+
         .hero-actions {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
 
             gap: 10px;
 
             margin-top: 25px;
+
+            width: min(430px, 100%);
         }
+
+        .hero-control-row {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .hero-playback-row {
+            justify-content: flex-start;
+        }
+
+        .hero-secondary-row {
+            justify-content: flex-start;
+        }
+
+        .hero-control-button {
+            width: 54px;
+            height: 54px;
+
+            flex: 0 0 54px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--border);
+            border-radius: 50%;
+
+            color: var(--text);
+            background: var(--card);
+
+            font-size: 17px;
+
+            cursor: pointer;
+
+            transition:
+                transform .2s ease,
+                background .2s ease,
+                color .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .hero-control-button:hover {
+            color: var(--accent);
+
+            background: var(--card-hover);
+
+            border-color:
+                rgba(249,115,22,.35);
+
+            transform: translateY(-2px);
+        }
+
+        .hero-control-button.play {
+            width: 64px;
+            height: 64px;
+
+            flex-basis: 64px;
+
+            color: white;
+
+            background: var(--accent);
+
+            border-color: transparent;
+
+            font-size: 21px;
+
+            box-shadow:
+                0 12px 32px rgba(249,115,22,.28);
+        }
+
+        .hero-control-button.play:hover {
+            color: white;
+
+            background: var(--accent-dark);
+
+            transform: scale(1.045);
+        }
+
+        .hero-secondary-button {
+            min-height: 48px;
+
+            flex: 1;
+
+            padding: 0 18px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            border: 1px solid var(--border);
+            border-radius: 999px;
+
+            color: var(--text);
+            background: var(--card);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                .2s ease;
+        }
+
+        .hero-secondary-button:hover {
+            color: var(--accent);
+
+            background: var(--card-hover);
+
+            border-color:
+                rgba(249,115,22,.35);
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =====================================================
+           TIMER BUTTON
+           ===================================================== */
+
+        .timer-button {
+            position: relative;
+
+            overflow: hidden;
+
+            min-width: 145px;
+        }
+
+        .timer-button i {
+            transition: transform .25s ease;
+        }
+
+        .timer-button.timer-active {
+            color: var(--accent);
+
+            border-color:
+                rgba(249,115,22,.45);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(249,115,22,.12),
+                    var(--card)
+                );
+
+            animation:
+                timerButtonPulse 1.8s
+                ease-in-out infinite;
+        }
+
+        .timer-button.timer-active i {
+            animation:
+                timerIconPulse 1s
+                ease-in-out infinite;
+        }
+
+        @keyframes timerButtonPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 0 0
+                    rgba(249,115,22,0);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 0 5px
+                    rgba(249,115,22,.08);
+            }
+        }
+
+        @keyframes timerIconPulse {
+            0%, 100% {
+                transform: scale(1)
+                    rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.15)
+                    rotate(-8deg);
+            }
+        }
+
+        .timer-button::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            bottom: 0;
+
+            width: var(--timer-progress, 0%);
+            height: 3px;
+
+            background: var(--accent);
+
+            transition:
+                width .5s linear;
+
+            border-radius: 0 5px 5px 0;
+        }
+
+        .timer-text {
+            min-width: 54px;
+            text-align: left;
+        }
+
+
+        /* =====================================================
+           STANDARD BUTTONS
+           ===================================================== */
 
         .primary-button {
             min-height: 46px;
@@ -475,6 +706,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+
             gap: 9px;
 
             border: 0;
@@ -506,6 +738,7 @@
 
             display: inline-flex;
             align-items: center;
+
             gap: 9px;
 
             border: 1px solid var(--border);
@@ -527,6 +760,11 @@
             border-color: rgba(249,115,22,.3);
             color: var(--accent);
         }
+
+
+        /* =====================================================
+           STATIONS
+           ===================================================== */
 
         .section {
             margin-top: 35px;
@@ -563,6 +801,7 @@
 
         .search-box i {
             position: absolute;
+
             left: 14px;
             top: 50%;
 
@@ -591,15 +830,22 @@
         }
 
         .search-box input:focus {
-            border-color: rgba(249,115,22,.6);
-            box-shadow: 0 0 0 4px rgba(249,115,22,.08);
+            border-color:
+                rgba(249,115,22,.6);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(249,115,22,.08);
         }
 
         .station-grid {
             display: grid;
 
             grid-template-columns:
-                repeat(auto-fill, minmax(250px, 1fr));
+                repeat(
+                    auto-fill,
+                    minmax(250px, 1fr)
+                );
 
             gap: 12px;
         }
@@ -635,14 +881,16 @@
 
             background: var(--card-hover);
 
-            border-color: rgba(249,115,22,.25);
+            border-color:
+                rgba(249,115,22,.25);
 
             box-shadow:
                 0 15px 35px rgba(0,0,0,.12);
         }
 
         .station-card.active {
-            border-color: rgba(249,115,22,.5);
+            border-color:
+                rgba(249,115,22,.5);
 
             background:
                 linear-gradient(
@@ -652,7 +900,8 @@
                 );
 
             box-shadow:
-                0 12px 35px rgba(249,115,22,.08);
+                0 12px 35px
+                rgba(249,115,22,.08);
         }
 
         .station-logo {
@@ -668,7 +917,8 @@
             background: #27272a;
 
             box-shadow:
-                inset 0 0 0 1px rgba(255,255,255,.08);
+                inset 0 0 0 1px
+                rgba(255,255,255,.08);
         }
 
         .station-logo img {
@@ -710,6 +960,7 @@
 
             display: flex;
             align-items: center;
+
             gap: 5px;
 
             color: var(--accent);
@@ -724,17 +975,23 @@
         .mini-eq {
             display: flex;
             align-items: flex-end;
+
             gap: 2px;
+
             height: 13px;
         }
 
         .mini-eq span {
             width: 2px;
+
             border-radius: 3px;
 
             background: var(--accent);
 
-            animation: eq 1s ease-in-out infinite;
+            animation:
+                eq 1s
+                ease-in-out
+                infinite;
         }
 
         .mini-eq span:nth-child(1) {
@@ -792,53 +1049,14 @@
             color: var(--accent);
         }
 
-        .visualizer-section {
-            margin-top: 35px;
 
-            padding: 18px;
-
-            border-radius: 20px;
-
-            background: var(--card);
-            border: 1px solid var(--border);
-        }
-
-        .visualizer-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 12px;
-        }
-
-        .visualizer-title {
-            font-size: 13px;
-            font-weight: 750;
-        }
-
-        .visualizer-status {
-            color: var(--muted);
-            font-size: 11px;
-        }
-
-        #visualizer {
-            width: 100%;
-            height: 130px;
-
-            display: block;
-
-            border-radius: 14px;
-
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(249,115,22,.04),
-                    transparent
-                );
-        }
+        /* =====================================================
+           BOTTOM PLAYER
+           ===================================================== */
 
         .bottom-player {
             position: fixed;
+
             left: 0;
             right: 0;
             bottom: 0;
@@ -847,19 +1065,26 @@
 
             min-height: var(--player-height);
 
-            background: rgba(17,17,20,.88);
+            background:
+                rgba(17,17,20,.88);
 
-            backdrop-filter: blur(28px) saturate(160%);
-            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            backdrop-filter:
+                blur(28px) saturate(160%);
 
-            border-top: 1px solid var(--border);
+            -webkit-backdrop-filter:
+                blur(28px) saturate(160%);
+
+            border-top:
+                1px solid var(--border);
 
             box-shadow:
-                0 -20px 60px rgba(0,0,0,.15);
+                0 -20px 60px
+                rgba(0,0,0,.15);
         }
 
         html:not(.dark) .bottom-player {
-            background: rgba(255,255,255,.9);
+            background:
+                rgba(255,255,255,.9);
         }
 
         .player-inner {
@@ -885,6 +1110,7 @@
         .now-playing {
             display: flex;
             align-items: center;
+
             gap: 12px;
 
             min-width: 0;
@@ -974,7 +1200,8 @@
             background: var(--accent);
 
             box-shadow:
-                0 8px 25px rgba(249,115,22,.25);
+                0 8px 25px
+                rgba(249,115,22,.25);
         }
 
         .player-button.play:hover {
@@ -995,6 +1222,7 @@
         .volume-container {
             display: flex;
             align-items: center;
+
             gap: 9px;
 
             min-width: 150px;
@@ -1011,25 +1239,13 @@
 
         .range {
             width: 100%;
-
             cursor: pointer;
         }
 
-        .sleep-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
 
-            padding: 6px 10px;
-
-            border-radius: 999px;
-
-            background: rgba(249,115,22,.1);
-            color: var(--accent);
-
-            font-size: 11px;
-            font-weight: 750;
-        }
+        /* =====================================================
+           MODALS
+           ===================================================== */
 
         .modal-backdrop {
             position: fixed;
@@ -1068,15 +1284,19 @@
             border: 1px solid var(--border);
 
             box-shadow:
-                0 30px 100px rgba(0,0,0,.35);
+                0 30px 100px
+                rgba(0,0,0,.35);
 
-            animation: modalIn .2s ease;
+            animation:
+                modalIn .2s ease;
         }
 
         @keyframes modalIn {
             from {
                 opacity: 0;
-                transform: translateY(10px) scale(.98);
+                transform:
+                    translateY(10px)
+                    scale(.98);
             }
 
             to {
@@ -1143,7 +1363,9 @@
 
             padding: 0 13px;
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
+
             border-radius: 12px;
 
             background: var(--bg-secondary);
@@ -1155,16 +1377,19 @@
 
         .form-input:focus,
         .form-select:focus {
-            border-color: rgba(249,115,22,.6);
+            border-color:
+                rgba(249,115,22,.6);
 
             box-shadow:
-                0 0 0 4px rgba(249,115,22,.08);
+                0 0 0 4px
+                rgba(249,115,22,.08);
         }
 
         .eq-row {
             display: grid;
 
-            grid-template-columns: 65px 1fr 45px;
+            grid-template-columns:
+                65px 1fr 45px;
 
             align-items: center;
 
@@ -1238,7 +1463,9 @@
 
             text-align: center;
 
-            border: 1px dashed var(--border);
+            border:
+                1px dashed var(--border);
+
             border-radius: 18px;
 
             color: var(--muted);
@@ -1253,11 +1480,17 @@
             color: var(--accent);
         }
 
+
+        /* =====================================================
+           TOAST
+           ===================================================== */
+
         .toast-container {
             position: fixed;
 
             right: 20px;
-            bottom: calc(var(--player-height) + 20px);
+            bottom:
+                calc(var(--player-height) + 20px);
 
             z-index: 500;
 
@@ -1274,10 +1507,12 @@
 
             background: var(--card);
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
 
             box-shadow:
-                0 15px 45px rgba(0,0,0,.25);
+                0 15px 45px
+                rgba(0,0,0,.25);
 
             color: var(--text);
 
@@ -1321,9 +1556,17 @@
             font-size: 11px;
         }
 
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
         @media (max-width: 900px) {
+
             .hero {
-                grid-template-columns: 250px 1fr;
+                grid-template-columns:
+                    250px 1fr;
+
                 gap: 28px;
             }
 
@@ -1332,7 +1575,8 @@
             }
 
             .player-inner {
-                grid-template-columns: 1fr auto;
+                grid-template-columns:
+                    1fr auto;
             }
 
             .player-right {
@@ -1340,7 +1584,9 @@
             }
         }
 
+
         @media (max-width: 700px) {
+
             :root {
                 --player-height: 78px;
             }
@@ -1360,6 +1606,7 @@
 
             .hero {
                 display: block;
+
                 min-height: 0;
 
                 margin-bottom: 25px;
@@ -1368,7 +1615,8 @@
             .hero-art {
                 max-width: 280px;
 
-                margin: 0 auto 25px;
+                margin:
+                    0 auto 25px;
             }
 
             .hero-content {
@@ -1388,7 +1636,19 @@
             }
 
             .hero-actions {
+                width: 100%;
+
+                align-items: center;
+            }
+
+            .hero-playback-row,
+            .hero-secondary-row {
                 justify-content: center;
+                width: 100%;
+            }
+
+            .hero-secondary-button {
+                flex: 0 1 190px;
             }
 
             .section-header {
@@ -1404,27 +1664,23 @@
                 grid-template-columns: 1fr;
             }
 
-            .visualizer-section {
-                padding: 12px;
-            }
-
-            #visualizer {
-                height: 100px;
-            }
-
             .player-inner {
                 padding: 9px 12px;
-                gap: 10px;
+
+                gap: 8px;
             }
 
             .now-playing-art {
                 width: 52px;
                 height: 52px;
+
                 flex-basis: 52px;
             }
 
             .player-center {
-                gap: 2px;
+                justify-self: end;
+
+                gap: 1px;
             }
 
             .player-button {
@@ -1437,9 +1693,10 @@
                 height: 46px;
             }
 
-            .player-center .skip-button {
-                display: none;
-            }
+            /*
+             * W 3.0.1 przyciski poprzednia
+             * i następna pozostają widoczne.
+             */
 
             .now-playing-info {
                 max-width: 145px;
@@ -1448,7 +1705,12 @@
             .toast-container {
                 left: 12px;
                 right: 12px;
-                bottom: calc(var(--player-height) + 12px);
+
+                bottom:
+                    calc(
+                        var(--player-height)
+                        + 12px
+                    );
             }
 
             .toast {
@@ -1456,9 +1718,11 @@
             }
         }
 
+
         @media (max-width: 390px) {
+
             .now-playing-info {
-                max-width: 115px;
+                max-width: 105px;
             }
 
             .now-playing-subtitle {
@@ -1468,6 +1732,33 @@
             .hero h1 {
                 font-size: 34px;
             }
+
+            .hero-control-button {
+                width: 50px;
+                height: 50px;
+
+                flex-basis: 50px;
+            }
+
+            .hero-control-button.play {
+                width: 60px;
+                height: 60px;
+
+                flex-basis: 60px;
+            }
+
+            .hero-secondary-button {
+                min-height: 45px;
+
+                padding:
+                    0 12px;
+
+                font-size: 12px;
+            }
+
+            .timer-button {
+                min-width: 135px;
+            }
         }
 
         .hidden {
@@ -1475,7 +1766,8 @@
         }
 
         .fade-in {
-            animation: fadeIn .4s ease both;
+            animation:
+                fadeIn .4s ease both;
         }
 
         @keyframes fadeIn {
@@ -1492,21 +1784,31 @@
     </style>
 </head>
 
+
 <body>
 
 <header class="app-header">
+
     <div class="header-inner">
 
         <div class="brand">
+
             <div class="brand-icon">
                 <i class="fa-solid fa-radio"></i>
             </div>
 
             <div>
-                <span class="brand-name">Radio by ToMi</span>
-                <span class="brand-version">3.0</span>
+                <span class="brand-name">
+                    Radio by ToMi
+                </span>
+
+                <span class="brand-version">
+                    3.0.1
+                </span>
             </div>
+
         </div>
+
 
         <div class="header-actions">
 
@@ -1523,7 +1825,10 @@
                 class="icon-button"
                 title="Zmień motyw"
             >
-                <i id="themeIcon" class="fa-solid fa-sun"></i>
+                <i
+                    id="themeIcon"
+                    class="fa-solid fa-sun"
+                ></i>
             </button>
 
             <button
@@ -1535,7 +1840,9 @@
             </button>
 
         </div>
+
     </div>
+
 </header>
 
 
@@ -1545,7 +1852,10 @@
 
         <div class="hero-art">
 
-            <div id="heroArtPlaceholder" class="hero-art-placeholder">
+            <div
+                id="heroArtPlaceholder"
+                class="hero-art-placeholder"
+            >
                 <i class="fa-solid fa-radio"></i>
             </div>
 
@@ -1563,44 +1873,118 @@
         <div class="hero-content">
 
             <div class="eyebrow">
+
                 <span class="live-dot"></span>
+
                 Radio na żywo
+
             </div>
+
 
             <h1 id="heroStationName">
                 Wybierz swoją stację
             </h1>
 
-            <p id="heroDescription" class="hero-description">
-                Słuchaj ulubionych stacji radiowych w nowoczesnym
-                interfejsie Radio by ToMi.
+
+            <p
+                id="heroDescription"
+                class="hero-description"
+            >
+                Słuchaj ulubionych stacji radiowych
+                w nowoczesnym interfejsie
+                Radio by ToMi.
             </p>
+
+
+            <!-- =============================================
+                 GŁÓWNE STEROWANIE 3.0.1
+                 ============================================= -->
 
             <div class="hero-actions">
 
-                <button
-                    id="btnHeroPlay"
-                    class="primary-button"
-                >
-                    <i class="fa-solid fa-play"></i>
-                    <span>Odtwórz</span>
-                </button>
 
-                <button
-                    id="btnHeroFavorite"
-                    class="secondary-button"
-                >
-                    <i class="fa-regular fa-heart"></i>
-                    <span>Ulubione</span>
-                </button>
+                <!-- PIERWSZY WIERSZ -->
 
-                <button
-                    id="btnSleep"
-                    class="secondary-button"
-                >
-                    <i class="fa-solid fa-moon"></i>
-                    Timer
-                </button>
+                <div class="hero-control-row hero-playback-row">
+
+                    <button
+                        id="btnHeroPrev"
+                        class="hero-control-button"
+                        title="Poprzednia stacja"
+                        aria-label="Poprzednia stacja"
+                    >
+                        <i
+                            class="fa-solid fa-backward-step"
+                        ></i>
+                    </button>
+
+
+                    <button
+                        id="btnHeroPlay"
+                        class="hero-control-button play"
+                        title="Odtwórz / pauza"
+                        aria-label="Odtwórz / pauza"
+                    >
+                        <i
+                            class="fa-solid fa-play"
+                        ></i>
+                    </button>
+
+
+                    <button
+                        id="btnHeroNext"
+                        class="hero-control-button"
+                        title="Następna stacja"
+                        aria-label="Następna stacja"
+                    >
+                        <i
+                            class="fa-solid fa-forward-step"
+                        ></i>
+                    </button>
+
+                </div>
+
+
+                <!-- DRUGI WIERSZ -->
+
+                <div class="hero-control-row hero-secondary-row">
+
+                    <button
+                        id="btnHeroFavorite"
+                        class="hero-secondary-button"
+                        title="Dodaj do ulubionych"
+                    >
+                        <i
+                            class="fa-regular fa-heart"
+                        ></i>
+
+                        <span>
+                            Dodaj do ulubionych
+                        </span>
+                    </button>
+
+
+                    <button
+                        id="btnSleep"
+                        class="hero-secondary-button timer-button"
+                        title="Timer snu"
+                    >
+
+                        <i
+                            id="sleepTimerIcon"
+                            class="fa-solid fa-moon"
+                        ></i>
+
+                        <span
+                            id="sleepTimerText"
+                            class="timer-text"
+                        >
+                            Timer
+                        </span>
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -1609,11 +1993,14 @@
     </section>
 
 
+    <!-- STACJE -->
+
     <section class="section">
 
         <div class="section-header">
 
             <div>
+
                 <h2 class="section-title">
                     Stacje radiowe
                 </h2>
@@ -1621,10 +2008,15 @@
                 <div class="section-subtitle">
                     Wybierz stację i rozpocznij słuchanie
                 </div>
+
             </div>
 
+
             <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <i
+                    class="fa-solid fa-magnifying-glass"
+                ></i>
 
                 <input
                     id="stationSearch"
@@ -1632,54 +2024,35 @@
                     placeholder="Szukaj stacji..."
                     autocomplete="off"
                 >
+
             </div>
 
         </div>
 
-        <div id="stationGrid" class="station-grid"></div>
 
-    </section>
-
-
-    <section class="visualizer-section">
-
-        <div class="visualizer-header">
-
-            <span class="visualizer-title">
-                <i
-                    class="fa-solid fa-wave-square"
-                    style="color:var(--accent); margin-right:6px"
-                ></i>
-
-                Wizualizer
-            </span>
-
-            <span
-                id="visualizerStatus"
-                class="visualizer-status"
-            >
-                Gotowy
-            </span>
-
-        </div>
-
-        <canvas id="visualizer"></canvas>
+        <div
+            id="stationGrid"
+            class="station-grid"
+        ></div>
 
     </section>
 
 
     <footer class="footer">
-        Radio by ToMi 3.0 · Modern Web Radio Player
+        Radio by ToMi 3.0.1 · Modern Web Radio Player
     </footer>
 
 </main>
 
 
-<!-- BOTTOM PLAYER -->
+<!-- =========================================================
+     BOTTOM PLAYER
+     ========================================================= -->
 
 <div class="bottom-player">
 
     <div class="player-inner">
+
 
         <div class="now-playing">
 
@@ -1700,6 +2073,7 @@
                 >
 
             </div>
+
 
             <div class="now-playing-info">
 
@@ -1728,24 +2102,36 @@
                 id="btnPrev"
                 class="player-button skip-button"
                 title="Poprzednia stacja"
+                aria-label="Poprzednia stacja"
             >
-                <i class="fa-solid fa-backward-step"></i>
+                <i
+                    class="fa-solid fa-backward-step"
+                ></i>
             </button>
+
 
             <button
                 id="btnPlay"
                 class="player-button play"
                 title="Odtwórz / zatrzymaj"
+                aria-label="Odtwórz / zatrzymaj"
             >
-                <i id="playIcon" class="fa-solid fa-play"></i>
+                <i
+                    id="playIcon"
+                    class="fa-solid fa-play"
+                ></i>
             </button>
+
 
             <button
                 id="btnNext"
                 class="player-button skip-button"
                 title="Następna stacja"
+                aria-label="Następna stacja"
             >
-                <i class="fa-solid fa-forward-step"></i>
+                <i
+                    class="fa-solid fa-forward-step"
+                ></i>
             </button>
 
         </div>
@@ -1772,6 +2158,7 @@
 
             </div>
 
+
             <button
                 id="btnEQ"
                 class="icon-button"
@@ -1796,9 +2183,14 @@
 ></audio>
 
 
-<!-- EQ MODAL -->
+<!-- =========================================================
+     EQ MODAL
+     ========================================================= -->
 
-<div id="eqModal" class="modal-backdrop">
+<div
+    id="eqModal"
+    class="modal-backdrop"
+>
 
     <div class="modal">
 
@@ -1817,8 +2209,12 @@
 
         </div>
 
+
         <div class="eq-row">
-            <span class="eq-label">Bas</span>
+
+            <span class="eq-label">
+                Bas
+            </span>
 
             <input
                 id="eqLow"
@@ -1836,10 +2232,15 @@
             >
                 0 dB
             </span>
+
         </div>
 
+
         <div class="eq-row">
-            <span class="eq-label">Środek</span>
+
+            <span class="eq-label">
+                Środek
+            </span>
 
             <input
                 id="eqMid"
@@ -1857,10 +2258,15 @@
             >
                 0 dB
             </span>
+
         </div>
 
+
         <div class="eq-row">
-            <span class="eq-label">Treble</span>
+
+            <span class="eq-label">
+                Treble
+            </span>
 
             <input
                 id="eqHigh"
@@ -1878,24 +2284,39 @@
             >
                 0 dB
             </span>
+
         </div>
+
 
         <button
             id="btnResetEQ"
             class="secondary-button"
-            style="width:100%; justify-content:center"
+            style="
+                width:100%;
+                justify-content:center
+            "
         >
-            <i class="fa-solid fa-rotate-left"></i>
+            <i
+                class="fa-solid fa-rotate-left"
+            ></i>
+
             Reset korektora
+
         </button>
 
     </div>
+
 </div>
 
 
-<!-- SLEEP MODAL -->
+<!-- =========================================================
+     SLEEP MODAL
+     ========================================================= -->
 
-<div id="sleepModal" class="modal-backdrop">
+<div
+    id="sleepModal"
+    class="modal-backdrop"
+>
 
     <div class="modal">
 
@@ -1914,6 +2335,7 @@
 
         </div>
 
+
         <div class="form-group">
 
             <label class="form-label">
@@ -1924,16 +2346,39 @@
                 id="sleepSelect"
                 class="form-select"
             >
-                <option value="0">Wyłączony</option>
-                <option value="15">15 minut</option>
-                <option value="30">30 minut</option>
-                <option value="45">45 minut</option>
-                <option value="60">60 minut</option>
-                <option value="90">90 minut</option>
-                <option value="120">120 minut</option>
+
+                <option value="0">
+                    Wyłączony
+                </option>
+
+                <option value="15">
+                    15 minut
+                </option>
+
+                <option value="30">
+                    30 minut
+                </option>
+
+                <option value="45">
+                    45 minut
+                </option>
+
+                <option value="60">
+                    60 minut
+                </option>
+
+                <option value="90">
+                    90 minut
+                </option>
+
+                <option value="120">
+                    120 minut
+                </option>
+
             </select>
 
         </div>
+
 
         <button
             id="btnSetSleep"
@@ -1944,22 +2389,19 @@
             Ustaw timer
         </button>
 
-        <div
-            id="sleepInfo"
-            class="sleep-badge hidden"
-            style="margin-top:15px; justify-content:center"
-        >
-            <i class="fa-solid fa-moon"></i>
-            <span></span>
-        </div>
-
     </div>
+
 </div>
 
 
-<!-- ADD STATION -->
+<!-- =========================================================
+     ADD STATION
+     ========================================================= -->
 
-<div id="stationModal" class="modal-backdrop">
+<div
+    id="stationModal"
+    class="modal-backdrop"
+>
 
     <div class="modal">
 
@@ -1978,6 +2420,7 @@
 
         </div>
 
+
         <div class="form-group">
 
             <label class="form-label">
@@ -1992,6 +2435,7 @@
 
         </div>
 
+
         <div class="form-group">
 
             <label class="form-label">
@@ -2005,6 +2449,7 @@
             >
 
         </div>
+
 
         <div class="form-group">
 
@@ -2021,6 +2466,7 @@
 
         </div>
 
+
         <div class="form-group">
 
             <label class="form-label">
@@ -2036,6 +2482,7 @@
 
         </div>
 
+
         <button
             id="btnSaveStation"
             class="primary-button"
@@ -2046,12 +2493,18 @@
         </button>
 
     </div>
+
 </div>
 
 
-<!-- SHORTCUTS -->
+<!-- =========================================================
+     SHORTCUTS
+     ========================================================= -->
 
-<div id="shortcutsModal" class="modal-backdrop">
+<div
+    id="shortcutsModal"
+    class="modal-backdrop"
+>
 
     <div class="modal">
 
@@ -2070,160 +2523,202 @@
 
         </div>
 
+
         <div class="shortcuts">
 
             <div class="shortcut">
-                <span>Odtwarzanie / pauza</span>
+                <span>
+                    Odtwarzanie / pauza
+                </span>
                 <kbd>Space</kbd>
             </div>
 
             <div class="shortcut">
-                <span>Poprzednia stacja</span>
+                <span>
+                    Poprzednia stacja
+                </span>
                 <kbd>←</kbd>
             </div>
 
             <div class="shortcut">
-                <span>Następna stacja</span>
+                <span>
+                    Następna stacja
+                </span>
                 <kbd>→</kbd>
             </div>
 
             <div class="shortcut">
-                <span>Zwiększ głośność</span>
+                <span>
+                    Zwiększ głośność
+                </span>
                 <kbd>↑</kbd>
             </div>
 
             <div class="shortcut">
-                <span>Zmniejsz głośność</span>
+                <span>
+                    Zmniejsz głośność
+                </span>
                 <kbd>↓</kbd>
             </div>
 
             <div class="shortcut">
-                <span>Wyciszenie</span>
+                <span>
+                    Wyciszenie
+                </span>
                 <kbd>M</kbd>
             </div>
 
             <div class="shortcut">
-                <span>Zamknij okno</span>
+                <span>
+                    Zamknij okno
+                </span>
                 <kbd>Esc</kbd>
             </div>
 
         </div>
 
     </div>
+
 </div>
 
 
-<div id="toastContainer" class="toast-container"></div>
+<div
+    id="toastContainer"
+    class="toast-container"
+></div>
 
 
 <script>
 /* =========================================================
-   RADIO BY TOMI 3.0
+   RADIO BY TOMI 3.0.1
    ========================================================= */
 
+
 const stations = [
+
     {
         name: "RMF FM",
         genre: "Pop · Hits",
         url: "https://rs6-krk2.rmfstream.pl/RMFFM48",
         color: "#f97316"
     },
+
     {
         name: "Radio ZET",
         genre: "Pop · Music",
         url: "https://r.dcs.redcdn.pl/sc/o2/Eurozet/live/radiozet.livx",
         color: "#ea580c"
     },
+
     {
         name: "Eska",
         genre: "Pop · Dance",
         url: "https://radio-eska.pl/player",
         color: "#fb923c"
     },
+
     {
         name: "RMF MAXX",
         genre: "Dance · Pop",
         url: "https://rs6-krk2.rmfstream.pl/RMFMAXXX48",
         color: "#f97316"
     },
+
     {
         name: "RMF Classic",
         genre: "Classical · Film",
         url: "https://rs6-krk2.rmfstream.pl/RMFCLASSIC48",
         color: "#f59e0b"
     },
+
     {
         name: "TOK FM",
         genre: "News · Talk",
         url: "https://radiostream.pl/tuba10-1.mp3",
         color: "#ea580c"
     },
+
     {
         name: "Radio 357",
         genre: "Alternative · Rock",
         url: "https://stream.rcs.revma.com/ye5kghkgcm0uv",
         color: "#f97316"
     },
+
     {
         name: "Radio Nowy Świat",
         genre: "Alternative · Music",
         url: "https://stream.rcs.revma.com/ypqt9bq6v5zuv",
         color: "#fb923c"
     },
+
     {
         name: "Antyradio",
         genre: "Rock",
         url: "https://an1-krk.antyradio.pl:8443/antyradio",
         color: "#dc2626"
     },
+
     {
         name: "Rock Radio",
         genre: "Rock",
         url: "https://stream.rcs.revma.com/rockradio",
         color: "#f97316"
     },
+
     {
         name: "Chillizet",
         genre: "Chill · Lounge",
         url: "https://chillizet.livestream.com",
         color: "#fb923c"
     },
+
     {
         name: "Radio Pogoda",
         genre: "Oldies · Easy Listening",
         url: "https://stream.rcs.revma.com/pogoda",
         color: "#f59e0b"
     },
+
     {
         name: "Radio Paradise",
         genre: "Eclectic · Rock",
         url: "https://stream.radioparadise.com/aac-320",
         color: "#f97316"
     },
+
     {
         name: "SomaFM",
         genre: "Electronic · Ambient",
         url: "https://ice1.somafm.com/groovesalad-128-mp3",
         color: "#fb923c"
     },
+
     {
         name: "Jazz24",
         genre: "Jazz",
         url: "https://live.wrti.org/jazz24",
         color: "#ea580c"
     }
+
 ];
 
 
 let customStations = [];
 
 try {
+
     customStations =
         JSON.parse(
-            localStorage.getItem("radio_tomi_custom_stations") || "[]"
+            localStorage.getItem(
+                "radio_tomi_custom_stations"
+            ) || "[]"
         );
+
 } catch {
+
     customStations = [];
+
 }
 
 
@@ -2236,127 +2731,223 @@ let allStations = [
 let favorites = [];
 
 try {
+
     favorites =
         JSON.parse(
-            localStorage.getItem("radio_tomi_favorites") || "[]"
+            localStorage.getItem(
+                "radio_tomi_favorites"
+            ) || "[]"
         );
+
 } catch {
+
     favorites = [];
+
 }
 
 
 let currentStationIndex = -1;
+
 let isPlaying = false;
 
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
 let sleepTimer = null;
+
 let sleepEnd = null;
 
+let sleepDuration = 0;
+
+let sleepInterval = null;
+
+
+/* =========================================================
+   AUDIO / EQ
+   ========================================================= */
+
 let audioContext = null;
+
 let sourceNode = null;
+
 let analyser = null;
 
 let lowFilter = null;
-let midFilter = null;
-let highFilter = null;
 
-let visualizerAnimation = null;
+let midFilter = null;
+
+let highFilter = null;
 
 
 /* =========================================================
    ELEMENTS
    ========================================================= */
 
-const audio = document.getElementById("audio");
+const audio =
+    document.getElementById("audio");
+
 
 const stationGrid =
     document.getElementById("stationGrid");
 
+
 const stationSearch =
     document.getElementById("stationSearch");
+
 
 const btnPlay =
     document.getElementById("btnPlay");
 
+
 const playIcon =
     document.getElementById("playIcon");
+
 
 const btnHeroPlay =
     document.getElementById("btnHeroPlay");
 
+
+const btnHeroPrev =
+    document.getElementById("btnHeroPrev");
+
+
+const btnHeroNext =
+    document.getElementById("btnHeroNext");
+
+
 const btnPrev =
     document.getElementById("btnPrev");
+
 
 const btnNext =
     document.getElementById("btnNext");
 
+
 const volume =
     document.getElementById("volume");
+
 
 const volumeIcon =
     document.getElementById("volumeIcon");
 
+
 const btnTheme =
     document.getElementById("btnTheme");
+
 
 const themeIcon =
     document.getElementById("themeIcon");
 
+
 const btnHeroFavorite =
-    document.getElementById("btnHeroFavorite");
+    document.getElementById(
+        "btnHeroFavorite"
+    );
+
 
 const heroStationName =
-    document.getElementById("heroStationName");
+    document.getElementById(
+        "heroStationName"
+    );
+
 
 const heroDescription =
-    document.getElementById("heroDescription");
+    document.getElementById(
+        "heroDescription"
+    );
+
 
 const heroArt =
-    document.getElementById("heroArt");
+    document.getElementById(
+        "heroArt"
+    );
+
 
 const heroArtPlaceholder =
-    document.getElementById("heroArtPlaceholder");
+    document.getElementById(
+        "heroArtPlaceholder"
+    );
+
 
 const playerStationName =
-    document.getElementById("playerStationName");
+    document.getElementById(
+        "playerStationName"
+    );
+
 
 const playerStationGenre =
-    document.getElementById("playerStationGenre");
+    document.getElementById(
+        "playerStationGenre"
+    );
+
 
 const playerArt =
-    document.getElementById("playerArt");
+    document.getElementById(
+        "playerArt"
+    );
+
 
 const playerArtPlaceholder =
-    document.getElementById("playerArtPlaceholder");
+    document.getElementById(
+        "playerArtPlaceholder"
+    );
 
-const visualizer =
-    document.getElementById("visualizer");
 
-const visualizerStatus =
-    document.getElementById("visualizerStatus");
+const btnSleep =
+    document.getElementById(
+        "btnSleep"
+    );
+
+
+const sleepTimerIcon =
+    document.getElementById(
+        "sleepTimerIcon"
+    );
+
+
+const sleepTimerText =
+    document.getElementById(
+        "sleepTimerText"
+    );
 
 
 /* =========================================================
-   STATION LOGO
+   LOGO
    ========================================================= */
 
-function generateLogo(name, color = "#f97316") {
+function generateLogo(
+    name,
+    color = "#f97316"
+) {
 
     const initials =
         name
-            .replace(/[^a-zA-ZĄĆĘŁŃÓŚŹŻąćęłńóśźż0-9 ]/g, "")
+            .replace(
+                /[^a-zA-ZĄĆĘŁŃÓŚŹŻąćęłńóśźż0-9 ]/g,
+                ""
+            )
             .split(/\s+/)
             .slice(0, 2)
             .map(x => x[0])
             .join("")
             .toUpperCase();
 
+
     const canvas =
-        document.createElement("canvas");
+        document.createElement(
+            "canvas"
+        );
+
 
     canvas.width = 300;
     canvas.height = 300;
 
-    const ctx = canvas.getContext("2d");
+
+    const ctx =
+        canvas.getContext("2d");
+
 
     const gradient =
         ctx.createLinearGradient(
@@ -2366,18 +2957,43 @@ function generateLogo(name, color = "#f97316") {
             300
         );
 
-    gradient.addColorStop(0, color);
-    gradient.addColorStop(1, "#18181b");
 
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 300, 300);
+    gradient.addColorStop(
+        0,
+        color
+    );
 
-    ctx.fillStyle = "rgba(255,255,255,.96)";
+    gradient.addColorStop(
+        1,
+        "#18181b"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        300,
+        300
+    );
+
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.96)";
+
+
     ctx.font =
         "800 105px -apple-system, BlinkMacSystemFont, Arial";
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
 
     ctx.fillText(
         initials || "R",
@@ -2385,7 +3001,10 @@ function generateLogo(name, color = "#f97316") {
         150
     );
 
-    return canvas.toDataURL("image/png");
+
+    return canvas.toDataURL(
+        "image/png"
+    );
 }
 
 
@@ -2393,7 +3012,9 @@ function generateLogo(name, color = "#f97316") {
    LOGO URL
    ========================================================= */
 
-function getStationLogo(station) {
+function getStationLogo(
+    station
+) {
 
     if (station.logo) {
         return station.logo;
@@ -2411,6 +3032,7 @@ function getStationLogo(station) {
    ========================================================= */
 
 function saveFavorites() {
+
     localStorage.setItem(
         "radio_tomi_favorites",
         JSON.stringify(favorites)
@@ -2419,6 +3041,7 @@ function saveFavorites() {
 
 
 function saveCustomStations() {
+
     localStorage.setItem(
         "radio_tomi_custom_stations",
         JSON.stringify(customStations)
@@ -2433,22 +3056,37 @@ function saveCustomStations() {
 function toast(message) {
 
     const container =
-        document.getElementById("toastContainer");
+        document.getElementById(
+            "toastContainer"
+        );
+
 
     const element =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
-    element.className = "toast";
+
+    element.className =
+        "toast";
+
 
     element.innerHTML = `
         <i
             class="fa-solid fa-circle-check"
-            style="color:var(--accent);margin-right:7px"
+            style="
+                color:var(--accent);
+                margin-right:7px
+            "
         ></i>
         ${escapeHtml(message)}
     `;
 
-    container.appendChild(element);
+
+    container.appendChild(
+        element
+    );
+
 
     setTimeout(() => {
         element.remove();
@@ -2463,11 +3101,26 @@ function toast(message) {
 function escapeHtml(value) {
 
     return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 }
 
 
@@ -2475,42 +3128,62 @@ function escapeHtml(value) {
    RENDER STATIONS
    ========================================================= */
 
-function renderStations(filter = "") {
+function renderStations(
+    filter = ""
+) {
 
     stationGrid.innerHTML = "";
+
 
     const query =
         filter
             .trim()
             .toLowerCase();
 
+
     const visible =
         allStations
-            .map((station, index) => ({
-                station,
-                index
-            }))
-            .filter(({ station }) => {
+            .map(
+                (station, index) => ({
+                    station,
+                    index
+                })
+            )
+            .filter(
+                ({ station }) => {
 
-                if (!query) {
-                    return true;
+                    if (!query) {
+                        return true;
+                    }
+
+
+                    return (
+                        station.name
+                            .toLowerCase()
+                            .includes(query) ||
+
+                        (
+                            station.genre ||
+                            ""
+                        )
+                            .toLowerCase()
+                            .includes(query)
+                    );
                 }
-
-                return (
-                    station.name.toLowerCase().includes(query) ||
-                    (station.genre || "")
-                        .toLowerCase()
-                        .includes(query)
-                );
-            });
+            );
 
 
     if (!visible.length) {
 
         stationGrid.innerHTML = `
             <div class="empty-state">
-                <i class="fa-solid fa-radio"></i>
+
+                <i
+                    class="fa-solid fa-radio"
+                ></i>
+
                 Nie znaleziono stacji.
+
             </div>
         `;
 
@@ -2518,104 +3191,159 @@ function renderStations(filter = "") {
     }
 
 
-    visible.forEach(({ station, index }) => {
+    visible.forEach(
+        ({ station, index }) => {
 
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "station-card fade-in";
-
-        if (index === currentStationIndex) {
-            card.classList.add("active");
-        }
+            const card =
+                document.createElement(
+                    "div"
+                );
 
 
-        const favorite =
-            favorites.includes(index);
+            card.className =
+                "station-card fade-in";
 
-
-        card.innerHTML = `
-
-            <div class="station-logo">
-                <img
-                    src="${getStationLogo(station)}"
-                    alt=""
-                    onerror="this.style.display='none'"
-                >
-            </div>
-
-            <div class="station-info">
-
-                <div class="station-name">
-                    ${escapeHtml(station.name)}
-                </div>
-
-                <div class="station-genre">
-                    ${escapeHtml(station.genre || "Radio")}
-                </div>
-
-                ${
-                    index === currentStationIndex && isPlaying
-                    ?
-                    `
-                    <div class="station-playing">
-
-                        <div class="mini-eq">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-
-                        Gra teraz
-
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-
-            <button
-                class="favorite-button ${favorite ? "active" : ""}"
-                data-favorite="${index}"
-                title="Ulubiona stacja"
-            >
-                <i class="${favorite ? "fa-solid" : "fa-regular"} fa-heart"></i>
-            </button>
-        `;
-
-
-        card.addEventListener("click", event => {
 
             if (
-                event.target.closest("[data-favorite]")
+                index ===
+                currentStationIndex
             ) {
-                return;
+
+                card.classList.add(
+                    "active"
+                );
             }
 
-            selectStation(index, true);
-        });
+
+            const favorite =
+                favorites.includes(
+                    index
+                );
 
 
-        const favoriteButton =
-            card.querySelector("[data-favorite]");
+            card.innerHTML = `
+
+                <div class="station-logo">
+
+                    <img
+                        src="${getStationLogo(station)}"
+                        alt=""
+                        onerror="
+                            this.style.display='none'
+                        "
+                    >
+
+                </div>
 
 
-        favoriteButton.addEventListener(
-            "click",
-            event => {
+                <div class="station-info">
 
-                event.stopPropagation();
+                    <div class="station-name">
+                        ${escapeHtml(station.name)}
+                    </div>
 
-                toggleFavorite(index);
-            }
-        );
+                    <div class="station-genre">
+                        ${escapeHtml(
+                            station.genre ||
+                            "Radio"
+                        )}
+                    </div>
+
+                    ${
+                        index ===
+                        currentStationIndex &&
+                        isPlaying
+                        ?
+                        `
+                        <div
+                            class="station-playing"
+                        >
+
+                            <div class="mini-eq">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+
+                            Gra teraz
+
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
 
 
-        stationGrid.appendChild(card);
-    });
+                <button
+                    class="
+                        favorite-button
+                        ${favorite ? "active" : ""}
+                    "
+                    data-favorite="${index}"
+                    title="Ulubiona stacja"
+                >
+
+                    <i
+                        class="
+                            ${
+                                favorite
+                                ? "fa-solid"
+                                : "fa-regular"
+                            }
+                            fa-heart
+                        "
+                    ></i>
+
+                </button>
+            `;
+
+
+            card.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.closest(
+                            "[data-favorite]"
+                        )
+                    ) {
+                        return;
+                    }
+
+                    selectStation(
+                        index,
+                        true
+                    );
+                }
+            );
+
+
+            const favoriteButton =
+                card.querySelector(
+                    "[data-favorite]"
+                );
+
+
+            favoriteButton.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    toggleFavorite(
+                        index
+                    );
+                }
+            );
+
+
+            stationGrid.appendChild(
+                card
+            );
+        }
+    );
 }
 
 
@@ -2623,23 +3351,33 @@ function renderStations(filter = "") {
    FAVORITES
    ========================================================= */
 
-function toggleFavorite(index) {
+function toggleFavorite(
+    index
+) {
 
-    if (favorites.includes(index)) {
+    if (
+        favorites.includes(index)
+    ) {
 
         favorites =
             favorites.filter(
-                item => item !== index
+                item =>
+                    item !== index
             );
 
-        toast("Usunięto z ulubionych");
+        toast(
+            "Usunięto z ulubionych"
+        );
 
     } else {
 
         favorites.push(index);
 
-        toast("Dodano do ulubionych");
+        toast(
+            "Dodano do ulubionych"
+        );
     }
+
 
     saveFavorites();
 
@@ -2655,7 +3393,10 @@ function toggleFavorite(index) {
    SELECT STATION
    ========================================================= */
 
-function selectStation(index, autoplay = false) {
+function selectStation(
+    index,
+    autoplay = false
+) {
 
     if (
         index < 0 ||
@@ -2665,17 +3406,22 @@ function selectStation(index, autoplay = false) {
     }
 
 
-    currentStationIndex = index;
+    currentStationIndex =
+        index;
+
 
     const station =
         allStations[index];
 
 
-    audio.src = station.url;
+    audio.src =
+        station.url;
+
     audio.load();
 
 
     updateStationUI();
+
 
     renderStations(
         stationSearch.value
@@ -2694,30 +3440,39 @@ function selectStation(index, autoplay = false) {
 
 function updateStationUI() {
 
-    if (currentStationIndex < 0) {
+    if (
+        currentStationIndex < 0
+    ) {
 
         heroStationName.textContent =
             "Wybierz swoją stację";
 
+
         heroDescription.textContent =
             "Słuchaj ulubionych stacji radiowych w nowoczesnym interfejsie Radio by ToMi.";
+
 
         playerStationName.textContent =
             "Brak wybranej stacji";
 
+
         playerStationGenre.textContent =
             "Wybierz stację";
+
 
         return;
     }
 
 
     const station =
-        allStations[currentStationIndex];
+        allStations[
+            currentStationIndex
+        ];
 
 
     heroStationName.textContent =
         station.name;
+
 
     heroDescription.textContent =
         station.genre ||
@@ -2727,23 +3482,40 @@ function updateStationUI() {
     playerStationName.textContent =
         station.name;
 
+
     playerStationGenre.textContent =
         station.genre ||
         "Radio na żywo";
 
 
     const logo =
-        getStationLogo(station);
+        getStationLogo(
+            station
+        );
 
 
-    heroArt.src = logo;
-    heroArt.classList.remove("hidden");
-    heroArtPlaceholder.classList.add("hidden");
+    heroArt.src =
+        logo;
+
+    heroArt.classList.remove(
+        "hidden"
+    );
+
+    heroArtPlaceholder.classList.add(
+        "hidden"
+    );
 
 
-    playerArt.src = logo;
-    playerArt.classList.remove("hidden");
-    playerArtPlaceholder.classList.add("hidden");
+    playerArt.src =
+        logo;
+
+    playerArt.classList.remove(
+        "hidden"
+    );
+
+    playerArtPlaceholder.classList.add(
+        "hidden"
+    );
 
 
     updateHeroFavorite();
@@ -2756,11 +3528,18 @@ function updateStationUI() {
 
 function updateHeroFavorite() {
 
-    if (currentStationIndex < 0) {
+    if (
+        currentStationIndex < 0
+    ) {
 
         btnHeroFavorite.innerHTML = `
-            <i class="fa-regular fa-heart"></i>
-            Ulubione
+            <i
+                class="fa-regular fa-heart"
+            ></i>
+
+            <span>
+                Dodaj do ulubionych
+            </span>
         `;
 
         return;
@@ -2768,22 +3547,33 @@ function updateHeroFavorite() {
 
 
     const favorite =
-        favorites.includes(currentStationIndex);
+        favorites.includes(
+            currentStationIndex
+        );
 
 
-    btnHeroFavorite.innerHTML = favorite
+    btnHeroFavorite.innerHTML =
+        favorite
         ?
         `
             <i
                 class="fa-solid fa-heart"
                 style="color:var(--accent)"
             ></i>
-            Usuń z ulubionych
+
+            <span>
+                Usuń z ulubionych
+            </span>
         `
         :
         `
-            <i class="fa-regular fa-heart"></i>
-            Dodaj do ulubionych
+            <i
+                class="fa-regular fa-heart"
+            ></i>
+
+            <span>
+                Dodaj do ulubionych
+            </span>
         `;
 }
 
@@ -2794,9 +3584,14 @@ function updateHeroFavorite() {
 
 async function playRadio() {
 
-    if (currentStationIndex < 0) {
+    if (
+        currentStationIndex < 0
+    ) {
 
-        selectStation(0, false);
+        selectStation(
+            0,
+            false
+        );
     }
 
 
@@ -2804,14 +3599,24 @@ async function playRadio() {
 
         await audio.play();
 
+
         isPlaying = true;
+
 
         updatePlaybackUI();
 
+
         setupAudioContext();
 
-        visualizerStatus.textContent =
-            "Odtwarzanie na żywo";
+
+        if (
+            audioContext &&
+            audioContext.state ===
+            "suspended"
+        ) {
+
+            await audioContext.resume();
+        }
 
     } catch (error) {
 
@@ -2837,9 +3642,6 @@ function pauseRadio() {
     isPlaying = false;
 
     updatePlaybackUI();
-
-    visualizerStatus.textContent =
-        "Wstrzymano";
 }
 
 
@@ -2850,8 +3652,11 @@ function pauseRadio() {
 function togglePlay() {
 
     if (isPlaying) {
+
         pauseRadio();
+
     } else {
+
         playRadio();
     }
 }
@@ -2865,22 +3670,25 @@ function updatePlaybackUI() {
 
     playIcon.className =
         isPlaying
-            ? "fa-solid fa-pause"
-            : "fa-solid fa-play";
+        ?
+        "fa-solid fa-pause"
+        :
+        "fa-solid fa-play";
 
 
     btnHeroPlay.innerHTML =
-        isPlaying
-            ?
-            `
-                <i class="fa-solid fa-pause"></i>
-                Pauza
-            `
-            :
-            `
-                <i class="fa-solid fa-play"></i>
-                Odtwórz
-            `;
+        `
+            <i
+                class="
+                    fa-solid
+                    ${
+                        isPlaying
+                        ? "fa-pause"
+                        : "fa-play"
+                    }
+                "
+            ></i>
+        `;
 
 
     renderStations(
@@ -2895,35 +3703,57 @@ function updatePlaybackUI() {
 
 function nextStation() {
 
-    if (!allStations.length) {
+    if (
+        !allStations.length
+    ) {
         return;
     }
+
 
     let index =
         currentStationIndex + 1;
 
-    if (index >= allStations.length) {
+
+    if (
+        index >=
+        allStations.length
+    ) {
+
         index = 0;
     }
 
-    selectStation(index, true);
+
+    selectStation(
+        index,
+        true
+    );
 }
 
 
 function previousStation() {
 
-    if (!allStations.length) {
+    if (
+        !allStations.length
+    ) {
         return;
     }
+
 
     let index =
         currentStationIndex - 1;
 
+
     if (index < 0) {
-        index = allStations.length - 1;
+
+        index =
+            allStations.length - 1;
     }
 
-    selectStation(index, true);
+
+    selectStation(
+        index,
+        true
+    );
 }
 
 
@@ -2934,9 +3764,13 @@ function previousStation() {
 function updateVolume() {
 
     const value =
-        Number(volume.value);
+        Number(
+            volume.value
+        );
 
-    audio.volume = value;
+
+    audio.volume =
+        value;
 
 
     if (value === 0) {
@@ -2984,46 +3818,68 @@ function setupAudioContext() {
 
 
         sourceNode =
-            audioContext.createMediaElementSource(audio);
+            audioContext
+                .createMediaElementSource(
+                    audio
+                );
 
 
         lowFilter =
-            audioContext.createBiquadFilter();
+            audioContext
+                .createBiquadFilter();
+
 
         lowFilter.type =
             "lowshelf";
+
 
         lowFilter.frequency.value =
             180;
 
 
         midFilter =
-            audioContext.createBiquadFilter();
+            audioContext
+                .createBiquadFilter();
+
 
         midFilter.type =
             "peaking";
 
+
         midFilter.frequency.value =
             1000;
+
 
         midFilter.Q.value =
             1;
 
 
         highFilter =
-            audioContext.createBiquadFilter();
+            audioContext
+                .createBiquadFilter();
+
 
         highFilter.type =
             "highshelf";
+
 
         highFilter.frequency.value =
             5000;
 
 
-        analyser =
-            audioContext.createAnalyser();
+        /*
+         * Analyser pozostaje dostępny
+         * dla EQ/audio processing, ale
+         * nie uruchamiamy już wizualizera.
+         */
 
-        analyser.fftSize = 256;
+        analyser =
+            audioContext
+                .createAnalyser();
+
+
+        analyser.fftSize =
+            256;
 
 
         sourceNode
@@ -3031,10 +3887,10 @@ function setupAudioContext() {
             .connect(midFilter)
             .connect(highFilter)
             .connect(analyser)
-            .connect(audioContext.destination);
+            .connect(
+                audioContext.destination
+            );
 
-
-        startVisualizer();
 
     } catch (error) {
 
@@ -3047,200 +3903,71 @@ function setupAudioContext() {
 
 
 /* =========================================================
-   VISUALIZER
-   ========================================================= */
-
-function startVisualizer() {
-
-    if (!analyser) {
-        return;
-    }
-
-
-    const ctx =
-        visualizer.getContext("2d");
-
-
-    function draw() {
-
-        visualizerAnimation =
-            requestAnimationFrame(draw);
-
-
-        const rect =
-            visualizer.getBoundingClientRect();
-
-
-        const dpr =
-            window.devicePixelRatio || 1;
-
-
-        const width =
-            Math.max(
-                1,
-                Math.floor(rect.width * dpr)
-            );
-
-
-        const height =
-            Math.max(
-                1,
-                Math.floor(rect.height * dpr)
-            );
-
-
-        if (
-            visualizer.width !== width ||
-            visualizer.height !== height
-        ) {
-            visualizer.width = width;
-            visualizer.height = height;
-        }
-
-
-        ctx.clearRect(
-            0,
-            0,
-            width,
-            height
-        );
-
-
-        const bufferLength =
-            analyser.frequencyBinCount;
-
-
-        const data =
-            new Uint8Array(bufferLength);
-
-
-        analyser.getByteFrequencyData(data);
-
-
-        const bars =
-            Math.min(
-                70,
-                bufferLength
-            );
-
-
-        const gap =
-            width / bars;
-
-
-        for (
-            let i = 0;
-            i < bars;
-            i++
-        ) {
-
-            const value =
-                data[i] / 255;
-
-
-            const barHeight =
-                Math.max(
-                    2,
-                    value * height * .82
-                );
-
-
-            const x =
-                i * gap;
-
-
-            const y =
-                height - barHeight;
-
-
-            const gradient =
-                ctx.createLinearGradient(
-                    0,
-                    y,
-                    0,
-                    height
-                );
-
-
-            gradient.addColorStop(
-                0,
-                "#fb923c"
-            );
-
-            gradient.addColorStop(
-                .5,
-                "#f97316"
-            );
-
-            gradient.addColorStop(
-                1,
-                "rgba(249,115,22,.08)"
-            );
-
-
-            ctx.fillStyle =
-                gradient;
-
-
-            ctx.beginPath();
-
-            ctx.roundRect(
-                x + 1,
-                y,
-                Math.max(2, gap - 3),
-                barHeight,
-                4
-            );
-
-            ctx.fill();
-        }
-    }
-
-
-    draw();
-}
-
-
-/* =========================================================
    EQ
    ========================================================= */
 
 function setEQ() {
 
-    if (!audioContext) {
+    if (
+        !audioContext ||
+        !lowFilter ||
+        !midFilter ||
+        !highFilter
+    ) {
         return;
     }
 
 
     lowFilter.gain.value =
         Number(
-            document.getElementById("eqLow").value
+            document
+                .getElementById(
+                    "eqLow"
+                )
+                .value
         );
 
 
     midFilter.gain.value =
         Number(
-            document.getElementById("eqMid").value
+            document
+                .getElementById(
+                    "eqMid"
+                )
+                .value
         );
 
 
     highFilter.gain.value =
         Number(
-            document.getElementById("eqHigh").value
+            document
+                .getElementById(
+                    "eqHigh"
+                )
+                .value
         );
 
 
-    document.getElementById("eqLowValue")
+    document
+        .getElementById(
+            "eqLowValue"
+        )
         .textContent =
         `${lowFilter.gain.value} dB`;
 
 
-    document.getElementById("eqMidValue")
+    document
+        .getElementById(
+            "eqMidValue"
+        )
         .textContent =
         `${midFilter.gain.value} dB`;
 
 
-    document.getElementById("eqHighValue")
+    document
+        .getElementById(
+            "eqHighValue"
+        )
         .textContent =
         `${highFilter.gain.value} dB`;
 }
@@ -3254,7 +3981,9 @@ function openModal(id) {
 
     document
         .getElementById(id)
-        .classList.add("show");
+        .classList.add(
+            "show"
+        );
 }
 
 
@@ -3262,17 +3991,22 @@ function closeModal(id) {
 
     document
         .getElementById(id)
-        .classList.remove("show");
+        .classList.remove(
+            "show"
+        );
 }
 
 
 document
-    .querySelectorAll("[data-close]")
+    .querySelectorAll(
+        "[data-close]"
+    )
     .forEach(button => {
 
         button.addEventListener(
             "click",
             () => {
+
                 closeModal(
                     button.dataset.close
                 );
@@ -3282,7 +4016,9 @@ document
 
 
 document
-    .querySelectorAll(".modal-backdrop")
+    .querySelectorAll(
+        ".modal-backdrop"
+    )
     .forEach(backdrop => {
 
         backdrop.addEventListener(
@@ -3290,8 +4026,10 @@ document
             event => {
 
                 if (
-                    event.target === backdrop
+                    event.target ===
+                    backdrop
                 ) {
+
                     backdrop.classList.remove(
                         "show"
                     );
@@ -3305,18 +4043,77 @@ document
    SLEEP TIMER
    ========================================================= */
 
+function formatTimer(
+    milliseconds
+) {
+
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.ceil(
+                milliseconds / 1000
+            )
+        );
+
+
+    const hours =
+        Math.floor(
+            totalSeconds / 3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    const mm =
+        String(minutes)
+            .padStart(2, "0");
+
+
+    const ss =
+        String(seconds)
+            .padStart(2, "0");
+
+
+    if (hours > 0) {
+
+        return `${hours}:${mm}:${ss}`;
+    }
+
+
+    return `${minutes}:${ss}`;
+}
+
+
 function updateSleepInfo() {
-
-    const info =
-        document.getElementById("sleepInfo");
-
-    const span =
-        info.querySelector("span");
-
 
     if (!sleepEnd) {
 
-        info.classList.add("hidden");
+        sleepTimerText.textContent =
+            "Timer";
+
+
+        btnSleep.classList.remove(
+            "timer-active"
+        );
+
+
+        btnSleep.style.setProperty(
+            "--timer-progress",
+            "0%"
+        );
+
+
+        sleepTimerIcon.className =
+            "fa-solid fa-moon";
+
 
         return;
     }
@@ -3329,38 +4126,99 @@ function updateSleepInfo() {
         );
 
 
-    const minutes =
-        Math.ceil(
-            remaining / 60000
+    if (
+        remaining <= 0
+    ) {
+
+        sleepTimerText.textContent =
+            "Timer";
+
+
+        btnSleep.classList.remove(
+            "timer-active"
         );
 
 
-    if (minutes <= 0) {
+        btnSleep.style.setProperty(
+            "--timer-progress",
+            "0%"
+        );
 
-        info.classList.add("hidden");
 
         return;
     }
 
 
-    info.classList.remove("hidden");
+    const progress =
+        sleepDuration > 0
+        ?
+        (
+            (
+                sleepDuration -
+                remaining
+            ) /
+            sleepDuration
+        ) * 100
+        :
+        0;
 
-    span.textContent =
-        `Timer: ${minutes} min`;
+
+    sleepTimerText.textContent =
+        formatTimer(
+            remaining
+        );
+
+
+    btnSleep.classList.add(
+        "timer-active"
+    );
+
+
+    btnSleep.style.setProperty(
+        "--timer-progress",
+        `${Math.min(
+            100,
+            Math.max(
+                0,
+                progress
+            )
+        )}%`
+    );
+
+
+    sleepTimerIcon.className =
+        "fa-solid fa-hourglass-half";
 }
 
 
-function setSleepTimer(minutes) {
+function setSleepTimer(
+    minutes
+) {
 
-    clearTimeout(sleepTimer);
+    clearTimeout(
+        sleepTimer
+    );
 
-    sleepTimer = null;
-    sleepEnd = null;
+
+    clearInterval(
+        sleepInterval
+    );
+
+
+    sleepTimer =
+        null;
+
+    sleepEnd =
+        null;
+
+    sleepDuration =
+        0;
+
+
+    updateSleepInfo();
 
 
     if (!minutes) {
-
-        updateSleepInfo();
 
         toast(
             "Timer snu wyłączony"
@@ -3370,28 +4228,59 @@ function setSleepTimer(minutes) {
     }
 
 
-    sleepEnd =
-        Date.now() +
+    sleepDuration =
         minutes * 60000;
 
 
+    sleepEnd =
+        Date.now() +
+        sleepDuration;
+
+
     sleepTimer =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            pauseRadio();
+                pauseRadio();
 
-            sleepEnd = null;
 
-            updateSleepInfo();
+                sleepEnd =
+                    null;
 
-            toast(
-                "Timer zakończony — radio zatrzymane."
-            );
+                sleepDuration =
+                    0;
 
-        }, minutes * 60000);
+
+                clearInterval(
+                    sleepInterval
+                );
+
+
+                sleepInterval =
+                    null;
+
+
+                updateSleepInfo();
+
+
+                toast(
+                    "Timer zakończony — radio zatrzymane."
+                );
+
+            },
+            sleepDuration
+        );
+
+
+    sleepInterval =
+        setInterval(
+            updateSleepInfo,
+            1000
+        );
 
 
     updateSleepInfo();
+
 
     toast(
         `Timer ustawiony na ${minutes} min`
@@ -3399,10 +4288,7 @@ function setSleepTimer(minutes) {
 }
 
 
-setInterval(
-    updateSleepInfo,
-    30000
-);
+updateSleepInfo();
 
 
 /* =========================================================
@@ -3419,21 +4305,29 @@ function updateThemeUI() {
 
     themeIcon.className =
         dark
-            ? "fa-solid fa-sun"
-            : "fa-solid fa-moon";
+        ?
+        "fa-solid fa-sun"
+        :
+        "fa-solid fa-moon";
 
 
     btnTheme.title =
         dark
-            ? "Przełącz na jasny motyw"
-            : "Przełącz na ciemny motyw";
+        ?
+        "Przełącz na jasny motyw"
+        :
+        "Przełącz na ciemny motyw";
 
 
     document
-        .querySelector('meta[name="theme-color"]')
+        .querySelector(
+            'meta[name="theme-color"]'
+        )
         .setAttribute(
             "content",
-            dark ? "#0b0b0d" : "#f5f5f7"
+            dark
+            ? "#0b0b0d"
+            : "#f5f5f7"
         );
 }
 
@@ -3454,6 +4348,7 @@ btnTheme.addEventListener(
                 .classList
                 .remove("dark");
 
+
             localStorage.setItem(
                 "radio_tomi_theme",
                 "light"
@@ -3464,6 +4359,7 @@ btnTheme.addEventListener(
             document.documentElement
                 .classList
                 .add("dark");
+
 
             localStorage.setItem(
                 "radio_tomi_theme",
@@ -3482,48 +4378,66 @@ btnTheme.addEventListener(
    ========================================================= */
 
 document
-    .getElementById("btnAddStation")
+    .getElementById(
+        "btnAddStation"
+    )
     .addEventListener(
         "click",
-        () => openModal("stationModal")
+        () =>
+            openModal(
+                "stationModal"
+            )
     );
 
 
 document
-    .getElementById("btnSaveStation")
+    .getElementById(
+        "btnSaveStation"
+    )
     .addEventListener(
         "click",
         () => {
 
             const name =
                 document
-                    .getElementById("customName")
+                    .getElementById(
+                        "customName"
+                    )
                     .value
                     .trim();
 
 
             const genre =
                 document
-                    .getElementById("customGenre")
+                    .getElementById(
+                        "customGenre"
+                    )
                     .value
                     .trim();
 
 
             const url =
                 document
-                    .getElementById("customUrl")
+                    .getElementById(
+                        "customUrl"
+                    )
                     .value
                     .trim();
 
 
             const logo =
                 document
-                    .getElementById("customLogo")
+                    .getElementById(
+                        "customLogo"
+                    )
                     .value
                     .trim();
 
 
-            if (!name || !url) {
+            if (
+                !name ||
+                !url
+            ) {
 
                 toast(
                     "Podaj nazwę i adres strumienia."
@@ -3544,7 +4458,8 @@ document
                 url,
 
                 logo:
-                    logo || null,
+                    logo ||
+                    null,
 
                 color:
                     "#f97316"
@@ -3564,6 +4479,7 @@ document
 
             saveCustomStations();
 
+
             renderStations(
                 stationSearch.value
             );
@@ -3575,19 +4491,30 @@ document
 
 
             document
-                .getElementById("customName")
+                .getElementById(
+                    "customName"
+                )
                 .value = "";
 
-            document
-                .getElementById("customGenre")
-                .value = "";
 
             document
-                .getElementById("customUrl")
+                .getElementById(
+                    "customGenre"
+                )
                 .value = "";
 
+
             document
-                .getElementById("customLogo")
+                .getElementById(
+                    "customUrl"
+                )
+                .value = "";
+
+
+            document
+                .getElementById(
+                    "customLogo"
+                )
                 .value = "";
 
 
@@ -3641,6 +4568,18 @@ btnNext.addEventListener(
 );
 
 
+btnHeroPrev.addEventListener(
+    "click",
+    previousStation
+);
+
+
+btnHeroNext.addEventListener(
+    "click",
+    nextStation
+);
+
+
 btnHeroFavorite.addEventListener(
     "click",
     () => {
@@ -3648,6 +4587,7 @@ btnHeroFavorite.addEventListener(
         if (
             currentStationIndex >= 0
         ) {
+
             toggleFavorite(
                 currentStationIndex
             );
@@ -3667,10 +4607,15 @@ volume.addEventListener(
    ========================================================= */
 
 document
-    .getElementById("btnEQ")
+    .getElementById(
+        "btnEQ"
+    )
     .addEventListener(
         "click",
-        () => openModal("eqModal")
+        () =>
+            openModal(
+                "eqModal"
+            )
     );
 
 
@@ -3678,19 +4623,23 @@ document
     "eqLow",
     "eqMid",
     "eqHigh"
-].forEach(id => {
+].forEach(
+    id => {
 
-    document
-        .getElementById(id)
-        .addEventListener(
-            "input",
-            setEQ
-        );
-});
+        document
+            .getElementById(id)
+            .addEventListener(
+                "input",
+                setEQ
+            );
+    }
+);
 
 
 document
-    .getElementById("btnResetEQ")
+    .getElementById(
+        "btnResetEQ"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3699,15 +4648,18 @@ document
                 "eqLow",
                 "eqMid",
                 "eqHigh"
-            ].forEach(id => {
+            ].forEach(
+                id => {
 
-                document
-                    .getElementById(id)
-                    .value = 0;
-            });
+                    document
+                        .getElementById(id)
+                        .value = 0;
+                }
+            );
 
 
             setEQ();
+
 
             toast(
                 "Korektor został zresetowany."
@@ -3720,16 +4672,19 @@ document
    SLEEP
    ========================================================= */
 
-document
-    .getElementById("btnSleep")
-    .addEventListener(
-        "click",
-        () => openModal("sleepModal")
-    );
+btnSleep.addEventListener(
+    "click",
+    () =>
+        openModal(
+            "sleepModal"
+        )
+);
 
 
 document
-    .getElementById("btnSetSleep")
+    .getElementById(
+        "btnSetSleep"
+    )
     .addEventListener(
         "click",
         () => {
@@ -3737,12 +4692,17 @@ document
             const minutes =
                 Number(
                     document
-                        .getElementById("sleepSelect")
+                        .getElementById(
+                            "sleepSelect"
+                        )
                         .value
                 );
 
 
-            setSleepTimer(minutes);
+            setSleepTimer(
+                minutes
+            );
+
 
             closeModal(
                 "sleepModal"
@@ -3756,10 +4716,15 @@ document
    ========================================================= */
 
 document
-    .getElementById("btnShortcuts")
+    .getElementById(
+        "btnShortcuts"
+    )
     .addEventListener(
         "click",
-        () => openModal("shortcutsModal")
+        () =>
+            openModal(
+                "shortcutsModal"
+            )
     );
 
 
@@ -3768,7 +4733,9 @@ document.addEventListener(
     event => {
 
         const tag =
-            document.activeElement?.tagName;
+            document
+                .activeElement
+                ?.tagName;
 
 
         if (
@@ -3785,11 +4752,14 @@ document.addEventListener(
         }
 
 
-        if (event.key === " ") {
+        if (
+            event.key === " "
+        ) {
 
             event.preventDefault();
 
             togglePlay();
+
 
         } else if (
             event.key === "ArrowRight"
@@ -3797,11 +4767,13 @@ document.addEventListener(
 
             nextStation();
 
+
         } else if (
             event.key === "ArrowLeft"
         ) {
 
             previousStation();
+
 
         } else if (
             event.key === "ArrowUp"
@@ -3809,13 +4781,18 @@ document.addEventListener(
 
             event.preventDefault();
 
+
             volume.value =
                 Math.min(
                     1,
-                    Number(volume.value) + .05
+                    Number(
+                        volume.value
+                    ) + .05
                 );
 
+
             updateVolume();
+
 
         } else if (
             event.key === "ArrowDown"
@@ -3823,24 +4800,33 @@ document.addEventListener(
 
             event.preventDefault();
 
+
             volume.value =
                 Math.max(
                     0,
-                    Number(volume.value) - .05
+                    Number(
+                        volume.value
+                    ) - .05
                 );
+
 
             updateVolume();
 
+
         } else if (
-            event.key.toLowerCase() === "m"
+            event.key.toLowerCase()
+            === "m"
         ) {
 
-            if (audio.volume > 0) {
+            if (
+                audio.volume > 0
+            ) {
 
                 audio.dataset.previousVolume =
                     audio.volume;
 
-                volume.value = 0;
+                volume.value =
+                    0;
 
             } else {
 
@@ -3849,17 +4835,26 @@ document.addEventListener(
                     .8;
             }
 
+
             updateVolume();
+
 
         } else if (
             event.key === "Escape"
         ) {
 
             document
-                .querySelectorAll(".modal-backdrop.show")
-                .forEach(modal => {
-                    modal.classList.remove("show");
-                });
+                .querySelectorAll(
+                    ".modal-backdrop.show"
+                )
+                .forEach(
+                    modal => {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+                    }
+                );
         }
     }
 );
@@ -3910,26 +4905,35 @@ audio.addEventListener(
    MEDIA SESSION
    ========================================================= */
 
-if ("mediaSession" in navigator) {
+if (
+    "mediaSession" in navigator
+) {
 
     navigator.mediaSession.setActionHandler(
         "play",
-        () => playRadio()
+        () =>
+            playRadio()
     );
+
 
     navigator.mediaSession.setActionHandler(
         "pause",
-        () => pauseRadio()
+        () =>
+            pauseRadio()
     );
+
 
     navigator.mediaSession.setActionHandler(
         "previoustrack",
-        () => previousStation()
+        () =>
+            previousStation()
     );
+
 
     navigator.mediaSession.setActionHandler(
         "nexttrack",
-        () => nextStation()
+        () =>
+            nextStation()
     );
 }
 
@@ -3945,7 +4949,9 @@ function updateMediaSession() {
 
 
     const station =
-        allStations[currentStationIndex];
+        allStations[
+            currentStationIndex
+        ];
 
 
     navigator.mediaSession.metadata =
@@ -3959,12 +4965,14 @@ function updateMediaSession() {
                 "Radio by ToMi",
 
             album:
-                "Radio by ToMi 3.0",
+                "Radio by ToMi 3.0.1",
 
             artwork: [
                 {
                     src:
-                        getStationLogo(station),
+                        getStationLogo(
+                            station
+                        ),
 
                     sizes:
                         "300x300",
@@ -3975,14 +4983,6 @@ function updateMediaSession() {
             ]
         });
 }
-
-
-/* =========================================================
-   WRAP SELECT STATION FOR MEDIA SESSION
-   ========================================================= */
-
-const originalSelectStation =
-    selectStation;
 
 
 /* =========================================================
@@ -3997,15 +4997,22 @@ const originalSelectStation =
         );
 
 
-    if (savedVolume !== null) {
+    if (
+        savedVolume !== null
+    ) {
 
         const value =
-            Number(savedVolume);
+            Number(
+                savedVolume
+            );
 
 
         if (
-            Number.isFinite(value)
+            Number.isFinite(
+                value
+            )
         ) {
+
             volume.value =
                 Math.max(
                     0,
@@ -4026,83 +5033,38 @@ const originalSelectStation =
 
     updateStationUI();
 
-    visualizerStatus.textContent =
-        "Gotowy";
-
 
     /*
-       Domyślnie wybieramy pierwszą stację,
-       ale nie uruchamiamy jej automatycznie.
-    */
+     * Domyślnie wybieramy pierwszą
+     * stację, ale jej nie uruchamiamy.
+     */
 
-    if (allStations.length) {
+    if (
+        allStations.length
+    ) {
 
-        currentStationIndex = 0;
+        currentStationIndex =
+            0;
+
 
         updateStationUI();
 
         renderStations();
     }
 
+
+    updateSleepInfo();
+
 })();
 
 
 /* =========================================================
-   MEDIA SESSION UPDATE OBSERVER
+   MEDIA SESSION UPDATE
    ========================================================= */
 
 audio.addEventListener(
     "loadedmetadata",
     updateMediaSession
-);
-
-
-/* =========================================================
-   PAGE VISIBILITY
-   ========================================================= */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if (
-            document.hidden &&
-            visualizerAnimation
-        ) {
-
-            cancelAnimationFrame(
-                visualizerAnimation
-            );
-
-            visualizerAnimation = null;
-
-        } else if (
-            !document.hidden &&
-            analyser
-        ) {
-
-            startVisualizer();
-        }
-    }
-);
-
-
-/* =========================================================
-   RESIZE
-   ========================================================= */
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        if (
-            visualizer.width &&
-            visualizer.height
-        ) {
-            visualizer.width = 0;
-            visualizer.height = 0;
-        }
-    }
 );
 
 </script>
