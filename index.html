@@ -2,29 +2,30 @@
 <html lang="pl" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b0b0d">
 
-    <title>Radio by ToMi 3.0.7</title>
+    <title>Radio by ToMi 3.0.6</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            50: "#fff7ed",
-                            100: "#ffedd5",
-                            200: "#fed7aa",
-                            300: "#fdba74",
-                            400: "#fb923c",
-                            500: "#f97316",
-                            600: "#ea580c",
-                            700: "#c2410c",
-                            800: "#9a3412",
-                            900: "#7c2d12"
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12'
                         }
                     }
                 }
@@ -34,12 +35,17 @@
 
     <script>
         (() => {
-            const savedTheme = localStorage.getItem("radio_tomi_theme");
+            const saved = localStorage.getItem('radio_tomi_theme');
 
-            if (savedTheme === "light") {
-                document.documentElement.classList.remove("dark");
-            } else {
-                document.documentElement.classList.add("dark");
+            if (
+                saved === 'light' ||
+                (
+                    !saved &&
+                    window.matchMedia &&
+                    window.matchMedia('(prefers-color-scheme: light)').matches
+                )
+            ) {
+                document.documentElement.classList.remove('dark');
             }
         })();
     </script>
@@ -55,27 +61,29 @@
             --accent-dark: #ea580c;
             --accent-light: #fb923c;
 
-            --bg: #ffffff;
-            --secondary: #f4f4f5;
-            --card: #ffffff;
-            --card-hover: #fafafa;
+            --bg: #0b0b0d;
+            --bg-secondary: #111114;
+            --card: #18181b;
+            --card-hover: #202024;
+            --border: rgba(255,255,255,.08);
 
-            --text: #18181b;
-            --muted: #71717a;
-            --border: #e4e4e7;
+            --text: #f5f5f5;
+            --muted: #a1a1aa;
+            --muted-dark: #71717a;
 
             --player-height: 92px;
         }
 
-        html.dark {
-            --bg: #0b0b0d;
-            --secondary: #111114;
-            --card: #18181b;
-            --card-hover: #202024;
+        html:not(.dark) {
+            --bg: #f5f5f7;
+            --bg-secondary: #ffffff;
+            --card: #ffffff;
+            --card-hover: #f1f1f3;
+            --border: rgba(0,0,0,.08);
 
-            --text: #fafafa;
-            --muted: #a1a1aa;
-            --border: #27272a;
+            --text: #18181b;
+            --muted: #71717a;
+            --muted-dark: #a1a1aa;
         }
 
         * {
@@ -83,38 +91,84 @@
         }
 
         html {
-            min-height: 100%;
-            background: var(--bg);
-            color-scheme: dark;
-        }
-
-        html:not(.dark) {
-            color-scheme: light;
+            scroll-behavior: smooth;
         }
 
         body {
             margin: 0;
             min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at top,
-                    rgba(249, 115, 22, 0.06),
-                    transparent 35%
-                ),
-                var(--bg);
-            color: var(--text);
+
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
                 "SF Pro Display",
                 "SF Pro Text",
-                "Segoe UI",
-                Roboto,
-                Helvetica,
-                Arial,
+                Inter,
+                system-ui,
                 sans-serif;
 
+            background:
+                radial-gradient(
+                    circle at 50% -10%,
+                    rgba(249,115,22,.14),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            /*
+             * Brak dodatkowego paddingu pod stopką.
+             * Player jest fixed i nie generuje już pustej
+             * przestrzeni na końcu dokumentu.
+             */
             padding-bottom: 0;
+
+            transition:
+                background .35s ease,
+                color .35s ease;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+            z-index: -1;
+
+            background:
+                radial-gradient(
+                    circle at 15% 10%,
+                    rgba(249,115,22,.06),
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 90% 30%,
+                    rgba(251,146,60,.04),
+                    transparent 30%
+                );
+        }
+
+        ::selection {
+            background: rgba(249,115,22,.35);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(128,128,128,.3);
+            border-radius: 20px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(249,115,22,.55);
         }
 
         button,
@@ -127,70 +181,88 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .main {
-            width: 100%;
-            max-width: 1500px;
-            margin: 0 auto;
+        .glass {
+            background: rgba(24,24,27,.78);
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
 
-            /*
-             * Miejsce na dolny odtwarzacz.
-             * Dzięki temu stopka nie zostaje schowana pod playerem.
-             */
-            padding: 30px 24px calc(var(--player-height) + 30px);
+            border: 1px solid var(--border);
         }
 
-        /* =========================================================
-           HEADER
-           ========================================================= */
+        html:not(.dark) .glass {
+            background: rgba(255,255,255,.78);
+        }
 
-        .header {
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+
+            background: rgba(11,11,13,.78);
+
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        html:not(.dark) .app-header {
+            background: rgba(245,245,247,.82);
+        }
+
+        .header-inner {
+            max-width: 1500px;
+            margin: auto;
+
+            height: 72px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 24px;
+
+            padding: 0 24px;
         }
 
-        .brand-title {
+        .brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            min-width: 0;
+
+            font-weight: 800;
+            letter-spacing: -.03em;
         }
 
         .brand-icon {
-            width: 42px;
-            height: 42px;
-            flex: 0 0 42px;
-            border-radius: 14px;
+            width: 38px;
+            height: 38px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
 
             color: white;
-            background: linear-gradient(
-                135deg,
-                var(--accent),
-                var(--accent-dark)
-            );
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f97316,
+                    #ea580c
+                );
 
             box-shadow:
-                0 8px 24px rgba(249, 115, 22, 0.25);
+                0 8px 25px rgba(249,115,22,.28);
         }
 
-        .brand-text h1 {
-            margin: 0;
-            font-size: 22px;
-            line-height: 1.1;
-            font-weight: 800;
-            letter-spacing: -0.03em;
+        .brand-name {
+            font-size: 18px;
         }
 
-        .brand-text p {
-            margin: 4px 0 0;
-            color: var(--muted);
+        .brand-version {
             font-size: 11px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-left: 3px;
         }
 
         .header-actions {
@@ -199,328 +271,639 @@
             gap: 8px;
         }
 
-        /* =========================================================
-           ICON BUTTONS
-           ========================================================= */
-
         .icon-button {
             width: 38px;
             height: 38px;
 
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            display: grid;
+            place-items: center;
 
-            background: var(--card);
-            color: var(--text);
+            border-radius: 50%;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--muted);
 
+            background: transparent;
+            border: 1px solid transparent;
+
+            transition: .2s ease;
             cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                background 0.15s ease,
-                border-color 0.15s ease,
-                color 0.15s ease;
         }
 
         .icon-button:hover {
-            background: var(--card-hover);
-            border-color: rgba(249, 115, 22, 0.35);
+            color: var(--text);
+            background: var(--card);
+            border-color: var(--border);
+            transform: translateY(-1px);
+        }
+
+        .icon-button.accent:hover {
             color: var(--accent);
         }
 
-        .icon-button:active {
-            transform: scale(0.94);
+        .main {
+            max-width: 1500px;
+            margin: auto;
+
+            padding: 30px 24px 0;
         }
-
-        /* =========================================================
-           SEARCH
-           ========================================================= */
-
-        .search-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        .search-wrapper {
-            position: relative;
-            flex: 1;
-        }
-
-        .search-wrapper i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--muted);
-            pointer-events: none;
-        }
-
-        .search-input {
-            width: 100%;
-            height: 46px;
-
-            padding: 0 15px 0 44px;
-
-            border: 1px solid var(--border);
-            border-radius: 14px;
-
-            outline: none;
-
-            color: var(--text);
-            background: var(--card);
-
-            transition:
-                border-color 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .search-input::placeholder {
-            color: var(--muted);
-        }
-
-        .search-input:focus {
-            border-color: var(--accent);
-            box-shadow:
-                0 0 0 3px rgba(249, 115, 22, 0.12);
-        }
-
-        /* =========================================================
-           HERO
-           ========================================================= */
 
         .hero {
+            min-height: 330px;
+
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 420px;
-            gap: 24px;
-            margin-bottom: 30px;
+            grid-template-columns: 330px 1fr;
+
+            gap: 42px;
+            align-items: center;
+
+            margin-bottom: 34px;
         }
 
-        .hero-card {
+        .hero-art {
             position: relative;
+
+            width: 100%;
+            max-width: 330px;
+
+            aspect-ratio: 1;
+
+            border-radius: 24px;
+
             overflow: hidden;
 
-            min-height: 420px;
+            background:
+                radial-gradient(
+                    circle at 35% 25%,
+                    rgba(249,115,22,.9),
+                    transparent 28%
+                ),
+                linear-gradient(
+                    145deg,
+                    #252525,
+                    #090909
+                );
 
-            border: 1px solid var(--border);
-            border-radius: 28px;
+            box-shadow:
+                0 30px 70px rgba(0,0,0,.4),
+                0 0 80px rgba(249,115,22,.08);
+
+            transform: translateZ(0);
+        }
+
+        .hero-art::before {
+            content: "";
+            position: absolute;
+            inset: 0;
 
             background:
                 linear-gradient(
                     135deg,
-                    rgba(249, 115, 22, 0.08),
-                    transparent 45%
-                ),
-                var(--card);
+                    transparent 35%,
+                    rgba(255,255,255,.08),
+                    transparent 65%
+                );
 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            padding: 34px;
-        }
-
-        .hero-art {
-            width: min(280px, 68vw);
-            aspect-ratio: 1;
-
-            border-radius: 30px;
-
-            overflow: hidden;
-
-            background: var(--secondary);
-
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, 0.28);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-bottom: 22px;
+            pointer-events: none;
         }
 
         .hero-art img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+
+            /*
+             * Grafika bez wewnętrznej ramki.
+             */
+            border: 0;
+            outline: 0;
         }
 
-        .hero-station-name {
-            margin: 0;
+        .hero-art-placeholder {
+            width: 100%;
+            height: 100%;
 
-            font-size: clamp(24px, 3vw, 34px);
-            line-height: 1.1;
+            display: grid;
+            place-items: center;
+
+            font-size: 90px;
+            color: rgba(255,255,255,.9);
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(249,115,22,.75),
+                    transparent 55%
+                ),
+                #18181b;
+        }
+
+        /*
+         * USUNIĘTO wewnętrzny playing-ring.
+         *
+         * Nie nakładamy już żadnej ramki na główną
+         * grafikę radia.
+         */
+
+        .hero-content {
+            min-width: 0;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--accent);
+
+            font-size: 12px;
             font-weight: 800;
 
-            text-align: center;
-            letter-spacing: -0.03em;
-        }
-
-        .hero-station-genre {
-            margin: 7px 0 0;
-
-            color: var(--muted);
-            font-size: 13px;
-            text-align: center;
-        }
-
-        .hero-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-
-            margin-top: 22px;
-        }
-
-        .hero-control {
-            width: 44px;
-            height: 44px;
-
-            border: 1px solid var(--border);
-            border-radius: 14px;
-
-            background: var(--secondary);
-            color: var(--text);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                background 0.15s ease,
-                color 0.15s ease;
-        }
-
-        .hero-control:hover {
-            color: var(--accent);
-            background: var(--card-hover);
-        }
-
-        .hero-control:active {
-            transform: scale(0.94);
-        }
-
-        .hero-control.primary {
-            width: 54px;
-            height: 54px;
-
-            border: 0;
-
-            background: var(--accent);
-            color: white;
-
-            border-radius: 17px;
-
-            box-shadow:
-                0 8px 25px rgba(249, 115, 22, 0.3);
-        }
-
-        .hero-control.primary:hover {
-            background: var(--accent-dark);
-            color: white;
-        }
-
-        .hero-control.active {
-            color: var(--accent);
-        }
-
-        /* =========================================================
-           STATION GRID
-           ========================================================= */
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: .12em;
 
             margin-bottom: 14px;
         }
 
-        .section-title h2 {
-            margin: 0;
+        .live-dot {
+            width: 7px;
+            height: 7px;
 
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 4px rgba(34,197,94,.1),
+                0 0 15px rgba(34,197,94,.7);
+
+            animation: livePulse 2s infinite;
         }
 
-        .section-title span {
+        @keyframes livePulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(.85);
+            }
+        }
+
+        .hero h1 {
+            margin: 0;
+
+            font-size: clamp(38px, 5vw, 68px);
+            line-height: .98;
+
+            letter-spacing: -.055em;
+            font-weight: 850;
+
+            max-width: 800px;
+        }
+
+        .hero-description {
+            margin-top: 16px;
+
             color: var(--muted);
-            font-size: 11px;
+
+            font-size: 16px;
+            line-height: 1.6;
+
+            max-width: 700px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+
+            margin-top: 25px;
+
+            width: min(430px, 100%);
+        }
+
+        .hero-control-row {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .hero-playback-row {
+            justify-content: flex-start;
+        }
+
+        .hero-secondary-row {
+            justify-content: flex-start;
+        }
+
+        .hero-control-button {
+            width: 54px;
+            height: 54px;
+
+            flex: 0 0 54px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--border);
+            border-radius: 50%;
+
+            color: var(--text);
+            background: var(--card);
+
+            font-size: 17px;
+
+            cursor: pointer;
+
+            transition:
+                transform .2s ease,
+                background .2s ease,
+                color .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .hero-control-button:hover {
+            color: var(--accent);
+
+            background: var(--card-hover);
+
+            border-color:
+                rgba(249,115,22,.35);
+
+            transform: translateY(-2px);
+        }
+
+        .hero-control-button.play {
+            width: 64px;
+            height: 64px;
+
+            flex-basis: 64px;
+
+            color: white;
+
+            background: var(--accent);
+
+            border-color: transparent;
+
+            font-size: 21px;
+
+            box-shadow:
+                0 12px 32px rgba(249,115,22,.28);
+        }
+
+        .hero-control-button.play:hover {
+            color: white;
+
+            background: var(--accent-dark);
+
+            transform: scale(1.045);
+        }
+
+        .hero-secondary-button {
+            min-height: 48px;
+
+            flex: 1;
+
+            padding: 0 18px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            border: 1px solid var(--border);
+            border-radius: 999px;
+
+            color: var(--text);
+            background: var(--card);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+        .hero-secondary-button:hover {
+            color: var(--accent);
+
+            background: var(--card-hover);
+
+            border-color:
+                rgba(249,115,22,.35);
+
+            transform: translateY(-1px);
+        }
+
+        .timer-button {
+            position: relative;
+
+            overflow: hidden;
+
+            min-width: 145px;
+        }
+
+        .timer-button i {
+            transition: transform .25s ease;
+        }
+
+        .timer-button.timer-active {
+            color: var(--accent);
+
+            border-color:
+                rgba(249,115,22,.45);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(249,115,22,.12),
+                    var(--card)
+                );
+
+            animation:
+                timerButtonPulse 1.8s
+                ease-in-out infinite;
+        }
+
+        .timer-button.timer-active i {
+            animation:
+                timerIconPulse 1s
+                ease-in-out infinite;
+        }
+
+        @keyframes timerButtonPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 0 0
+                    rgba(249,115,22,0);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 0 5px
+                    rgba(249,115,22,.08);
+            }
+        }
+
+        @keyframes timerIconPulse {
+            0%, 100% {
+                transform: scale(1)
+                    rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.15)
+                    rotate(-8deg);
+            }
+        }
+
+        .timer-button::after {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            bottom: 0;
+
+            width: var(--timer-progress, 0%);
+            height: 2px;
+
+            background: var(--accent);
+
+            transition:
+                width .5s linear;
+
+            border-radius: 0 5px 5px 0;
+        }
+
+        .timer-text {
+            min-width: 54px;
+            text-align: left;
+        }
+
+        .primary-button {
+            min-height: 46px;
+
+            padding: 0 22px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            border: 0;
+            border-radius: 999px;
+
+            color: white;
+            background: var(--accent);
+
+            font-size: 14px;
+            font-weight: 750;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 10px 30px rgba(249,115,22,.2);
+
+            transition: .2s ease;
+        }
+
+        .primary-button:hover {
+            background: var(--accent-dark);
+            transform: scale(1.025);
+        }
+
+        .secondary-button {
+            min-height: 46px;
+
+            padding: 0 18px;
+
+            display: inline-flex;
+            align-items: center;
+
+            gap: 9px;
+
+            border: 1px solid var(--border);
+            border-radius: 999px;
+
+            color: var(--text);
+            background: var(--card);
+
+            font-size: 14px;
+            font-weight: 650;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+        .secondary-button:hover {
+            background: var(--card-hover);
+            border-color: rgba(249,115,22,.3);
+            color: var(--accent);
+        }
+
+        .section {
+            margin-top: 35px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            margin: 0;
+
+            font-size: 24px;
+            letter-spacing: -.035em;
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .search-box {
+            width: min(320px, 100%);
+
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+
+            left: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: var(--muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            height: 42px;
+
+            padding: 0 15px 0 42px;
+
+            border-radius: 999px;
+
+            border: 1px solid var(--border);
+
+            background: var(--card);
+
+            color: var(--text);
+
+            outline: none;
+
+            transition: .2s ease;
+        }
+
+        .search-box input:focus {
+            border-color:
+                rgba(249,115,22,.6);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(249,115,22,.08);
         }
 
         .station-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(250px, 1fr)
+                );
+
             gap: 12px;
         }
 
         .station-card {
             position: relative;
 
-            min-width: 0;
+            min-height: 90px;
 
-            padding: 14px;
+            display: flex;
+            align-items: center;
 
-            border: 1px solid var(--border);
-            border-radius: 18px;
+            gap: 14px;
+
+            padding: 12px 14px;
+
+            border-radius: 17px;
 
             background: var(--card);
+            border: 1px solid var(--border);
 
             cursor: pointer;
 
             transition:
-                transform 0.18s ease,
-                border-color 0.18s ease,
-                background 0.18s ease;
+                transform .2s ease,
+                background .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
         }
 
         .station-card:hover {
             transform: translateY(-2px);
+
             background: var(--card-hover);
-            border-color: rgba(249, 115, 22, 0.35);
+
+            border-color:
+                rgba(249,115,22,.25);
+
+            box-shadow:
+                0 15px 35px rgba(0,0,0,.12);
         }
 
         .station-card.active {
-            border-color: var(--accent);
+            border-color:
+                rgba(249,115,22,.5);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(249,115,22,.13),
+                    var(--card)
+                );
 
             box-shadow:
-                0 0 0 1px rgba(249, 115, 22, 0.2),
-                0 10px 30px rgba(249, 115, 22, 0.08);
-        }
-
-        .station-card-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+                0 12px 35px
+                rgba(249,115,22,.08);
         }
 
         .station-logo {
-            width: 48px;
-            height: 48px;
+            width: 60px;
+            height: 60px;
 
-            flex: 0 0 48px;
+            flex: 0 0 60px;
 
-            border-radius: 14px;
+            border-radius: 13px;
 
             overflow: hidden;
 
-            background: var(--secondary);
+            background: #27272a;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow:
+                inset 0 0 0 1px
+                rgba(255,255,255,.08);
         }
 
         .station-logo img {
@@ -531,120 +914,129 @@
 
         .station-info {
             min-width: 0;
+            flex: 1;
         }
 
         .station-name {
+            margin: 0;
+
+            font-size: 15px;
+            font-weight: 750;
+
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-
-            font-size: 14px;
-            font-weight: 700;
         }
 
         .station-genre {
             margin-top: 4px;
 
+            color: var(--muted);
+
+            font-size: 12px;
+
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-
-            color: var(--muted);
-            font-size: 10px;
         }
 
-        .station-live {
+        .station-playing {
+            margin-top: 7px;
+
             display: flex;
             align-items: center;
+
             gap: 5px;
 
-            margin-top: 12px;
+            color: var(--accent);
 
-            color: var(--muted);
-            font-size: 9px;
+            font-size: 10px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
         }
 
-        .station-live-dot {
-            width: 6px;
+        .mini-eq {
+            display: flex;
+            align-items: flex-end;
+
+            gap: 2px;
+
+            height: 13px;
+        }
+
+        .mini-eq span {
+            width: 2px;
+
+            border-radius: 3px;
+
+            background: var(--accent);
+
+            animation:
+                eq 1s
+                ease-in-out
+                infinite;
+        }
+
+        .mini-eq span:nth-child(1) {
             height: 6px;
-
-            border-radius: 50%;
-
-            background: #71717a;
+            animation-delay: -.2s;
         }
 
-        .station-card.active .station-live-dot {
-            background: #22c55e;
-            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        .mini-eq span:nth-child(2) {
+            height: 12px;
+            animation-delay: -.5s;
         }
 
-        .favorite-small {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        .mini-eq span:nth-child(3) {
+            height: 8px;
+            animation-delay: -.1s;
+        }
 
-            width: 28px;
-            height: 28px;
+        @keyframes eq {
+            0%, 100% {
+                transform: scaleY(.45);
+            }
+
+            50% {
+                transform: scaleY(1);
+            }
+        }
+
+        .favorite-button {
+            width: 34px;
+            height: 34px;
+
+            flex: 0 0 34px;
 
             border: 0;
-            border-radius: 9px;
+            border-radius: 50%;
 
-            background: transparent;
+            display: grid;
+            place-items: center;
+
             color: var(--muted);
 
+            background: transparent;
+
             cursor: pointer;
+
+            transition: .2s ease;
         }
 
-        .favorite-small.active {
+        .favorite-button:hover {
+            color: var(--accent);
+            background: rgba(249,115,22,.1);
+        }
+
+        .favorite-button.active {
             color: var(--accent);
         }
 
-        /* =========================================================
-           EMPTY STATE
-           ========================================================= */
-
-        .empty-state {
-            display: none;
-
-            padding: 50px 20px;
-
-            text-align: center;
-
-            color: var(--muted);
-        }
-
-        .empty-state i {
-            font-size: 32px;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
-        /* =========================================================
-           FOOTER
-           ========================================================= */
-
-        .footer {
-            position: relative;
-            z-index: 10;
-
-            max-width: 1500px;
-
-            margin: 20px auto 0;
-
-            padding:
-                25px
-                24px
-                calc(var(--player-height) + 18px);
-
-            color: var(--muted);
-            text-align: center;
-
-            font-size: 11px;
-        }
-
-        /* =========================================================
+        /* =====================================================
            BOTTOM PLAYER
-           ========================================================= */
+           ===================================================== */
 
         .bottom-player {
             position: fixed;
@@ -657,58 +1049,68 @@
 
             min-height: var(--player-height);
 
-            border-top: 1px solid var(--border);
-
             background:
-                rgba(11, 11, 13, 0.92);
+                rgba(17,17,20,.88);
 
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
+            backdrop-filter:
+                blur(28px) saturate(160%);
 
-            padding:
-                10px
-                max(16px, env(safe-area-inset-right))
-                calc(10px + env(safe-area-inset-bottom))
-                max(16px, env(safe-area-inset-left));
+            -webkit-backdrop-filter:
+                blur(28px) saturate(160%);
+
+            border-top:
+                1px solid var(--border);
+
+            box-shadow:
+                0 -20px 60px
+                rgba(0,0,0,.15);
         }
 
         html:not(.dark) .bottom-player {
-            background: rgba(255, 255, 255, 0.92);
+            background:
+                rgba(255,255,255,.9);
         }
 
-        .bottom-player-inner {
-            width: 100%;
+        .player-inner {
             max-width: 1500px;
+            min-height: var(--player-height);
 
-            margin: 0 auto;
+            margin: auto;
+
+            padding: 12px 24px;
 
             display: grid;
-            grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
+
+            grid-template-columns:
+                minmax(230px, 1fr)
+                auto
+                minmax(230px, 1fr);
 
             align-items: center;
 
-            gap: 20px;
+            gap: 25px;
         }
 
         .now-playing {
-            min-width: 0;
-
             display: flex;
             align-items: center;
+
             gap: 12px;
+
+            min-width: 0;
         }
 
         .now-playing-art {
-            width: 52px;
-            height: 52px;
+            width: 58px;
+            height: 58px;
 
-            flex: 0 0 52px;
+            flex: 0 0 58px;
 
-            border-radius: 14px;
+            border-radius: 11px;
 
             overflow: hidden;
 
-            background: var(--secondary);
+            background: #27272a;
         }
 
         .now-playing-art img {
@@ -717,176 +1119,149 @@
             object-fit: cover;
         }
 
-        /*
-         * Stała wysokość informacji zapobiega "skakaniu"
-         * nazwy stacji i gatunku.
-         */
         .now-playing-info {
             min-width: 0;
 
-            width: 100%;
+            /*
+             * Stała wysokość zapobiega przesuwaniu
+             * informacji przy zmianie stacji.
+             */
             height: 38px;
 
             display: flex;
             flex-direction: column;
             justify-content: center;
-
-            overflow: hidden;
         }
 
         .now-playing-title {
             height: 18px;
 
+            font-size: 14px;
+            font-weight: 800;
             line-height: 18px;
 
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
-
-            font-size: 13px;
-            font-weight: 700;
         }
 
         .now-playing-subtitle {
             height: 16px;
 
-            margin-top: 2px;
-
-            line-height: 16px;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
             color: var(--muted);
 
-            font-size: 10px;
+            font-size: 12px;
+            line-height: 16px;
+
+            margin-top: 2px;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .player-controls {
+        .player-center {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+
+            gap: 10px;
         }
 
         .player-button {
             width: 38px;
             height: 38px;
 
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            display: grid;
+            place-items: center;
 
-            background: var(--card);
+            border: 0;
+            border-radius: 50%;
+
             color: var(--text);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: transparent;
 
             cursor: pointer;
 
-            transition:
-                transform 0.15s ease,
-                background 0.15s ease,
-                color 0.15s ease;
+            transition: .2s ease;
         }
 
         .player-button:hover {
             color: var(--accent);
-            background: var(--card-hover);
+            background: rgba(249,115,22,.1);
         }
 
-        .player-button:active {
-            transform: scale(0.94);
-        }
-
-        .player-button.primary {
-            width: 44px;
-            height: 44px;
-
-            border: 0;
+        .player-button.play {
+            width: 52px;
+            height: 52px;
 
             color: white;
+
             background: var(--accent);
 
-            border-radius: 14px;
-
             box-shadow:
-                0 6px 20px rgba(249, 115, 22, 0.28);
+                0 8px 25px
+                rgba(249,115,22,.25);
         }
 
-        .player-button.primary:hover {
+        .player-button.play:hover {
             color: white;
             background: var(--accent-dark);
+
+            transform: scale(1.04);
         }
 
-        .player-tools {
+        .player-right {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 8px;
+
+            gap: 10px;
         }
 
-        .volume-wrapper {
+        .volume-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+
+            gap: 9px;
+
+            min-width: 150px;
         }
 
-        .volume-slider {
-            width: 90px;
+        .volume-container i {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        input[type="range"] {
             accent-color: var(--accent);
         }
 
-        /* =========================================================
-           TIMER PROGRESS
-           ========================================================= */
-
-        .timer-progress {
-            position: absolute;
-
-            left: 0;
-            right: 0;
-            bottom: 0;
-
-            height: 2px;
-
-            background: transparent;
-
-            overflow: hidden;
+        .range {
+            width: 100%;
+            cursor: pointer;
         }
 
-        .timer-progress-bar {
-            width: 0%;
-            height: 100%;
-
-            background: var(--accent);
-
-            transition: width 0.5s linear;
-        }
-
-        /* =========================================================
+        /* =====================================================
            MODALS
-           ========================================================= */
+           ===================================================== */
 
         .modal-backdrop {
             position: fixed;
-
             inset: 0;
 
-            z-index: 400;
-
-            padding: 20px;
-
-            background: rgba(0, 0, 0, 0.62);
+            z-index: 200;
 
             display: none;
             align-items: center;
             justify-content: center;
 
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            padding: 20px;
+
+            background: rgba(0,0,0,.65);
+
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .modal-backdrop.show {
@@ -894,19 +1269,39 @@
         }
 
         .modal {
-            width: 100%;
-            max-width: 460px;
-
+            width: min(560px, 100%);
             max-height: calc(100vh - 40px);
-            overflow-y: auto;
 
-            border: 1px solid var(--border);
-            border-radius: 22px;
+            overflow: auto;
+
+            padding: 25px;
+
+            border-radius: 24px;
 
             background: var(--card);
 
+            border: 1px solid var(--border);
+
             box-shadow:
-                0 30px 80px rgba(0, 0, 0, 0.45);
+                0 30px 100px
+                rgba(0,0,0,.35);
+
+            animation:
+                modalIn .2s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform:
+                    translateY(10px)
+                    scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
         }
 
         .modal-header {
@@ -914,24 +1309,38 @@
             align-items: center;
             justify-content: space-between;
 
-            padding: 20px;
-
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 22px;
         }
 
-        .modal-header h3 {
+        .modal-title {
             margin: 0;
 
-            font-size: 17px;
+            font-size: 22px;
             font-weight: 800;
+
+            letter-spacing: -.035em;
         }
 
-        .modal-body {
-            padding: 20px;
+        .modal-close {
+            width: 36px;
+            height: 36px;
+
+            border: 0;
+            border-radius: 50%;
+
+            color: var(--muted);
+            background: rgba(128,128,128,.1);
+
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+            background: rgba(128,128,128,.18);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .form-label {
@@ -939,130 +1348,425 @@
 
             margin-bottom: 7px;
 
-            font-size: 11px;
-            font-weight: 700;
-
             color: var(--muted);
+
+            font-size: 12px;
+            font-weight: 700;
         }
 
-        .form-input {
+        .form-input,
+        .form-select {
             width: 100%;
-            height: 44px;
+
+            min-height: 45px;
 
             padding: 0 13px;
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
+
             border-radius: 12px;
 
-            background: var(--secondary);
+            background: var(--bg-secondary);
+
             color: var(--text);
 
             outline: none;
         }
 
-        .form-input:focus {
-            border-color: var(--accent);
+        .form-input:focus,
+        .form-select:focus {
+            border-color:
+                rgba(249,115,22,.6);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(249,115,22,.08);
         }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-
-            margin-top: 20px;
-        }
-
-        .btn {
-            min-height: 40px;
-
-            padding: 0 15px;
-
-            border: 1px solid var(--border);
-            border-radius: 11px;
-
-            background: var(--secondary);
-            color: var(--text);
-
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            border-color: var(--accent);
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-dark);
-        }
-
-        /* =========================================================
-           EQ
-           ========================================================= */
 
         .eq-row {
-            margin-bottom: 20px;
+            display: grid;
+
+            grid-template-columns:
+                65px 1fr 45px;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin: 18px 0;
         }
 
-        .eq-row-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+        .eq-label {
+            color: var(--muted);
 
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 650;
         }
 
         .eq-value {
+            text-align: right;
+
             color: var(--accent);
+
+            font-size: 12px;
             font-weight: 700;
         }
 
-        .eq-slider {
-            width: 100%;
-            accent-color: var(--accent);
+        .shortcuts {
+            display: grid;
+            gap: 8px;
         }
 
-        /* =========================================================
+        .shortcut {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 11px 13px;
+
+            border-radius: 12px;
+
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .shortcut span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        kbd {
+            min-width: 32px;
+
+            padding: 4px 7px;
+
+            border-radius: 6px;
+
+            background: rgba(128,128,128,.13);
+
+            border: 1px solid var(--border);
+
+            color: var(--text);
+
+            text-align: center;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+
+            padding: 45px 20px;
+
+            text-align: center;
+
+            border:
+                1px dashed var(--border);
+
+            border-radius: 18px;
+
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            display: block;
+
+            margin-bottom: 12px;
+
+            font-size: 30px;
+            color: var(--accent);
+        }
+
+        /* =====================================================
            TOAST
-           ========================================================= */
+           ===================================================== */
 
         .toast-container {
             position: fixed;
 
             right: 20px;
-            bottom: calc(var(--player-height) + 20px);
+            bottom:
+                calc(var(--player-height) + 20px);
 
             z-index: 500;
 
-            display: flex;
-            flex-direction: column;
+            display: grid;
             gap: 8px;
-
-            pointer-events: none;
         }
 
         .toast {
-            max-width: 320px;
+            max-width: 340px;
 
-            padding: 11px 14px;
+            padding: 12px 15px;
 
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 13px;
 
             background: var(--card);
-            color: var(--text);
+
+            border:
+                1px solid var(--border);
 
             box-shadow:
-                0 12px 30px rgba(0, 0, 0, 0.2);
+                0 15px 45px
+                rgba(0,0,0,.25);
 
-            font-size: 11px;
+            color: var(--text);
+
+            font-size: 13px;
 
             animation:
-                toastIn 0.2s ease,
-                toastOut 0.3s ease 3.2s forwards;
+                toastIn .25s ease,
+                toastOut .3s ease 3.7s forwards;
         }
 
         @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
+        .footer {
+            max-width: 1500px;
+
+            margin: 20px auto 0;
+
+            padding: 25px 24px 18px;
+
+            color: var(--muted-dark);
+
+            text-align: center;
+
+            font-size: 11px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .hero {
+                grid-template-columns:
+                    250px 1fr;
+
+                gap: 28px;
+            }
+
+            .hero h1 {
+                font-size: 44px;
+            }
+
+            .player-inner {
+                grid-template-columns:
+                    1fr auto;
+            }
+
+            .player-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            :root {
+                --player-height: 78px;
+            }
+
+            .header-inner {
+                height: 62px;
+                padding: 0 15px;
+            }
+
+            .main {
+                padding: 20px 15px 0;
+            }
+
+            .brand-version {
+                display: none;
+            }
+
+            .hero {
+                display: block;
+
+                min-height: 0;
+
+                margin-bottom: 25px;
+            }
+
+            .hero-art {
+                max-width: 280px;
+
+                margin:
+                    0 auto 25px;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .eyebrow {
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 39px;
+            }
+
+            .hero-description {
+                font-size: 14px;
+            }
+
+            .hero-actions {
+                width: 100%;
+
+                align-items: center;
+            }
+
+            .hero-playback-row,
+            .hero-secondary-row {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .hero-secondary-button {
+                flex: 0 1 190px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .station-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .player-inner {
+                padding: 9px 12px;
+
+                gap: 8px;
+            }
+
+            .now-playing-art {
+                width: 52px;
+                height: 52px;
+
+                flex-basis: 52px;
+            }
+
+            .player-center {
+                justify-self: end;
+
+                gap: 1px;
+            }
+
+            .player-button {
+                width: 34px;
+                height: 34px;
+            }
+
+            .player-button.play {
+                width: 46px;
+                height: 46px;
+            }
+
+            .now-playing-info {
+                max-width: 145px;
+            }
+
+            .toast-container {
+                left: 12px;
+                right: 12px;
+
+                bottom:
+                    calc(
+                        var(--player-height)
+                        + 12px
+                    );
+            }
+
+            .toast {
+                max-width: none;
+            }
+
+            .footer {
+                padding-bottom: 12px;
+            }
+        }
+
+        @media (max-width: 390px) {
+
+            .now-playing-info {
+                max-width: 105px;
+
+                height: 38px;
+            }
+
+            .now-playing-subtitle {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .hero-control-button {
+                width: 50px;
+                height: 50px;
+
+                flex-basis: 50px;
+            }
+
+            .hero-control-button.play {
+                width: 60px;
+                height: 60px;
+
+                flex-basis: 60px;
+            }
+
+            .hero-secondary-button {
+                min-height: 45px;
+
+                padding:
+                    0 12px;
+
+                font-size: 12px;
+            }
+
+            .timer-button {
+                min-width: 135px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation:
+                fadeIn .4s ease both;
+        }
+
+        @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(8px);
@@ -1070,194 +1774,7 @@
 
             to {
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes toastOut {
-            to {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-        }
-
-        /* =========================================================
-           RESPONSIVE
-           ========================================================= */
-
-        @media (max-width: 900px) {
-            .hero {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-card {
-                min-height: auto;
-            }
-
-            .bottom-player-inner {
-                grid-template-columns: 1fr auto;
-            }
-
-            .player-tools {
-                display: none;
-            }
-        }
-
-        @media (max-width: 600px) {
-            :root {
-                --player-height: 78px;
-            }
-
-            .main {
-                padding:
-                    20px 14px
-                    calc(var(--player-height) + 24px);
-            }
-
-            .header {
-                margin-bottom: 18px;
-            }
-
-            .brand-text h1 {
-                font-size: 19px;
-            }
-
-            .brand-icon {
-                width: 38px;
-                height: 38px;
-                flex-basis: 38px;
-                border-radius: 12px;
-            }
-
-            .search-row {
-                margin-bottom: 18px;
-            }
-
-            .hero-card {
-                padding: 22px 15px;
-                border-radius: 22px;
-            }
-
-            .hero-art {
-                width: min(240px, 65vw);
-                border-radius: 24px;
-            }
-
-            .station-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 8px;
-            }
-
-            .station-card {
-                padding: 11px;
-                border-radius: 15px;
-            }
-
-            .station-logo {
-                width: 42px;
-                height: 42px;
-                flex-basis: 42px;
-                border-radius: 12px;
-            }
-
-            .station-name {
-                font-size: 12px;
-            }
-
-            .station-genre {
-                font-size: 9px;
-            }
-
-            .bottom-player {
-                padding:
-                    7px
-                    max(10px, env(safe-area-inset-right))
-                    calc(7px + env(safe-area-inset-bottom))
-                    max(10px, env(safe-area-inset-left));
-            }
-
-            .bottom-player-inner {
-                gap: 8px;
-            }
-
-            .now-playing-art {
-                width: 42px;
-                height: 42px;
-                flex-basis: 42px;
-                border-radius: 11px;
-            }
-
-            .now-playing-info {
-                height: 34px;
-            }
-
-            .now-playing-title {
-                height: 16px;
-                line-height: 16px;
-                font-size: 11px;
-            }
-
-            .now-playing-subtitle {
-                height: 14px;
-                line-height: 14px;
-                font-size: 9px;
-                margin-top: 2px;
-            }
-
-            .player-controls {
-                gap: 5px;
-            }
-
-            .player-button {
-                width: 34px;
-                height: 34px;
-                border-radius: 10px;
-            }
-
-            .player-button.primary {
-                width: 40px;
-                height: 40px;
-                border-radius: 12px;
-            }
-
-            .footer {
-                padding-bottom:
-                    calc(var(--player-height) + 20px);
-            }
-
-            .toast-container {
-                left: 14px;
-                right: 14px;
-                bottom: calc(var(--player-height) + 14px);
-            }
-
-            .toast {
-                max-width: none;
-            }
-        }
-
-        @media (max-width: 390px) {
-            .header-actions {
-                gap: 5px;
-            }
-
-            .icon-button {
-                width: 36px;
-                height: 36px;
-            }
-
-            .hero-controls {
-                margin-top: 17px;
-            }
-
-            .hero-control {
-                width: 40px;
-                height: 40px;
-            }
-
-            .hero-control.primary {
-                width: 50px;
-                height: 50px;
+                transform: none;
             }
         }
     </style>
@@ -1265,23 +1782,24 @@
 
 <body>
 
-<main class="main">
+<header class="app-header">
 
-    <!-- =========================================================
-         HEADER
-         ========================================================= -->
+    <div class="header-inner">
 
-    <header class="header">
-
-        <div class="brand-title">
+        <div class="brand">
 
             <div class="brand-icon">
                 <i class="fa-solid fa-radio"></i>
             </div>
 
-            <div class="brand-text">
-                <h1>Radio by ToMi</h1>
-                <p>Twoje radio internetowe</p>
+            <div>
+                <span class="brand-name">
+                    Radio by ToMi
+                </span>
+
+                <span class="brand-version">
+                    3.0.6
+                </span>
             </div>
 
         </div>
@@ -1289,136 +1807,150 @@
         <div class="header-actions">
 
             <button
-                class="icon-button"
-                id="btnTheme"
-                title="Zmień motyw"
-                aria-label="Zmień motyw"
-            >
-                <i class="fa-solid fa-sun"></i>
-            </button>
-
-            <button
-                class="icon-button"
                 id="btnShortcuts"
-                title="Skróty klawiszowe"
-                aria-label="Skróty klawiszowe"
+                class="icon-button"
+                title="Skróty klawiaturowe"
             >
                 <i class="fa-solid fa-keyboard"></i>
             </button>
 
             <button
+                id="btnTheme"
                 class="icon-button"
+                title="Zmień motyw"
+            >
+                <i
+                    id="themeIcon"
+                    class="fa-solid fa-sun"
+                ></i>
+            </button>
+
+            <button
                 id="btnAddStation"
+                class="icon-button accent"
                 title="Dodaj stację"
-                aria-label="Dodaj stację"
             >
                 <i class="fa-solid fa-plus"></i>
             </button>
 
         </div>
 
-    </header>
+    </div>
 
+</header>
 
-    <!-- =========================================================
-         SEARCH
-         ========================================================= -->
+<main class="main">
 
-    <div class="search-row">
+    <section class="hero">
 
-        <div class="search-wrapper">
+        <div class="hero-art">
 
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <div
+                id="heroArtPlaceholder"
+                class="hero-art-placeholder"
+            >
+                <i class="fa-solid fa-radio"></i>
+            </div>
 
-            <input
-                id="searchInput"
-                class="search-input"
-                type="search"
-                placeholder="Szukaj stacji..."
-                autocomplete="off"
+            <img
+                id="heroArt"
+                class="hidden"
+                alt="Okładka stacji"
             >
 
         </div>
 
-    </div>
+        <div class="hero-content">
 
+            <div class="eyebrow">
 
-    <!-- =========================================================
-         HERO
-         ========================================================= -->
+                <span class="live-dot"></span>
 
-    <section class="hero">
+                Radio na żywo
 
-        <div class="hero-card">
-
-            <div class="hero-art">
-                <img
-                    id="heroArtwork"
-                    src=""
-                    alt="Okładka stacji"
-                >
             </div>
 
-            <h2
-                id="heroStationName"
-                class="hero-station-name"
-            >
-                Wybierz stację
-            </h2>
+            <h1 id="heroStationName">
+                Wybierz swoją stację
+            </h1>
 
             <p
-                id="heroStationGenre"
-                class="hero-station-genre"
+                id="heroDescription"
+                class="hero-description"
             >
-                Radio internetowe
+                Słuchaj ulubionych stacji radiowych
+                w nowoczesnym interfejsie
+                Radio by ToMi.
             </p>
 
-            <div class="hero-controls">
+            <div class="hero-actions">
 
-                <button
-                    class="hero-control"
-                    id="heroPrevious"
-                    title="Poprzednia stacja"
-                    aria-label="Poprzednia stacja"
-                >
-                    <i class="fa-solid fa-backward-step"></i>
-                </button>
+                <div class="hero-control-row hero-playback-row">
 
-                <button
-                    class="hero-control primary"
-                    id="heroPlay"
-                    title="Odtwórz"
-                    aria-label="Odtwórz"
-                >
-                    <i class="fa-solid fa-play"></i>
-                </button>
+                    <button
+                        id="btnHeroPrev"
+                        class="hero-control-button"
+                        title="Poprzednia stacja"
+                        aria-label="Poprzednia stacja"
+                    >
+                        <i class="fa-solid fa-backward-step"></i>
+                    </button>
 
-                <button
-                    class="hero-control"
-                    id="heroNext"
-                    title="Następna stacja"
-                    aria-label="Następna stacja"
-                >
-                    <i class="fa-solid fa-forward-step"></i>
-                </button>
+                    <button
+                        id="btnHeroPlay"
+                        class="hero-control-button play"
+                        title="Odtwórz / pauza"
+                        aria-label="Odtwórz / pauza"
+                    >
+                        <i class="fa-solid fa-play"></i>
+                    </button>
 
-                <button
-                    class="hero-control"
-                    id="heroFavorite"
-                    title="Dodaj do ulubionych"
-                    aria-label="Dodaj do ulubionych"
-                >
-                    <i class="fa-regular fa-heart"></i>
-                </button>
+                    <button
+                        id="btnHeroNext"
+                        class="hero-control-button"
+                        title="Następna stacja"
+                        aria-label="Następna stacja"
+                    >
+                        <i class="fa-solid fa-forward-step"></i>
+                    </button>
 
-                <button
-                    class="hero-control"
-                    id="heroTimer"
-                    title="Timer"
-                    aria-label="Timer"
-                >
-                    <i class="fa-regular fa-clock"></i>
-                </button>
+                </div>
+
+                <div class="hero-control-row hero-secondary-row">
+
+                    <button
+                        id="btnHeroFavorite"
+                        class="hero-secondary-button"
+                        title="Dodaj do ulubionych"
+                    >
+                        <i class="fa-regular fa-heart"></i>
+
+                        <span>
+                            Dodaj do ulubionych
+                        </span>
+                    </button>
+
+                    <button
+                        id="btnSleep"
+                        class="hero-secondary-button timer-button"
+                        title="Timer snu"
+                    >
+
+                        <i
+                            id="sleepTimerIcon"
+                            class="fa-solid fa-moon"
+                        ></i>
+
+                        <span
+                            id="sleepTimerText"
+                            class="timer-text"
+                        >
+                            Timer
+                        </span>
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -1426,18 +1958,34 @@
 
     </section>
 
+    <section class="section">
 
-    <!-- =========================================================
-         STATIONS
-         ========================================================= -->
+        <div class="section-header">
 
-    <section>
+            <div>
 
-        <div class="section-title">
+                <h2 class="section-title">
+                    Stacje radiowe
+                </h2>
 
-            <h2>Stacje radiowe</h2>
+                <div class="section-subtitle">
+                    Wybierz stację i rozpocznij słuchanie
+                </div>
 
-            <span id="stationCount"></span>
+            </div>
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    id="stationSearch"
+                    type="search"
+                    placeholder="Szukaj stacji..."
+                    autocomplete="off"
+                >
+
+            </div>
 
         </div>
 
@@ -1446,47 +1994,34 @@
             class="station-grid"
         ></div>
 
-        <div
-            id="emptyState"
-            class="empty-state"
-        >
-            <i class="fa-solid fa-radio"></i>
-
-            <div>
-                Nie znaleziono stacji.
-            </div>
-        </div>
-
     </section>
 
-
-    <!-- =========================================================
-         FOOTER
-         ========================================================= -->
-
     <footer class="footer">
-        Created by ToMi with AI · wersja 3.0.7
+        Created by ToMi with AI · wersja 3.0.6
     </footer>
 
 </main>
 
-
-<!-- =============================================================
-     BOTTOM PLAYER
-     ============================================================= -->
-
 <div class="bottom-player">
 
-    <div class="bottom-player-inner">
+    <div class="player-inner">
 
         <div class="now-playing">
 
             <div class="now-playing-art">
 
+                <div
+                    id="playerArtPlaceholder"
+                    class="hero-art-placeholder"
+                    style="font-size:22px"
+                >
+                    <i class="fa-solid fa-radio"></i>
+                </div>
+
                 <img
-                    id="playerArtwork"
-                    src=""
-                    alt="Aktualna stacja"
+                    id="playerArt"
+                    class="hidden"
+                    alt=""
                 >
 
             </div>
@@ -1494,29 +2029,28 @@
             <div class="now-playing-info">
 
                 <div
-                    id="playerTitle"
+                    id="playerStationName"
                     class="now-playing-title"
                 >
-                    Wybierz stację
+                    Brak wybranej stacji
                 </div>
 
                 <div
-                    id="playerSubtitle"
+                    id="playerStationGenre"
                     class="now-playing-subtitle"
                 >
-                    Radio by ToMi
+                    Wybierz stację
                 </div>
 
             </div>
 
         </div>
 
-
-        <div class="player-controls">
+        <div class="player-center">
 
             <button
-                class="player-button"
-                id="btnPrevious"
+                id="btnPrev"
+                class="player-button skip-button"
                 title="Poprzednia stacja"
                 aria-label="Poprzednia stacja"
             >
@@ -1524,17 +2058,20 @@
             </button>
 
             <button
-                class="player-button primary"
                 id="btnPlay"
-                title="Odtwórz"
-                aria-label="Odtwórz"
+                class="player-button play"
+                title="Odtwórz / zatrzymaj"
+                aria-label="Odtwórz / zatrzymaj"
             >
-                <i class="fa-solid fa-play"></i>
+                <i
+                    id="playIcon"
+                    class="fa-solid fa-play"
+                ></i>
             </button>
 
             <button
-                class="player-button"
                 id="btnNext"
+                class="player-button skip-button"
                 title="Następna stacja"
                 aria-label="Następna stacja"
             >
@@ -1543,10 +2080,9 @@
 
         </div>
 
+        <div class="player-right">
 
-        <div class="player-tools">
-
-            <div class="volume-wrapper">
+            <div class="volume-container">
 
                 <i
                     id="volumeIcon"
@@ -1554,23 +2090,21 @@
                 ></i>
 
                 <input
-                    id="volumeSlider"
-                    class="volume-slider"
+                    id="volume"
+                    class="range"
                     type="range"
                     min="0"
                     max="1"
                     step="0.01"
                     value="0.8"
-                    aria-label="Głośność"
                 >
 
             </div>
 
             <button
-                class="icon-button"
                 id="btnEQ"
+                class="icon-button"
                 title="Korektor"
-                aria-label="Korektor"
             >
                 <i class="fa-solid fa-sliders"></i>
             </button>
@@ -1579,202 +2113,15 @@
 
     </div>
 
-    <div class="timer-progress">
-        <div
-            id="timerProgressBar"
-            class="timer-progress-bar"
-        ></div>
-    </div>
-
 </div>
 
+<audio
+    id="audio"
+    preload="none"
+    crossorigin="anonymous"
+></audio>
 
-<!-- =============================================================
-     TIMER MODAL
-     ============================================================= -->
-
-<div
-    id="timerModal"
-    class="modal-backdrop"
->
-
-    <div class="modal">
-
-        <div class="modal-header">
-
-            <h3>Wyłącznik czasowy</h3>
-
-            <button
-                class="icon-button"
-                data-close="timerModal"
-            >
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div class="modal-body">
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Czas odliczania
-                </label>
-
-                <select
-                    id="timerSelect"
-                    class="form-input"
-                >
-                    <option value="0">Wyłączony</option>
-                    <option value="15">15 minut</option>
-                    <option value="30">30 minut</option>
-                    <option value="45">45 minut</option>
-                    <option value="60">60 minut</option>
-                    <option value="90">90 minut</option>
-                    <option value="120">120 minut</option>
-                </select>
-
-            </div>
-
-            <div class="modal-actions">
-
-                <button
-                    class="btn"
-                    data-close="timerModal"
-                >
-                    Anuluj
-                </button>
-
-                <button
-                    class="btn btn-primary"
-                    id="saveTimer"
-                >
-                    Ustaw timer
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =============================================================
-     ADD STATION MODAL
-     ============================================================= -->
-
-<div
-    id="addStationModal"
-    class="modal-backdrop"
->
-
-    <div class="modal">
-
-        <div class="modal-header">
-
-            <h3>Dodaj stację</h3>
-
-            <button
-                class="icon-button"
-                data-close="addStationModal"
-            >
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div class="modal-body">
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Nazwa
-                </label>
-
-                <input
-                    id="newStationName"
-                    class="form-input"
-                    type="text"
-                    placeholder="Nazwa stacji"
-                >
-
-            </div>
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Gatunek
-                </label>
-
-                <input
-                    id="newStationGenre"
-                    class="form-input"
-                    type="text"
-                    placeholder="np. Pop · Hits"
-                >
-
-            </div>
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    Adres strumienia
-                </label>
-
-                <input
-                    id="newStationUrl"
-                    class="form-input"
-                    type="url"
-                    placeholder="https://..."
-                >
-
-            </div>
-
-            <div class="form-group">
-
-                <label class="form-label">
-                    URL logo — opcjonalnie
-                </label>
-
-                <input
-                    id="newStationLogo"
-                    class="form-input"
-                    type="url"
-                    placeholder="https://..."
-                >
-
-            </div>
-
-            <div class="modal-actions">
-
-                <button
-                    class="btn"
-                    data-close="addStationModal"
-                >
-                    Anuluj
-                </button>
-
-                <button
-                    class="btn btn-primary"
-                    id="saveStation"
-                >
-                    Dodaj stację
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =============================================================
-     EQ MODAL
-     ============================================================= -->
+<!-- EQ -->
 
 <div
     id="eqModal"
@@ -1785,10 +2132,12 @@
 
         <div class="modal-header">
 
-            <h3>Korektor dźwięku</h3>
+            <h2 class="modal-title">
+                Korektor dźwięku
+            </h2>
 
             <button
-                class="icon-button"
+                class="modal-close"
                 data-close="eqModal"
             >
                 <i class="fa-solid fa-xmark"></i>
@@ -1796,108 +2145,250 @@
 
         </div>
 
-        <div class="modal-body">
+        <div class="eq-row">
 
-            <div class="eq-row">
+            <span class="eq-label">
+                Bas
+            </span>
 
-                <div class="eq-row-header">
-                    <span>Bass</span>
-                    <span
-                        id="lowValue"
-                        class="eq-value"
-                    >
-                        0 dB
-                    </span>
-                </div>
+            <input
+                id="eqLow"
+                type="range"
+                min="-12"
+                max="12"
+                value="0"
+                step="1"
+                class="range"
+            >
 
-                <input
-                    id="lowSlider"
-                    class="eq-slider"
-                    type="range"
-                    min="-12"
-                    max="12"
-                    value="0"
-                    step="1"
-                >
-
-            </div>
-
-            <div class="eq-row">
-
-                <div class="eq-row-header">
-                    <span>Mid</span>
-                    <span
-                        id="midValue"
-                        class="eq-value"
-                    >
-                        0 dB
-                    </span>
-                </div>
-
-                <input
-                    id="midSlider"
-                    class="eq-slider"
-                    type="range"
-                    min="-12"
-                    max="12"
-                    value="0"
-                    step="1"
-                >
-
-            </div>
-
-            <div class="eq-row">
-
-                <div class="eq-row-header">
-                    <span>Treble</span>
-                    <span
-                        id="highValue"
-                        class="eq-value"
-                    >
-                        0 dB
-                    </span>
-                </div>
-
-                <input
-                    id="highSlider"
-                    class="eq-slider"
-                    type="range"
-                    min="-12"
-                    max="12"
-                    value="0"
-                    step="1"
-                >
-
-            </div>
-
-            <div class="modal-actions">
-
-                <button
-                    class="btn"
-                    id="resetEQ"
-                >
-                    Reset
-                </button>
-
-                <button
-                    class="btn btn-primary"
-                    data-close="eqModal"
-                >
-                    Gotowe
-                </button>
-
-            </div>
+            <span
+                id="eqLowValue"
+                class="eq-value"
+            >
+                0 dB
+            </span>
 
         </div>
+
+        <div class="eq-row">
+
+            <span class="eq-label">
+                Środek
+            </span>
+
+            <input
+                id="eqMid"
+                type="range"
+                min="-12"
+                max="12"
+                value="0"
+                step="1"
+                class="range"
+            >
+
+            <span
+                id="eqMidValue"
+                class="eq-value"
+            >
+                0 dB
+            </span>
+
+        </div>
+
+        <div class="eq-row">
+
+            <span class="eq-label">
+                Treble
+            </span>
+
+            <input
+                id="eqHigh"
+                type="range"
+                min="-12"
+                max="12"
+                value="0"
+                step="1"
+                class="range"
+            >
+
+            <span
+                id="eqHighValue"
+                class="eq-value"
+            >
+                0 dB
+            </span>
+
+        </div>
+
+        <button
+            id="btnResetEQ"
+            class="secondary-button"
+            style="width:100%;justify-content:center"
+        >
+            <i class="fa-solid fa-rotate-left"></i>
+            Reset korektora
+        </button>
 
     </div>
 
 </div>
 
+<!-- SLEEP -->
 
-<!-- =============================================================
-     SHORTCUTS MODAL
-     ============================================================= -->
+<div
+    id="sleepModal"
+    class="modal-backdrop"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2 class="modal-title">
+                Timer snu
+            </h2>
+
+            <button
+                class="modal-close"
+                data-close="sleepModal"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Czas odtwarzania
+            </label>
+
+            <select
+                id="sleepSelect"
+                class="form-select"
+            >
+
+                <option value="0">Wyłączony</option>
+                <option value="15">15 minut</option>
+                <option value="30">30 minut</option>
+                <option value="45">45 minut</option>
+                <option value="60">60 minut</option>
+                <option value="90">90 minut</option>
+                <option value="120">120 minut</option>
+
+            </select>
+
+        </div>
+
+        <button
+            id="btnSetSleep"
+            class="primary-button"
+            style="width:100%"
+        >
+            <i class="fa-solid fa-check"></i>
+            Ustaw timer
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ADD STATION -->
+
+<div
+    id="stationModal"
+    class="modal-backdrop"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h2 class="modal-title">
+                Dodaj stację
+            </h2>
+
+            <button
+                class="modal-close"
+                data-close="stationModal"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Nazwa stacji
+            </label>
+
+            <input
+                id="customName"
+                class="form-input"
+                placeholder="np. Moje Radio"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Gatunek / opis
+            </label>
+
+            <input
+                id="customGenre"
+                class="form-input"
+                placeholder="np. Rock / Chill / Pop"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="form-label">
+                URL strumienia
+            </label>
+
+            <input
+                id="customUrl"
+                class="form-input"
+                type="url"
+                placeholder="https://..."
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="form-label">
+                URL logo — opcjonalnie
+            </label>
+
+            <input
+                id="customLogo"
+                class="form-input"
+                type="url"
+                placeholder="https://..."
+            >
+
+        </div>
+
+        <button
+            id="btnSaveStation"
+            class="primary-button"
+            style="width:100%"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Dodaj stację
+        </button>
+
+    </div>
+
+</div>
+
+<!-- SHORTCUTS -->
 
 <div
     id="shortcutsModal"
@@ -1908,10 +2399,12 @@
 
         <div class="modal-header">
 
-            <h3>Skróty klawiszowe</h3>
+            <h2 class="modal-title">
+                Skróty klawiaturowe
+            </h2>
 
             <button
-                class="icon-button"
+                class="modal-close"
                 data-close="shortcutsModal"
             >
                 <i class="fa-solid fa-xmark"></i>
@@ -1919,19 +2412,42 @@
 
         </div>
 
-        <div class="modal-body">
+        <div class="shortcuts">
 
-            <p style="margin:0 0 10px;">
-                <strong>Spacja</strong> — odtwórz / pauza
-            </p>
+            <div class="shortcut">
+                <span>Odtwarzanie / pauza</span>
+                <kbd>Space</kbd>
+            </div>
 
-            <p style="margin:0 0 10px;">
-                <strong>←</strong> — poprzednia stacja
-            </p>
+            <div class="shortcut">
+                <span>Poprzednia stacja</span>
+                <kbd>←</kbd>
+            </div>
 
-            <p style="margin:0;">
-                <strong>→</strong> — następna stacja
-            </p>
+            <div class="shortcut">
+                <span>Następna stacja</span>
+                <kbd>→</kbd>
+            </div>
+
+            <div class="shortcut">
+                <span>Zwiększ głośność</span>
+                <kbd>↑</kbd>
+            </div>
+
+            <div class="shortcut">
+                <span>Zmniejsz głośność</span>
+                <kbd>↓</kbd>
+            </div>
+
+            <div class="shortcut">
+                <span>Wyciszenie</span>
+                <kbd>M</kbd>
+            </div>
+
+            <div class="shortcut">
+                <span>Zamknij okno</span>
+                <kbd>Esc</kbd>
+            </div>
 
         </div>
 
@@ -1939,302 +2455,369 @@
 
 </div>
 
-
-<!-- =============================================================
-     TOAST
-     ============================================================= -->
-
 <div
     id="toastContainer"
     class="toast-container"
 ></div>
 
-
-<!-- =============================================================
-     AUDIO
-     ============================================================= -->
-
-<audio
-    id="audio"
-    crossorigin="anonymous"
-    preload="none"
-></audio>
-
-
 <script>
-/* ===============================================================
-   RADIO BY TOMI 3.0.7
-   =============================================================== */
 
-/* ===============================================================
-   STATIONS
-   =============================================================== */
-
-const stations = [
-
-    {
-        name: "RMF FM",
-        genre: "Pop · Hits",
-        url: "https://rs6-krk2.rmfstream.pl/rmf_fm",
-        logo: generateStationIconSVG("RMF"),
-        color: "#f97316"
-    },
-
-    {
-        name: "Radio ZET",
-        genre: "Pop · Music",
-        url: "https://stream.open.fm/146",
-        logo: generateStationIconSVG("ZET"),
-        color: "#ef4444"
-    },
-
-    {
-        name: "Radio Plus",
-        genre: "Pop · Music",
-        url: "https://pl.fmstream.org/radio-plus",
-        logo: generateStationIconSVG("PLUS"),
-        color: "#eab308"
-    },
-
-    {
-        name: "Radio Gdańsk",
-        genre: "Regionalne",
-        url: "https://radiogdansk.akamaized.net/melody",
-        logo: generateStationIconSVG("RG"),
-        color: "#3b82f6"
-    },
-
-    {
-        name: "Radio Złote Przeboje",
-        genre: "Oldies · Hits",
-        url: "https://radiostream.pl/tuba9-1.mp3",
-        logo: generateStationIconSVG("ZP"),
-        color: "#eab308"
-    },
-
-    {
-        name: "TOK FM",
-        genre: "News · Talk",
-        url: "https://pl-play.adtonos.com/tok-fm",
-        logo: generateStationIconSVG("TOK"),
-        color: "#2563eb"
-    },
-
-    {
-        name: "Eska",
-        genre: "Pop · Hits",
-        url: "https://radio.stream24.net/eska",
-        logo: generateStationIconSVG("ESKA"),
-        color: "#ec4899"
-    },
-
-    {
-        name: "Eska GO",
-        genre: "Pop · Hits",
-        url: "https://radio.stream24.net/eska-go",
-        logo: generateStationIconSVG("GO"),
-        color: "#f97316"
-    },
-
-    {
-        name: "Eska Rock",
-        genre: "Rock",
-        url: "https://radio.stream24.net/eska-rock",
-        logo: generateStationIconSVG("ROCK"),
-        color: "#dc2626"
-    },
-
-    {
-        name: "VOX FM",
-        genre: "Dance · Disco",
-        url: "https://pl-play.adtonos.com/vox-fm",
-        logo: generateStationIconSVG("VOX"),
-        color: "#8b5cf6"
-    },
-
-    {
-        name: "RMF MAXX",
-        genre: "Dance · Hits",
-        url: "https://rs6-krk2.rmfstream.pl/rmf_maxxx",
-        logo: generateStationIconSVG("MAXX"),
-        color: "#06b6d4"
-    },
-
-    {
-        name: "RMF Classic",
-        genre: "Classical · Music",
-        url: "https://rs6-krk2.rmfstream.pl/rmf_classic",
-        logo: generateStationIconSVG("CLASSIC"),
-        color: "#a855f7"
-    },
-
-    {
-        name: "RMF Maxx Club",
-        genre: "Dance · Club",
-        url: "https://rs6-krk2.rmfstream.pl/rmf_maxxx",
-        logo: generateStationIconSVG("CLUB"),
-        color: "#ec4899"
-    },
-
-    {
-        name: "Radio 357",
-        genre: "Alternative · Music",
-        url: "https://stream.radio357.pl/",
-        logo: generateStationIconSVG("357"),
-        color: "#f97316"
-    },
-
-    {
-        name: "Radio Nowy Świat",
-        genre: "Alternative · Music",
-        url: "https://stream.nowyswiat.online/",
-        logo: generateStationIconSVG("NS"),
-        color: "#22c55e"
-    },
-
-    {
-        name: "Antyradio",
-        genre: "Rock",
-        url: "https://an2-1.cdn.eurozet.pl/ant-waw.mp3",
-        logo: generateStationIconSVG("ANTY"),
-        color: "#ef4444"
-    },
-
-    {
-        name: "Chillizet",
-        genre: "Chill · Lounge",
-        url: "https://ch.cdn.eurozet.pl/chi-waw.mp3",
-        logo: generateStationIconSVG("CH"),
-        color: "#14b8a6"
-    },
-
-    {
-        name: "Radio Pogoda",
-        genre: "Oldies · Easy",
-        url: "https://radiopogoda.cdn.eurozet.pl/pog-waw.mp3",
-        logo: generateStationIconSVG("POGODA"),
-        color: "#f59e0b"
-    },
-
-    {
-        name: "Radio Kaszëbë",
-        genre: "Regionalne",
-        url: "https://stream.radio.kaszebe.pl/",
-        logo: generateStationIconSVG("KASZ"),
-        color: "#0ea5e9"
-    },
-
-    {
-        name: "Radio Yanosik",
-        genre: "Music · Traffic",
-        url: "https://stream.open.fm/108",
-        logo: generateStationIconSVG("YANOSIK"),
-        color: "#eab308"
-    },
-
-    {
-        name: "Radio Yanosik '80",
-        genre: "80s",
-        url: "https://stream.open.fm/108",
-        logo: generateStationIconSVG("80"),
-        color: "#8b5cf6"
-    },
-
-    {
-        name: "Radio Yanosik Love",
-        genre: "Love · Ballads",
-        url: "https://stream.open.fm/108",
-        logo: generateStationIconSVG("LOVE"),
-        color: "#ec4899"
-    },
-
-    {
-        name: "Radio Yanosik Rock",
-        genre: "Rock",
-        url: "https://stream.open.fm/108",
-        logo: generateStationIconSVG("ROCK"),
-        color: "#ef4444"
-    },
-
-    {
-        name: "Radio Yanosik X-Mas",
-        genre: "Christmas",
-        url: "https://stream.open.fm/108",
-        logo: generateStationIconSVG("XMAS"),
-        color: "#22c55e"
-    },
-
-    {
-        name: "Dublin's Q102",
-        genre: "Pop · Hits",
-        url: "https://edge.audioxi.com/q102",
-        logo: generateStationIconSVG("Q102"),
-        color: "#3b82f6"
-    }
-
-];
-
-
-/* ===============================================================
-   CUSTOM STATIONS
-   =============================================================== */
-
-let customStations = [];
-
-try {
-    customStations = JSON.parse(
-        localStorage.getItem("radio_tomi_custom_stations") || "[]"
-    );
-} catch {
-    customStations = [];
-}
-
-function getAllStations() {
-    return [...stations, ...customStations];
-}
-
-
-/* ===============================================================
-   SVG / LOGO
-   =============================================================== */
+/* =========================================================
+   RADIO BY TOMI 3.0.6
+   ========================================================= */
 
 function generateStationIconSVG(label) {
     return generateLogo(label);
 }
 
-function generateLogo(label) {
+/* =========================================================
+   STATIONS
+   ========================================================= */
 
-    const canvas = document.createElement("canvas");
+const stations = [
+    {
+        name: "RMF FM",
+        genre: "Pop · Hits",
+        url: "https://rs6-krk2.rmfstream.pl/rmf_fm",
+        logo: "https://play-lh.googleusercontent.com/5QMOZJAwqTDbltpZtAhuHNhJCjpoeRyV-qpOS6I0RFIz-WMi04abc1S_5GTK6bCaTjrrOI3K49Aq85vzX43TiQ=w480-h960",
+        color: "#f97316"
+    },
+    {
+        name: "Radio ZET",
+        genre: "Pop · Music",
+        url: "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_ZETAAC.aac",
+        logo: "https://v.wpimg.pl/OTBjLmpwYDUjCDpeXwxtIGBQbgQZVWN2N0h2T19Bf2Q6RSMdFRkpOW8fPAEfFit5IxolQwcHLDAsRDwBX0csYXRTLVRJWn9nel5hWRVGfXkjCS5eXRN8YHZZe1UUEnZkIUQmHRdVMg",
+        color: "#ea580c"
+    },
+    {
+        name: "Radio Plus",
+        genre: "Pop · Hits",
+        url: "https://plus-waw-01.cdn.eurozet.pl/plu-waw.mp3",
+        logo: "https://www.radioplus.pl/media/radioplus/desktop/images/radioplus-plug-icon.jpg",
+        color: "#f97316"
+    },
+    {
+        name: "Radio Gdańsk",
+        genre: "News · Music",
+        url: "https://stream.task.gda.pl:8443/rg1",
+        logo: "https://www.radio.pl/300/polskieradiogdansk.png?version=ba15104473109e90d0d731e14d6d056454e62977",
+        color: "#ea580c"
+    },
+    {
+        name: "Radio Złote Przeboje",
+        genre: "Oldies · Hits",
+        url: "https://radiostream.pl/tuba8906-1.mp3",
+        logo: "https://play-lh.googleusercontent.com/kl4oFQueuGsej8YXVsvgLt1n0ODktArsTVUmaleMm795nl_blT_NU62feJnt-_IiZtHr7tQ2PH39yuvSxcJr",
+        color: "#f59e0b"
+    },
+    {
+        name: "TOK FM",
+        genre: "News · Talk",
+        url: "https://radiostream.pl/tuba10-1.mp3",
+        logo: "https://play-lh.googleusercontent.com/EbPgdspx2CI5GdehTM4et3c4SNaS4KqzrdlfsPNyoded_ZFMK1Wn9AP1Fp15DtTT57j7qTPOZ5-N76gZzWJIQpw=w480-h960",
+        color: "#ea580c"
+    },
+    {
+        name: "Eska",
+        genre: "Pop · Dance",
+        url: "https://ic2.smcdn.pl/2110-1.mp3",
+        logo: "https://play-lh.googleusercontent.com/AWuymPJZak_1mXkEcGf4R7IaLCCcZ_v3ipLUVu2T36KBVMUkyNwRtzXtGQAzOi754IO16o0Waxb3hqRTX8cj=w480-h960",
+        color: "#fb923c"
+    },
+    {
+        name: "Eska GO",
+        genre: "Pop · Dance",
+        url: "https://ic2.smcdn.pl/6200-1.mp3",
+        logo: "https://yt3.googleusercontent.com/ytc/AIdro_n9wZ6-l9B_dBhJJ8rqW70nWcGzCWQoSrlXkz6-ycYE_fI=s900-c-k-c0x00ffffff-no-rj",
+        color: "#f97316"
+    },
+    {
+        name: "Eska Rock",
+        genre: "Rock",
+        url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv",
+        logo: "https://play-lh.googleusercontent.com/Wbc2KfQ6Ubmix47KidoEhQ7zWq6jPtkSOfmHPbzzSVZXGvkzjvNK754FMZTh94iDoIz3RlVX3oGz-R4j4aaIL34",
+        color: "#dc2626"
+    },
+    {
+        name: "VOX FM",
+        genre: "Rock",
+        url: "https://ic2.smcdn.pl/3990-1.aac",
+        logo: "https://th.bing.com/th/id/R.22d88e0b41efcc50d8dd8ffc1a924405?rik=8QugnmPEP%2byXEA&pid=ImgRaw&r=0",
+        color: "#dc2626"
+    },
+    {
+        name: "RMF MAXX",
+        genre: "Dance · Pop",
+        url: "https://rs6-krk2.rmfstream.pl/RMFMAXXX48",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiRWfbSoirBlqexvaSPSxpU3efrxOhUmrnkw&s",
+        color: "#f97316"
+    },
+    {
+        name: "RMF Classic",
+        genre: "Classical · Film",
+        url: "https://rs6-krk2.rmfstream.pl/RMFCLASSIC48",
+        logo: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/RMF_CLASSIC_-_logotyp.png/250px-RMF_CLASSIC_-_logotyp.png?utm_source=pl.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+        color: "#f59e0b"
+    },
+    {
+        name: "RMF Maxx Club",
+        genre: "Electronic · EDM",
+        url: "https://rs6-krk2.rmfstream.pl/rmf_club",
+        logo: "https://static.rmf.pl/portal/stations/covers/rmf-club/20251007132553_rmf-club_600.jpg",
+        color: "#f97316"
+    },
+    {
+        name: "Radio 357",
+        genre: "Alternative · Rock",
+        url: "https://stream.rcs.revma.com/ye5kghkgcm0uv",
+        logo: "https://myradioonline.pl/public/uploads/radio_img/radio-357/play_250_250.webp",
+        color: "#f97316"
+    },
+    {
+        name: "Radio Nowy Świat",
+        genre: "Alternative · Music",
+        url: "http://stream.rcs.revma.com/ypqt40u0x1zuv",
+        logo: "https://media.licdn.com/dms/image/v2/D4D22AQHigxwiLgtOjQ/feedshare-shrink_800/feedshare-shrink_800/0/1707212512358?e=2147483647&v=beta&t=HsnqVM5gbH5NXFto5OwJXQKE63VSfAVyCQExKf39DOQ",
+        color: "#fb923c"
+    },
+    {
+        name: "Antyradio",
+        genre: "Rock",
+        url: "https://an.cdn.eurozet.pl/ant-waw.mp3",
+        logo: "https://www.radio.pl/300/antypoland.png?version=4ca187d0233e2428dce67d92cd267851ea89e3de",
+        color: "#dc2626"
+    },
+    {
+        name: "Chillizet",
+        genre: "Chill · Lounge",
+        url: "https://r.dcs.redcdn.pl/sc/o2/Eurozet/live/chillizet.livx?audio=5",
+        logo: "https://openfm-upload-api.wpcdn.pl/8d5f381e-a4e0-43d9-8c9a-627ed81da6f5.jpg",
+        color: "#fb923c"
+    },
+    {
+        name: "Radio Pogoda",
+        genre: "Oldies · Easy Listening",
+        url: "https://radiostream.pl/tuba145-1.mp3",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkOlHaMXfrVOMlzqGjsrR-7Ly8kHt-pkRmSQ&s",
+        color: "#f59e0b"
+    },
+    {
+        name: "Radio Kaszëbë",
+        genre: "Regional · Music",
+        url: "https://stream4.nadaje.com:10125/kaszebe128",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBXRktYoMxEacstxPfZwsF7wQJQJJIDbj_A8w2hnvWjQ&s",
+        color: "#f97316"
+    },
+    {
+        name: "Radio Yanosik",
+        genre: "Music · Road",
+        url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv",
+        logo: "https://static.mytuner.mobi/media/tvos_radios/995/radio-yanosik.a146e99c.png",
+        color: "#f97316"
+    },
+    {
+        name: "Radio Yanosik '80",
+        genre: "80s · Hits",
+        url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-vYzP11AQigoBntsGlVUMxmYK6-7iObZ8E5aTUDZHFA&s",
+        color: "#f59e0b"
+    },
+    {
+        name: "Radio Yanosik Love",
+        genre: "Love · Ballads",
+        url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXlhA1Zo2a2FickRHz-v1ELBGgEN0LSOlDIQ&s",
+        color: "#ea580c"
+    },
+    {
+        name: "Radio Yanosik Rock",
+        genre: "Rock",
+        url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv",
+        logo: "https://static.mytuner.mobi/media/tvos_radios/667/radio-yanosik-2.b2b0fdf8.png",
+        color: "#dc2626"
+    },
+    {
+        name: "Radio Yanosik X-Mas",
+        genre: "Christmas · Seasonal",
+        url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv",
+        logo: "https://cdn-profiles.tunein.com/s349545/images/logog.png?t=1",
+        color: "#dc2626"
+    },
+    {
+        name: "Dublin's Q102",
+        genre: "Rock",
+        url: "https://onic.dublin.live.stream.broadcasting.news/stream-q102",
+        logo: "https://media.info/l/o/6/64.1645844540.png",
+        color: "#f97316"
+    }
+];
+
+let customStations = [];
+
+try {
+    customStations = JSON.parse(
+        localStorage.getItem(
+            "radio_tomi_custom_stations"
+        ) || "[]"
+    );
+} catch {
+    customStations = [];
+}
+
+let allStations = [
+    ...stations,
+    ...customStations
+];
+
+let favorites = [];
+
+try {
+    favorites = JSON.parse(
+        localStorage.getItem(
+            "radio_tomi_favorites"
+        ) || "[]"
+    );
+} catch {
+    favorites = [];
+}
+
+let currentStationIndex = -1;
+let isPlaying = false;
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+let sleepTimer = null;
+let sleepEnd = null;
+let sleepDuration = 0;
+let sleepInterval = null;
+
+/* =========================================================
+   AUDIO / EQ
+   ========================================================= */
+
+let audioContext = null;
+let sourceNode = null;
+let analyser = null;
+let lowFilter = null;
+let midFilter = null;
+let highFilter = null;
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const audio = document.getElementById("audio");
+const stationGrid = document.getElementById("stationGrid");
+const stationSearch = document.getElementById("stationSearch");
+
+const btnPlay = document.getElementById("btnPlay");
+const playIcon = document.getElementById("playIcon");
+
+const btnHeroPlay = document.getElementById("btnHeroPlay");
+const btnHeroPrev = document.getElementById("btnHeroPrev");
+const btnHeroNext = document.getElementById("btnHeroNext");
+
+const btnPrev = document.getElementById("btnPrev");
+const btnNext = document.getElementById("btnNext");
+
+const volume = document.getElementById("volume");
+const volumeIcon = document.getElementById("volumeIcon");
+
+const btnTheme = document.getElementById("btnTheme");
+const themeIcon = document.getElementById("themeIcon");
+
+const btnHeroFavorite =
+    document.getElementById("btnHeroFavorite");
+
+const heroStationName =
+    document.getElementById("heroStationName");
+
+const heroDescription =
+    document.getElementById("heroDescription");
+
+const heroArt =
+    document.getElementById("heroArt");
+
+const heroArtPlaceholder =
+    document.getElementById("heroArtPlaceholder");
+
+const playerStationName =
+    document.getElementById("playerStationName");
+
+const playerStationGenre =
+    document.getElementById("playerStationGenre");
+
+const playerArt =
+    document.getElementById("playerArt");
+
+const playerArtPlaceholder =
+    document.getElementById("playerArtPlaceholder");
+
+const btnSleep =
+    document.getElementById("btnSleep");
+
+const sleepTimerIcon =
+    document.getElementById("sleepTimerIcon");
+
+const sleepTimerText =
+    document.getElementById("sleepTimerText");
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+function generateLogo(
+    name,
+    color = "#f97316"
+) {
+
+    const initials =
+        name
+            .replace(
+                /[^a-zA-ZĄĆĘŁŃÓŚŹŻąćęłńóśźż0-9 ]/g,
+                ""
+            )
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(x => x[0])
+            .join("")
+            .toUpperCase();
+
+    const canvas =
+        document.createElement("canvas");
 
     canvas.width = 300;
     canvas.height = 300;
 
-    const ctx = canvas.getContext("2d");
+    const ctx =
+        canvas.getContext("2d");
 
-    ctx.fillStyle = "#18181b";
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            300,
+            300
+        );
+
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, "#18181b");
+
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 300, 300);
 
-    ctx.fillStyle = "#f97316";
-    ctx.beginPath();
-    ctx.arc(150, 150, 115, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.96)";
 
-    ctx.fillStyle = "#ffffff";
+    ctx.font =
+        "800 105px -apple-system, BlinkMacSystemFont, Arial";
 
-    let fontSize = 55;
-
-    if (label.length > 7) {
-        fontSize = 35;
-    } else if (label.length > 5) {
-        fontSize = 43;
-    }
-
-    ctx.font = `800 ${fontSize}px Arial`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
     ctx.fillText(
-        label,
+        initials || "R",
         150,
         150
     );
@@ -2242,136 +2825,689 @@ function generateLogo(label) {
     return canvas.toDataURL("image/png");
 }
 
+/* =========================================================
+   LOGO URL
+   ========================================================= */
+
 function getStationLogo(station) {
-    return station.logo || generateLogo(station.name.substring(0, 5));
-}
 
+    if (station.logo) {
+        return station.logo;
+    }
 
-/* ===============================================================
-   STATE
-   =============================================================== */
-
-let currentStationIndex = -1;
-
-let isPlaying = false;
-
-let favorites = [];
-
-try {
-    favorites = JSON.parse(
-        localStorage.getItem("radio_tomi_favorites") || "[]"
+    return generateLogo(
+        station.name,
+        station.color || "#f97316"
     );
-} catch {
-    favorites = [];
 }
 
-let volume =
-    parseFloat(
-        localStorage.getItem("radio_tomi_volume")
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+function saveFavorites() {
+
+    localStorage.setItem(
+        "radio_tomi_favorites",
+        JSON.stringify(favorites)
+    );
+}
+
+function saveCustomStations() {
+
+    localStorage.setItem(
+        "radio_tomi_custom_stations",
+        JSON.stringify(customStations)
+    );
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function toast(message) {
+
+    const container =
+        document.getElementById(
+            "toastContainer"
+        );
+
+    const element =
+        document.createElement("div");
+
+    element.className = "toast";
+
+    element.innerHTML = `
+        <i
+            class="fa-solid fa-circle-check"
+            style="
+                color:var(--accent);
+                margin-right:7px
+            "
+        ></i>
+        ${escapeHtml(message)}
+    `;
+
+    container.appendChild(element);
+
+    setTimeout(() => {
+        element.remove();
+    }, 4200);
+}
+
+/* =========================================================
+   ESCAPE
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+/* =========================================================
+   RENDER STATIONS
+   ========================================================= */
+
+function renderStations(filter = "") {
+
+    stationGrid.innerHTML = "";
+
+    const query =
+        filter.trim().toLowerCase();
+
+    const visible =
+        allStations
+            .map(
+                (station, index) => ({
+                    station,
+                    index
+                })
+            )
+            .filter(({ station }) => {
+
+                if (!query) {
+                    return true;
+                }
+
+                return (
+                    station.name
+                        .toLowerCase()
+                        .includes(query) ||
+
+                    (
+                        station.genre || ""
+                    )
+                        .toLowerCase()
+                        .includes(query)
+                );
+            });
+
+    if (!visible.length) {
+
+        stationGrid.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-radio"></i>
+                Nie znaleziono stacji.
+            </div>
+        `;
+
+        return;
+    }
+
+    visible.forEach(
+        ({ station, index }) => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "station-card fade-in";
+
+            if (
+                index === currentStationIndex
+            ) {
+                card.classList.add("active");
+            }
+
+            const favorite =
+                favorites.includes(index);
+
+            card.innerHTML = `
+
+                <div class="station-logo">
+
+                    <img
+                        src="${getStationLogo(station)}"
+                        alt=""
+                        onerror="
+                            this.style.display='none'
+                        "
+                    >
+
+                </div>
+
+                <div class="station-info">
+
+                    <div class="station-name">
+                        ${escapeHtml(station.name)}
+                    </div>
+
+                    <div class="station-genre">
+                        ${escapeHtml(
+                            station.genre || "Radio"
+                        )}
+                    </div>
+
+                    ${
+                        index === currentStationIndex &&
+                        isPlaying
+                        ?
+                        `
+                        <div class="station-playing">
+
+                            <div class="mini-eq">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+
+                            Gra teraz
+
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+                <button
+                    class="
+                        favorite-button
+                        ${favorite ? "active" : ""}
+                    "
+                    data-favorite="${index}"
+                    title="Ulubiona stacja"
+                >
+
+                    <i
+                        class="
+                            ${
+                                favorite
+                                ? "fa-solid"
+                                : "fa-regular"
+                            }
+                            fa-heart
+                        "
+                    ></i>
+
+                </button>
+            `;
+
+            card.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.closest(
+                            "[data-favorite]"
+                        )
+                    ) {
+                        return;
+                    }
+
+                    selectStation(
+                        index,
+                        true
+                    );
+                }
+            );
+
+            const favoriteButton =
+                card.querySelector(
+                    "[data-favorite]"
+                );
+
+            favoriteButton.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    toggleFavorite(index);
+                }
+            );
+
+            stationGrid.appendChild(card);
+        }
+    );
+}
+
+/* =========================================================
+   FAVORITES
+   ========================================================= */
+
+function toggleFavorite(index) {
+
+    if (favorites.includes(index)) {
+
+        favorites =
+            favorites.filter(
+                item => item !== index
+            );
+
+        toast("Usunięto z ulubionych");
+
+    } else {
+
+        favorites.push(index);
+
+        toast("Dodano do ulubionych");
+    }
+
+    saveFavorites();
+
+    updateHeroFavorite();
+
+    renderStations(
+        stationSearch.value
+    );
+}
+
+/* =========================================================
+   SELECT STATION
+   ========================================================= */
+
+function selectStation(
+    index,
+    autoplay = false
+) {
+
+    if (
+        index < 0 ||
+        index >= allStations.length
+    ) {
+        return;
+    }
+
+    /*
+     * Zatrzymujemy poprzedni stan logiczny przed
+     * zmianą stacji. Dzięki temu Dynamic Island
+     * nie pokazuje przez chwilę starego stanu.
+     */
+    isPlaying = false;
+
+    currentStationIndex = index;
+
+    const station =
+        allStations[index];
+
+    audio.pause();
+
+    audio.src = station.url;
+    audio.load();
+
+    updateStationUI();
+
+    updatePlaybackUI();
+
+    updateMediaSession();
+
+    renderStations(
+        stationSearch.value
     );
 
-if (Number.isNaN(volume)) {
-    volume = 0.8;
+    if (autoplay) {
+        playRadio();
+    }
 }
 
-let timerInterval = null;
-let timerEndTime = null;
-let timerDuration = 0;
+/* =========================================================
+   UPDATE UI
+   ========================================================= */
 
+function updateStationUI() {
 
-/* ===============================================================
-   DOM
-   =============================================================== */
+    if (
+        currentStationIndex < 0
+    ) {
 
-const audio =
-    document.getElementById("audio");
+        heroStationName.textContent =
+            "Wybierz swoją stację";
 
-const stationGrid =
-    document.getElementById("stationGrid");
+        heroDescription.textContent =
+            "Słuchaj ulubionych stacji radiowych w nowoczesnym interfejsie Radio by ToMi.";
 
-const emptyState =
-    document.getElementById("emptyState");
+        playerStationName.textContent =
+            "Brak wybranej stacji";
 
-const searchInput =
-    document.getElementById("searchInput");
+        playerStationGenre.textContent =
+            "Wybierz stację";
 
-const stationCount =
-    document.getElementById("stationCount");
+        return;
+    }
 
-const heroArtwork =
-    document.getElementById("heroArtwork");
+    const station =
+        allStations[
+            currentStationIndex
+        ];
 
-const heroStationName =
-    document.getElementById("heroStationName");
+    heroStationName.textContent =
+        station.name;
 
-const heroStationGenre =
-    document.getElementById("heroStationGenre");
+    heroDescription.textContent =
+        station.genre ||
+        "Radio na żywo";
 
-const playerArtwork =
-    document.getElementById("playerArtwork");
+    playerStationName.textContent =
+        station.name;
 
-const playerTitle =
-    document.getElementById("playerTitle");
+    playerStationGenre.textContent =
+        station.genre ||
+        "Radio na żywo";
 
-const playerSubtitle =
-    document.getElementById("playerSubtitle");
+    const logo =
+        getStationLogo(station);
 
-const btnPlay =
-    document.getElementById("btnPlay");
+    heroArt.src = logo;
+    heroArt.classList.remove("hidden");
+    heroArtPlaceholder.classList.add("hidden");
 
-const btnPrevious =
-    document.getElementById("btnPrevious");
+    playerArt.src = logo;
+    playerArt.classList.remove("hidden");
+    playerArtPlaceholder.classList.add("hidden");
 
-const btnNext =
-    document.getElementById("btnNext");
+    updateHeroFavorite();
+}
 
-const heroPlay =
-    document.getElementById("heroPlay");
+/* =========================================================
+   HERO FAVORITE
+   ========================================================= */
 
-const heroPrevious =
-    document.getElementById("heroPrevious");
+function updateHeroFavorite() {
 
-const heroNext =
-    document.getElementById("heroNext");
+    if (
+        currentStationIndex < 0
+    ) {
 
-const heroFavorite =
-    document.getElementById("heroFavorite");
+        btnHeroFavorite.innerHTML = `
+            <i class="fa-regular fa-heart"></i>
 
-const heroTimer =
-    document.getElementById("heroTimer");
+            <span>
+                Dodaj do ulubionych
+            </span>
+        `;
 
-const volumeSlider =
-    document.getElementById("volumeSlider");
+        return;
+    }
 
-const volumeIcon =
-    document.getElementById("volumeIcon");
+    const favorite =
+        favorites.includes(
+            currentStationIndex
+        );
 
-const timerProgressBar =
-    document.getElementById("timerProgressBar");
+    btnHeroFavorite.innerHTML =
+        favorite
+        ?
+        `
+            <i
+                class="fa-solid fa-heart"
+                style="color:var(--accent)"
+            ></i>
 
-const toastContainer =
-    document.getElementById("toastContainer");
+            <span>
+                Usuń z ulubionych
+            </span>
+        `
+        :
+        `
+            <i class="fa-regular fa-heart"></i>
 
+            <span>
+                Dodaj do ulubionych
+            </span>
+        `;
+}
 
-/* ===============================================================
-   AUDIO
-   =============================================================== */
+/* =========================================================
+   PLAY
+   ========================================================= */
 
-audio.volume = volume;
+async function playRadio() {
 
-volumeSlider.value = volume;
+    if (
+        currentStationIndex < 0
+    ) {
 
+        selectStation(
+            0,
+            false
+        );
+    }
 
-/* ===============================================================
-   WEB AUDIO / EQ
-   =============================================================== */
+    try {
 
-let audioContext = null;
-let sourceNode = null;
+        setupAudioContext();
 
-let lowFilter = null;
-let midFilter = null;
-let highFilter = null;
+        await audio.play();
+
+        isPlaying = true;
+
+        updatePlaybackUI();
+
+        updateMediaSession();
+
+        if (
+            audioContext &&
+            audioContext.state === "suspended"
+        ) {
+
+            await audioContext.resume();
+        }
+
+    } catch (error) {
+
+        isPlaying = false;
+
+        updatePlaybackUI();
+
+        updateMediaSession();
+
+        toast(
+            "Nie udało się uruchomić strumienia."
+        );
+    }
+}
+
+/* =========================================================
+   PAUSE
+   ========================================================= */
+
+function pauseRadio() {
+
+    audio.pause();
+
+    isPlaying = false;
+
+    updatePlaybackUI();
+
+    updateMediaSession();
+}
+
+/* =========================================================
+   TOGGLE PLAY
+   ========================================================= */
+
+function togglePlay() {
+
+    if (isPlaying) {
+        pauseRadio();
+    } else {
+        playRadio();
+    }
+}
+
+/* =========================================================
+   PLAYBACK UI
+   ========================================================= */
+
+function updatePlaybackUI() {
+
+    playIcon.className =
+        isPlaying
+        ?
+        "fa-solid fa-pause"
+        :
+        "fa-solid fa-play";
+
+    btnHeroPlay.innerHTML = `
+        <i
+            class="
+                fa-solid
+                ${
+                    isPlaying
+                    ? "fa-pause"
+                    : "fa-play"
+                }
+            "
+        ></i>
+    `;
+
+    btnPlay.title =
+        isPlaying
+        ? "Pauza"
+        : "Odtwórz";
+
+    btnPlay.setAttribute(
+        "aria-label",
+        isPlaying
+        ? "Pauza"
+        : "Odtwórz"
+    );
+
+    btnHeroPlay.title =
+        isPlaying
+        ? "Pauza"
+        : "Odtwórz";
+
+    btnHeroPlay.setAttribute(
+        "aria-label",
+        isPlaying
+        ? "Pauza"
+        : "Odtwórz"
+    );
+
+    /*
+     * Synchronizacja stanu z Dynamic Island.
+     */
+    if ("mediaSession" in navigator) {
+
+        try {
+
+            navigator.mediaSession.playbackState =
+                isPlaying
+                ? "playing"
+                : "paused";
+
+        } catch (error) {
+            console.debug(
+                "Media Session playbackState:",
+                error
+            );
+        }
+    }
+
+    renderStations(
+        stationSearch.value
+    );
+}
+
+/* =========================================================
+   NEXT / PREVIOUS
+   ========================================================= */
+
+function nextStation() {
+
+    if (!allStations.length) {
+        return;
+    }
+
+    let index =
+        currentStationIndex + 1;
+
+    if (
+        index >= allStations.length
+    ) {
+        index = 0;
+    }
+
+    selectStation(
+        index,
+        true
+    );
+}
+
+function previousStation() {
+
+    if (!allStations.length) {
+        return;
+    }
+
+    let index =
+        currentStationIndex - 1;
+
+    if (index < 0) {
+        index =
+            allStations.length - 1;
+    }
+
+    selectStation(
+        index,
+        true
+    );
+}
+
+/* =========================================================
+   VOLUME
+   ========================================================= */
+
+function updateVolume() {
+
+    const value =
+        Number(volume.value);
+
+    audio.volume = value;
+
+    if (value === 0) {
+
+        volumeIcon.className =
+            "fa-solid fa-volume-xmark";
+
+    } else if (value < .5) {
+
+        volumeIcon.className =
+            "fa-solid fa-volume-low";
+
+    } else {
+
+        volumeIcon.className =
+            "fa-solid fa-volume-high";
+    }
+
+    localStorage.setItem(
+        "radio_tomi_volume",
+        String(value)
+    );
+}
+
+/* =========================================================
+   AUDIO CONTEXT / EQ
+   ========================================================= */
 
 function setupAudioContext() {
 
@@ -2381,55 +3517,49 @@ function setupAudioContext() {
 
     try {
 
-        const AudioContextClass =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-        if (!AudioContextClass) {
-            return;
-        }
-
         audioContext =
-            new AudioContextClass();
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
 
         sourceNode =
-            audioContext.createMediaElementSource(audio);
+            audioContext.createMediaElementSource(
+                audio
+            );
 
         lowFilter =
             audioContext.createBiquadFilter();
 
-        lowFilter.type =
-            "lowshelf";
-
-        lowFilter.frequency.value =
-            200;
+        lowFilter.type = "lowshelf";
+        lowFilter.frequency.value = 180;
 
         midFilter =
             audioContext.createBiquadFilter();
 
-        midFilter.type =
-            "peaking";
-
-        midFilter.frequency.value =
-            1000;
-
-        midFilter.Q.value =
-            0.7;
+        midFilter.type = "peaking";
+        midFilter.frequency.value = 1000;
+        midFilter.Q.value = 1;
 
         highFilter =
             audioContext.createBiquadFilter();
 
-        highFilter.type =
-            "highshelf";
+        highFilter.type = "highshelf";
+        highFilter.frequency.value = 5000;
 
-        highFilter.frequency.value =
-            4000;
+        analyser =
+            audioContext.createAnalyser();
+
+        analyser.fftSize = 256;
 
         sourceNode
             .connect(lowFilter)
             .connect(midFilter)
             .connect(highFilter)
-            .connect(audioContext.destination);
+            .connect(analyser)
+            .connect(
+                audioContext.destination
+            );
 
     } catch (error) {
 
@@ -2437,15 +3567,809 @@ function setupAudioContext() {
             "Web Audio API:",
             error
         );
-
-        audioContext = null;
     }
 }
 
+/* =========================================================
+   EQ
+   ========================================================= */
 
-/* ===============================================================
-   MEDIA SESSION — KLUCZOWA POPRAWKA DLA DYNAMIC ISLAND
-   =============================================================== */
+function setEQ() {
+
+    if (
+        !audioContext ||
+        !lowFilter ||
+        !midFilter ||
+        !highFilter
+    ) {
+        return;
+    }
+
+    lowFilter.gain.value =
+        Number(
+            document.getElementById(
+                "eqLow"
+            ).value
+        );
+
+    midFilter.gain.value =
+        Number(
+            document.getElementById(
+                "eqMid"
+            ).value
+        );
+
+    highFilter.gain.value =
+        Number(
+            document.getElementById(
+                "eqHigh"
+            ).value
+        );
+
+    document.getElementById(
+        "eqLowValue"
+    ).textContent =
+        `${lowFilter.gain.value} dB`;
+
+    document.getElementById(
+        "eqMidValue"
+    ).textContent =
+        `${midFilter.gain.value} dB`;
+
+    document.getElementById(
+        "eqHighValue"
+    ).textContent =
+        `${highFilter.gain.value} dB`;
+}
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+function openModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.add("show");
+}
+
+function closeModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.remove("show");
+}
+
+document
+    .querySelectorAll("[data-close]")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                closeModal(
+                    button.dataset.close
+                );
+            }
+        );
+    });
+
+document
+    .querySelectorAll(".modal-backdrop")
+    .forEach(backdrop => {
+
+        backdrop.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target === backdrop
+                ) {
+
+                    backdrop.classList.remove(
+                        "show"
+                    );
+                }
+            }
+        );
+    });
+
+/* =========================================================
+   SLEEP TIMER
+   ========================================================= */
+
+function formatTimer(milliseconds) {
+
+    const totalSeconds =
+        Math.max(
+            0,
+            Math.ceil(
+                milliseconds / 1000
+            )
+        );
+
+    const hours =
+        Math.floor(
+            totalSeconds / 3600
+        );
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+    const seconds =
+        totalSeconds % 60;
+
+    const mm =
+        String(minutes)
+            .padStart(2, "0");
+
+    const ss =
+        String(seconds)
+            .padStart(2, "0");
+
+    if (hours > 0) {
+        return `${hours}:${mm}:${ss}`;
+    }
+
+    return `${minutes}:${ss}`;
+}
+
+function updateSleepInfo() {
+
+    if (!sleepEnd) {
+
+        sleepTimerText.textContent =
+            "Timer";
+
+        btnSleep.classList.remove(
+            "timer-active"
+        );
+
+        btnSleep.style.setProperty(
+            "--timer-progress",
+            "0%"
+        );
+
+        sleepTimerIcon.className =
+            "fa-solid fa-moon";
+
+        return;
+    }
+
+    const remaining =
+        Math.max(
+            0,
+            sleepEnd - Date.now()
+        );
+
+    if (remaining <= 0) {
+
+        sleepTimerText.textContent =
+            "Timer";
+
+        btnSleep.classList.remove(
+            "timer-active"
+        );
+
+        btnSleep.style.setProperty(
+            "--timer-progress",
+            "0%"
+        );
+
+        return;
+    }
+
+    const progress =
+        sleepDuration > 0
+        ?
+        (
+            (
+                sleepDuration -
+                remaining
+            ) /
+            sleepDuration
+        ) * 100
+        :
+        0;
+
+    sleepTimerText.textContent =
+        formatTimer(remaining);
+
+    btnSleep.classList.add(
+        "timer-active"
+    );
+
+    btnSleep.style.setProperty(
+        "--timer-progress",
+        `${Math.min(
+            100,
+            Math.max(
+                0,
+                progress
+            )
+        )}%`
+    );
+
+    sleepTimerIcon.className =
+        "fa-solid fa-hourglass-half";
+}
+
+function setSleepTimer(minutes) {
+
+    clearTimeout(sleepTimer);
+    clearInterval(sleepInterval);
+
+    sleepTimer = null;
+    sleepEnd = null;
+    sleepDuration = 0;
+
+    updateSleepInfo();
+
+    if (!minutes) {
+
+        toast(
+            "Timer snu wyłączony"
+        );
+
+        return;
+    }
+
+    sleepDuration =
+        minutes * 60000;
+
+    sleepEnd =
+        Date.now() +
+        sleepDuration;
+
+    sleepTimer =
+        setTimeout(
+            () => {
+
+                pauseRadio();
+
+                sleepEnd = null;
+                sleepDuration = 0;
+
+                clearInterval(
+                    sleepInterval
+                );
+
+                sleepInterval = null;
+
+                updateSleepInfo();
+
+                toast(
+                    "Timer zakończony — radio zatrzymane."
+                );
+
+            },
+            sleepDuration
+        );
+
+    sleepInterval =
+        setInterval(
+            updateSleepInfo,
+            1000
+        );
+
+    updateSleepInfo();
+
+    toast(
+        `Timer ustawiony na ${minutes} min`
+    );
+}
+
+updateSleepInfo();
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+function updateThemeUI() {
+
+    const dark =
+        document.documentElement
+            .classList
+            .contains("dark");
+
+    themeIcon.className =
+        dark
+        ?
+        "fa-solid fa-sun"
+        :
+        "fa-solid fa-moon";
+
+    btnTheme.title =
+        dark
+        ?
+        "Przełącz na jasny motyw"
+        :
+        "Przełącz na ciemny motyw";
+
+    document
+        .querySelector(
+            'meta[name="theme-color"]'
+        )
+        .setAttribute(
+            "content",
+            dark
+            ? "#0b0b0d"
+            : "#f5f5f7"
+        );
+}
+
+btnTheme.addEventListener(
+    "click",
+    () => {
+
+        const dark =
+            document.documentElement
+                .classList
+                .contains("dark");
+
+        if (dark) {
+
+            document.documentElement
+                .classList
+                .remove("dark");
+
+            localStorage.setItem(
+                "radio_tomi_theme",
+                "light"
+            );
+
+        } else {
+
+            document.documentElement
+                .classList
+                .add("dark");
+
+            localStorage.setItem(
+                "radio_tomi_theme",
+                "dark"
+            );
+        }
+
+        updateThemeUI();
+    }
+);
+
+/* =========================================================
+   ADD STATION
+   ========================================================= */
+
+document
+    .getElementById("btnAddStation")
+    .addEventListener(
+        "click",
+        () =>
+            openModal("stationModal")
+    );
+
+document
+    .getElementById("btnSaveStation")
+    .addEventListener(
+        "click",
+        () => {
+
+            const name =
+                document
+                    .getElementById("customName")
+                    .value
+                    .trim();
+
+            const genre =
+                document
+                    .getElementById("customGenre")
+                    .value
+                    .trim();
+
+            const url =
+                document
+                    .getElementById("customUrl")
+                    .value
+                    .trim();
+
+            const logo =
+                document
+                    .getElementById("customLogo")
+                    .value
+                    .trim();
+
+            if (!name || !url) {
+
+                toast(
+                    "Podaj nazwę i adres strumienia."
+                );
+
+                return;
+            }
+
+            const station = {
+
+                name,
+
+                genre:
+                    genre ||
+                    "Moja stacja",
+
+                url,
+
+                logo:
+                    logo ||
+                    null,
+
+                color:
+                    "#f97316"
+            };
+
+            customStations.push(
+                station
+            );
+
+            allStations = [
+                ...stations,
+                ...customStations
+            ];
+
+            saveCustomStations();
+
+            renderStations(
+                stationSearch.value
+            );
+
+            closeModal(
+                "stationModal"
+            );
+
+            document.getElementById(
+                "customName"
+            ).value = "";
+
+            document.getElementById(
+                "customGenre"
+            ).value = "";
+
+            document.getElementById(
+                "customUrl"
+            ).value = "";
+
+            document.getElementById(
+                "customLogo"
+            ).value = "";
+
+            toast(
+                "Stacja została dodana."
+            );
+        }
+    );
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+stationSearch.addEventListener(
+    "input",
+    () => {
+
+        renderStations(
+            stationSearch.value
+        );
+    }
+);
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+btnPlay.addEventListener(
+    "click",
+    togglePlay
+);
+
+btnHeroPlay.addEventListener(
+    "click",
+    togglePlay
+);
+
+btnPrev.addEventListener(
+    "click",
+    previousStation
+);
+
+btnNext.addEventListener(
+    "click",
+    nextStation
+);
+
+btnHeroPrev.addEventListener(
+    "click",
+    previousStation
+);
+
+btnHeroNext.addEventListener(
+    "click",
+    nextStation
+);
+
+btnHeroFavorite.addEventListener(
+    "click",
+    () => {
+
+        if (
+            currentStationIndex >= 0
+        ) {
+
+            toggleFavorite(
+                currentStationIndex
+            );
+        }
+    }
+);
+
+volume.addEventListener(
+    "input",
+    updateVolume
+);
+
+/* =========================================================
+   EQ BUTTON
+   ========================================================= */
+
+document
+    .getElementById("btnEQ")
+    .addEventListener(
+        "click",
+        () =>
+            openModal("eqModal")
+    );
+
+[
+    "eqLow",
+    "eqMid",
+    "eqHigh"
+].forEach(id => {
+
+    document
+        .getElementById(id)
+        .addEventListener(
+            "input",
+            setEQ
+        );
+});
+
+document
+    .getElementById("btnResetEQ")
+    .addEventListener(
+        "click",
+        () => {
+
+            [
+                "eqLow",
+                "eqMid",
+                "eqHigh"
+            ].forEach(id => {
+
+                document
+                    .getElementById(id)
+                    .value = 0;
+            });
+
+            setEQ();
+
+            toast(
+                "Korektor został zresetowany."
+            );
+        }
+    );
+
+/* =========================================================
+   SLEEP
+   ========================================================= */
+
+btnSleep.addEventListener(
+    "click",
+    () =>
+        openModal("sleepModal")
+);
+
+document
+    .getElementById("btnSetSleep")
+    .addEventListener(
+        "click",
+        () => {
+
+            const minutes =
+                Number(
+                    document
+                        .getElementById(
+                            "sleepSelect"
+                        )
+                        .value
+                );
+
+            setSleepTimer(minutes);
+
+            closeModal(
+                "sleepModal"
+            );
+        }
+    );
+
+/* =========================================================
+   SHORTCUTS
+   ========================================================= */
+
+document
+    .getElementById("btnShortcuts")
+    .addEventListener(
+        "click",
+        () =>
+            openModal("shortcutsModal")
+    );
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        const tag =
+            document
+                .activeElement
+                ?.tagName;
+
+        if (
+            tag === "INPUT" ||
+            tag === "TEXTAREA" ||
+            tag === "SELECT"
+        ) {
+
+            if (
+                event.key !== "Escape"
+            ) {
+                return;
+            }
+        }
+
+        if (event.key === " ") {
+
+            event.preventDefault();
+
+            togglePlay();
+
+        } else if (
+            event.key === "ArrowRight"
+        ) {
+
+            nextStation();
+
+        } else if (
+            event.key === "ArrowLeft"
+        ) {
+
+            previousStation();
+
+        } else if (
+            event.key === "ArrowUp"
+        ) {
+
+            event.preventDefault();
+
+            volume.value =
+                Math.min(
+                    1,
+                    Number(
+                        volume.value
+                    ) + .05
+                );
+
+            updateVolume();
+
+        } else if (
+            event.key === "ArrowDown"
+        ) {
+
+            event.preventDefault();
+
+            volume.value =
+                Math.max(
+                    0,
+                    Number(
+                        volume.value
+                    ) - .05
+                );
+
+            updateVolume();
+
+        } else if (
+            event.key.toLowerCase() === "m"
+        ) {
+
+            if (audio.volume > 0) {
+
+                audio.dataset.previousVolume =
+                    audio.volume;
+
+                volume.value = 0;
+
+            } else {
+
+                volume.value =
+                    audio.dataset.previousVolume ||
+                    .8;
+            }
+
+            updateVolume();
+
+        } else if (
+            event.key === "Escape"
+        ) {
+
+            document
+                .querySelectorAll(
+                    ".modal-backdrop.show"
+                )
+                .forEach(
+                    modal => {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+                    }
+                );
+        }
+    }
+);
+
+/* =========================================================
+   AUDIO EVENTS
+   ========================================================= */
+
+audio.addEventListener(
+    "play",
+    () => {
+
+        isPlaying = true;
+
+        updatePlaybackUI();
+
+        updateMediaSession();
+    }
+);
+
+audio.addEventListener(
+    "pause",
+    () => {
+
+        isPlaying = false;
+
+        updatePlaybackUI();
+
+        updateMediaSession();
+    }
+);
+
+audio.addEventListener(
+    "error",
+    () => {
+
+        isPlaying = false;
+
+        updatePlaybackUI();
+
+        updateMediaSession();
+
+        toast(
+            "Błąd odtwarzania strumienia."
+        );
+    }
+);
+
+/* =========================================================
+   MEDIA SESSION — DYNAMIC ISLAND 3.0.6
+   ========================================================= */
 
 function setupMediaSession() {
 
@@ -2454,12 +4378,6 @@ function setupMediaSession() {
     }
 
     try {
-
-        /*
-         * Każdy handler jest ustawiany osobno.
-         * Dzięki temu iOS może obsłużyć przyciski
-         * poprzedni / play-pause / następny.
-         */
 
         navigator.mediaSession.setActionHandler(
             "play",
@@ -2490,7 +4408,8 @@ function setupMediaSession() {
         );
 
         /*
-         * Radio internetowe nie posiada klasycznego seekowania.
+         * Radio jest transmisją LIVE.
+         * Nie udostępniamy przewijania +/-10 s.
          */
 
         try {
@@ -2514,15 +4433,6 @@ function setupMediaSession() {
             );
         } catch {}
 
-        try {
-            navigator.mediaSession.setActionHandler(
-                "stop",
-                () => {
-                    pauseRadio();
-                }
-            );
-        } catch {}
-
     } catch (error) {
 
         console.warn(
@@ -2532,32 +4442,22 @@ function setupMediaSession() {
     }
 }
 
-
-/* ===============================================================
+/* =========================================================
    MEDIA SESSION METADATA
-   =============================================================== */
+   ========================================================= */
 
 function updateMediaSession() {
 
-    if (!("mediaSession" in navigator)) {
+    if (
+        !("mediaSession" in navigator)
+    ) {
         return;
     }
 
-    /*
-     * Upewniamy się, że handlery są aktywne
-     * również po zmianie stacji.
-     */
-
-    setupMediaSession();
-
-    const allStations =
-        getAllStations();
-
-    const station =
-        allStations[currentStationIndex];
-
-    if (!station) {
-
+    if (
+        currentStationIndex < 0 ||
+        !allStations[currentStationIndex]
+    ) {
         try {
             navigator.mediaSession.metadata = null;
             navigator.mediaSession.playbackState = "none";
@@ -2566,12 +4466,34 @@ function updateMediaSession() {
         return;
     }
 
+    const station =
+        allStations[
+            currentStationIndex
+        ];
+
+    const logo =
+        getStationLogo(station);
+
     try {
+
+        /*
+         * Aktualizujemy metadata przy każdej
+         * zmianie stacji.
+         *
+         * Dynamic Island / ekran blokady
+         * dostają:
+         *
+         * nazwa = title
+         * gatunek = artist
+         * Radio by ToMi = album
+         * logo = artwork
+         */
 
         navigator.mediaSession.metadata =
             new MediaMetadata({
 
-                title: station.name,
+                title:
+                    station.name,
 
                 artist:
                     station.genre ||
@@ -2581,1483 +4503,105 @@ function updateMediaSession() {
                     "Radio by ToMi",
 
                 artwork: [
-
                     {
-                        src: getStationLogo(station),
-                        sizes: "96x96",
-                        type: "image/png"
+                        src: logo,
+                        sizes: "96x96"
                     },
-
                     {
-                        src: getStationLogo(station),
-                        sizes: "192x192",
-                        type: "image/png"
+                        src: logo,
+                        sizes: "192x192"
                     },
-
                     {
-                        src: getStationLogo(station),
-                        sizes: "300x300",
-                        type: "image/png"
+                        src: logo,
+                        sizes: "300x300"
                     }
-
                 ]
-
             });
 
         navigator.mediaSession.playbackState =
             isPlaying
-                ? "playing"
-                : "paused";
+            ? "playing"
+            : "paused";
 
     } catch (error) {
 
         console.warn(
-            "Media metadata:",
+            "Media Session metadata:",
             error
         );
     }
 }
 
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
 
-/* ===============================================================
-   PLAY
-   =============================================================== */
+(function init() {
 
-async function playRadio() {
-
-    if (currentStationIndex < 0) {
-
-        selectStation(
-            0,
-            false
+    const savedVolume =
+        localStorage.getItem(
+            "radio_tomi_volume"
         );
-    }
-
-    try {
-
-        /*
-         * Najpierw AudioContext.
-         * Jest to istotne szczególnie na iOS,
-         * gdzie Web Audio może pozostawać suspended.
-         */
-
-        setupAudioContext();
-
-        if (
-            audioContext &&
-            audioContext.state === "suspended"
-        ) {
-
-            try {
-                await audioContext.resume();
-            } catch (error) {
-                console.warn(
-                    "AudioContext resume:",
-                    error
-                );
-            }
-        }
-
-        /*
-         * Uruchomienie właściwego strumienia.
-         */
-
-        await audio.play();
-
-        isPlaying = true;
-
-        /*
-         * Ponownie rejestrujemy Media Session
-         * już po faktycznym rozpoczęciu odtwarzania.
-         */
-
-        setupMediaSession();
-
-        updatePlaybackUI();
-
-        updateMediaSession();
-
-    } catch (error) {
-
-        console.warn(
-            "Playback error:",
-            error
-        );
-
-        isPlaying = false;
-
-        updatePlaybackUI();
-
-        updateMediaSession();
-
-        toast(
-            "Nie udało się uruchomić strumienia."
-        );
-    }
-}
-
-
-/* ===============================================================
-   PAUSE
-   =============================================================== */
-
-function pauseRadio() {
-
-    audio.pause();
-
-    isPlaying = false;
-
-    updatePlaybackUI();
-
-    updateMediaSession();
-}
-
-
-/* ===============================================================
-   TOGGLE
-   =============================================================== */
-
-function togglePlay() {
-
-    if (isPlaying) {
-        pauseRadio();
-    } else {
-        playRadio();
-    }
-}
-
-
-/* ===============================================================
-   PLAYBACK UI
-   =============================================================== */
-
-function updatePlaybackUI() {
-
-    const playIcon =
-        isPlaying
-            ? "fa-pause"
-            : "fa-play";
-
-    btnPlay.innerHTML =
-        `<i class="fa-solid ${playIcon}"></i>`;
-
-    heroPlay.innerHTML =
-        `<i class="fa-solid ${playIcon}"></i>`;
-
-    btnPlay.setAttribute(
-        "aria-label",
-        isPlaying
-            ? "Pauza"
-            : "Odtwórz"
-    );
-
-    heroPlay.setAttribute(
-        "aria-label",
-        isPlaying
-            ? "Pauza"
-            : "Odtwórz"
-    );
-
-    btnPlay.title =
-        isPlaying
-            ? "Pauza"
-            : "Odtwórz";
-
-    heroPlay.title =
-        isPlaying
-            ? "Pauza"
-            : "Odtwórz";
-
-    if ("mediaSession" in navigator) {
-
-        try {
-
-            navigator.mediaSession.playbackState =
-                isPlaying
-                    ? "playing"
-                    : "paused";
-
-        } catch {}
-    }
-}
-
-
-/* ===============================================================
-   SELECT STATION
-   =============================================================== */
-
-function selectStation(
-    index,
-    autoplay = true
-) {
-
-    const allStations =
-        getAllStations();
 
     if (
-        index < 0 ||
-        index >= allStations.length
+        savedVolume !== null
     ) {
-        return;
+
+        const value =
+            Number(savedVolume);
+
+        if (
+            Number.isFinite(value)
+        ) {
+
+            volume.value =
+                Math.max(
+                    0,
+                    Math.min(
+                        1,
+                        value
+                    )
+                );
+        }
     }
 
-    currentStationIndex = index;
+    updateVolume();
 
-    const station =
-        allStations[index];
+    updateThemeUI();
 
-    /*
-     * Zatrzymujemy poprzedni strumień.
-     */
-
-    audio.pause();
-
-    isPlaying = false;
-
-    /*
-     * Nowy strumień.
-     */
-
-    audio.src =
-        station.url;
-
-    audio.load();
-
-    /*
-     * UI.
-     */
+    renderStations();
 
     updateStationUI();
 
-    updatePlaybackUI();
-
-    updateMediaSession();
-
-    renderStations(
-        searchInput.value
-    );
-
-    if (autoplay) {
-        playRadio();
-    }
-}
-
-
-/* ===============================================================
-   STATION UI
-   =============================================================== */
-
-function updateStationUI() {
-
-    const allStations =
-        getAllStations();
-
-    const station =
-        allStations[currentStationIndex];
-
-    if (!station) {
-
-        heroStationName.textContent =
-            "Wybierz stację";
-
-        heroStationGenre.textContent =
-            "Radio internetowe";
-
-        return;
-    }
-
-    const logo =
-        getStationLogo(station);
-
-    heroArtwork.src =
-        logo;
-
-    playerArtwork.src =
-        logo;
-
-    heroStationName.textContent =
-        station.name;
-
-    heroStationGenre.textContent =
-        station.genre ||
-        "Radio internetowe";
-
-    playerTitle.textContent =
-        station.name;
-
-    playerSubtitle.textContent =
-        station.genre ||
-        "Radio na żywo";
-
-    updateFavoriteButton();
-}
-
-
-/* ===============================================================
-   PREVIOUS / NEXT
-   =============================================================== */
-
-function previousStation() {
-
-    const allStations =
-        getAllStations();
-
-    if (!allStations.length) {
-        return;
-    }
-
-    let index =
-        currentStationIndex - 1;
-
-    if (index < 0) {
-        index =
-            allStations.length - 1;
-    }
-
-    selectStation(
-        index,
-        true
-    );
-}
-
-
-function nextStation() {
-
-    const allStations =
-        getAllStations();
-
-    if (!allStations.length) {
-        return;
-    }
-
-    let index =
-        currentStationIndex + 1;
+    setupMediaSession();
 
     if (
-        index >=
         allStations.length
     ) {
-        index = 0;
-    }
 
-    selectStation(
-        index,
-        true
-    );
-}
+        currentStationIndex = 0;
 
-
-/* ===============================================================
-   FAVORITES
-   =============================================================== */
-
-function saveFavorites() {
-
-    localStorage.setItem(
-        "radio_tomi_favorites",
-        JSON.stringify(favorites)
-    );
-}
-
-
-function isFavorite(index) {
-
-    return favorites.includes(index);
-}
-
-
-function toggleFavorite() {
-
-    if (currentStationIndex < 0) {
-        return;
-    }
-
-    const index =
-        currentStationIndex;
-
-    if (favorites.includes(index)) {
-
-        favorites =
-            favorites.filter(
-                item => item !== index
-            );
-
-        toast(
-            "Usunięto z ulubionych."
-        );
-
-    } else {
-
-        favorites.push(index);
-
-        toast(
-            "Dodano do ulubionych."
-        );
-    }
-
-    saveFavorites();
-
-    updateFavoriteButton();
-
-    renderStations(
-        searchInput.value
-    );
-}
-
-
-function updateFavoriteButton() {
-
-    if (currentStationIndex < 0) {
-
-        heroFavorite.innerHTML =
-            '<i class="fa-regular fa-heart"></i>';
-
-        return;
-    }
-
-    const active =
-        isFavorite(
-            currentStationIndex
-        );
-
-    heroFavorite.innerHTML =
-        active
-            ? '<i class="fa-solid fa-heart"></i>'
-            : '<i class="fa-regular fa-heart"></i>';
-
-    heroFavorite.classList.toggle(
-        "active",
-        active
-    );
-}
-
-
-/* ===============================================================
-   RENDER STATIONS
-   =============================================================== */
-
-function renderStations(
-    search = ""
-) {
-
-    const allStations =
-        getAllStations();
-
-    const query =
-        search
-            .trim()
-            .toLowerCase();
-
-    const filtered =
-        allStations.filter(
-            station => {
-
-                if (!query) {
-                    return true;
-                }
-
-                return (
-                    station.name
-                        .toLowerCase()
-                        .includes(query)
-                    ||
-                    (station.genre || "")
-                        .toLowerCase()
-                        .includes(query)
-                );
-            }
-        );
-
-    stationGrid.innerHTML = "";
-
-    stationCount.textContent =
-        `${filtered.length} z ${allStations.length}`;
-
-    emptyState.style.display =
-        filtered.length
-            ? "none"
-            : "block";
-
-    filtered.forEach(
-        station => {
-
-            const originalIndex =
-                allStations.indexOf(
-                    station
-                );
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-            card.className =
-                "station-card";
-
-            if (
-                originalIndex ===
-                currentStationIndex
-            ) {
-                card.classList.add(
-                    "active"
-                );
-            }
-
-            const favorite =
-                isFavorite(
-                    originalIndex
-                );
-
-            card.innerHTML = `
-
-                <button
-                    class="favorite-small ${favorite ? "active" : ""}"
-                    title="Ulubiona"
-                    aria-label="Ulubiona"
-                    data-favorite="${originalIndex}"
-                >
-                    <i class="${favorite ? "fa-solid" : "fa-regular"} fa-heart"></i>
-                </button>
-
-                <div class="station-card-top">
-
-                    <div class="station-logo">
-
-                        <img
-                            src="${getStationLogo(station)}"
-                            alt=""
-                        >
-
-                    </div>
-
-                    <div class="station-info">
-
-                        <div class="station-name">
-                            ${escapeHtml(station.name)}
-                        </div>
-
-                        <div class="station-genre">
-                            ${escapeHtml(station.genre || "Radio")}
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="station-live">
-
-                    <span class="station-live-dot"></span>
-
-                    <span>
-                        ${originalIndex === currentStationIndex && isPlaying
-                            ? "ODTWARZANIE"
-                            : "RADIO ONLINE"}
-                    </span>
-
-                </div>
-            `;
-
-            card.addEventListener(
-                "click",
-                event => {
-
-                    if (
-                        event.target.closest(
-                            ".favorite-small"
-                        )
-                    ) {
-                        return;
-                    }
-
-                    selectStation(
-                        originalIndex,
-                        true
-                    );
-                }
-            );
-
-            const favoriteButton =
-                card.querySelector(
-                    ".favorite-small"
-                );
-
-            favoriteButton.addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-                    toggleFavoriteIndex(
-                        originalIndex
-                    );
-                }
-            );
-
-            stationGrid.appendChild(
-                card
-            );
-        }
-    );
-}
-
-
-function toggleFavoriteIndex(index) {
-
-    if (favorites.includes(index)) {
-
-        favorites =
-            favorites.filter(
-                item => item !== index
-            );
-
-    } else {
-
-        favorites.push(index);
-    }
-
-    saveFavorites();
-
-    updateFavoriteButton();
-
-    renderStations(
-        searchInput.value
-    );
-}
-
-
-/* ===============================================================
-   ESCAPE HTML
-   =============================================================== */
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-/* ===============================================================
-   VOLUME
-   =============================================================== */
-
-function updateVolumeIcon() {
-
-    if (volume <= 0) {
-
-        volumeIcon.className =
-            "fa-solid fa-volume-xmark";
-
-    } else if (volume < 0.5) {
-
-        volumeIcon.className =
-            "fa-solid fa-volume-low";
-
-    } else {
-
-        volumeIcon.className =
-            "fa-solid fa-volume-high";
-    }
-}
-
-
-volumeSlider.addEventListener(
-    "input",
-    () => {
-
-        volume =
-            parseFloat(
-                volumeSlider.value
-            );
-
-        audio.volume =
-            volume;
-
-        localStorage.setItem(
-            "radio_tomi_volume",
-            volume
-        );
-
-        updateVolumeIcon();
-    }
-);
-
-updateVolumeIcon();
-
-
-/* ===============================================================
-   TIMER
-   =============================================================== */
-
-function openTimer() {
-
-    document
-        .getElementById("timerModal")
-        .classList.add("show");
-}
-
-
-function stopTimer() {
-
-    if (timerInterval) {
-
-        clearInterval(
-            timerInterval
-        );
-
-        timerInterval = null;
-    }
-
-    timerEndTime = null;
-    timerDuration = 0;
-
-    timerProgressBar.style.width =
-        "0%";
-
-    heroTimer.innerHTML =
-        '<i class="fa-regular fa-clock"></i>';
-
-    document
-        .getElementById("timerSelect")
-        .value = "0";
-}
-
-
-function startTimer(minutes) {
-
-    stopTimer();
-
-    if (minutes <= 0) {
-        return;
-    }
-
-    timerDuration =
-        minutes * 60 * 1000;
-
-    timerEndTime =
-        Date.now() +
-        timerDuration;
-
-    heroTimer.innerHTML =
-        '<i class="fa-solid fa-hourglass-half"></i>';
-
-    timerInterval =
-        setInterval(
-            updateTimer,
-            500
-        );
-
-    updateTimer();
-
-    toast(
-        `Timer ustawiony na ${minutes} min.`
-    );
-}
-
-
-function updateTimer() {
-
-    if (!timerEndTime) {
-        return;
-    }
-
-    const remaining =
-        timerEndTime -
-        Date.now();
-
-    if (remaining <= 0) {
-
-        stopTimer();
-
-        pauseRadio();
-
-        toast(
-            "Timer zakończony. Radio zostało wyłączone."
-        );
-
-        return;
-    }
-
-    const progress =
-        ((timerDuration - remaining) /
-            timerDuration) *
-        100;
-
-    timerProgressBar.style.width =
-        `${Math.min(100, Math.max(0, progress))}%`;
-}
-
-
-/* ===============================================================
-   MODALS
-   =============================================================== */
-
-function openModal(id) {
-
-    document
-        .getElementById(id)
-        .classList.add("show");
-}
-
-
-function closeModal(id) {
-
-    document
-        .getElementById(id)
-        .classList.remove("show");
-}
-
-
-document
-    .querySelectorAll("[data-close]")
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    closeModal(
-                        button.dataset.close
-                    );
-                }
-            );
-        }
-    );
-
-
-document
-    .querySelectorAll(".modal-backdrop")
-    .forEach(
-        backdrop => {
-
-            backdrop.addEventListener(
-                "click",
-                event => {
-
-                    if (
-                        event.target ===
-                        backdrop
-                    ) {
-                        backdrop.classList.remove(
-                            "show"
-                        );
-                    }
-                }
-            );
-        }
-    );
-
-
-/* ===============================================================
-   ADD STATION
-   =============================================================== */
-
-function saveNewStation() {
-
-    const name =
-        document
-            .getElementById("newStationName")
-            .value
-            .trim();
-
-    const genre =
-        document
-            .getElementById("newStationGenre")
-            .value
-            .trim();
-
-    const url =
-        document
-            .getElementById("newStationUrl")
-            .value
-            .trim();
-
-    const logo =
-        document
-            .getElementById("newStationLogo")
-            .value
-            .trim();
-
-    if (!name) {
-
-        toast(
-            "Podaj nazwę stacji."
-        );
-
-        return;
-    }
-
-    if (!url) {
-
-        toast(
-            "Podaj adres strumienia."
-        );
-
-        return;
-    }
-
-    customStations.push({
-
-        name,
-
-        genre:
-            genre ||
-            "Radio",
-
-        url,
-
-        logo:
-            logo ||
-            generateLogo(
-                name.substring(
-                    0,
-                    5
-                )
-            ),
-
-        color:
-            "#f97316"
-    });
-
-    localStorage.setItem(
-        "radio_tomi_custom_stations",
-        JSON.stringify(
-            customStations
-        )
-    );
-
-    document
-        .getElementById("newStationName")
-        .value = "";
-
-    document
-        .getElementById("newStationGenre")
-        .value = "";
-
-    document
-        .getElementById("newStationUrl")
-        .value = "";
-
-    document
-        .getElementById("newStationLogo")
-        .value = "";
-
-    closeModal(
-        "addStationModal"
-    );
-
-    renderStations(
-        searchInput.value
-    );
-
-    toast(
-        "Dodano nową stację."
-    );
-}
-
-
-/* ===============================================================
-   THEME
-   =============================================================== */
-
-function updateThemeButton() {
-
-    const isDark =
-        document.documentElement
-            .classList.contains("dark");
-
-    const button =
-        document.getElementById(
-            "btnTheme"
-        );
-
-    button.innerHTML =
-        isDark
-            ? '<i class="fa-solid fa-sun"></i>'
-            : '<i class="fa-solid fa-moon"></i>';
-}
-
-
-function toggleTheme() {
-
-    const html =
-        document.documentElement;
-
-    const isDark =
-        html.classList.contains("dark");
-
-    if (isDark) {
-
-        html.classList.remove(
-            "dark"
-        );
-
-        localStorage.setItem(
-            "radio_tomi_theme",
-            "light"
-        );
-
-    } else {
-
-        html.classList.add(
-            "dark"
-        );
-
-        localStorage.setItem(
-            "radio_tomi_theme",
-            "dark"
-        );
-    }
-
-    updateThemeButton();
-}
-
-updateThemeButton();
-
-
-/* ===============================================================
-   EQ
-   =============================================================== */
-
-const lowSlider =
-    document.getElementById(
-        "lowSlider"
-    );
-
-const midSlider =
-    document.getElementById(
-        "midSlider"
-    );
-
-const highSlider =
-    document.getElementById(
-        "highSlider"
-    );
-
-const lowValue =
-    document.getElementById(
-        "lowValue"
-    );
-
-const midValue =
-    document.getElementById(
-        "midValue"
-    );
-
-const highValue =
-    document.getElementById(
-        "highValue"
-    );
-
-
-function updateEQ() {
-
-    setupAudioContext();
-
-    const low =
-        Number(
-            lowSlider.value
-        );
-
-    const mid =
-        Number(
-            midSlider.value
-        );
-
-    const high =
-        Number(
-            highSlider.value
-        );
-
-    if (lowFilter) {
-        lowFilter.gain.value =
-            low;
-    }
-
-    if (midFilter) {
-        midFilter.gain.value =
-            mid;
-    }
-
-    if (highFilter) {
-        highFilter.gain.value =
-            high;
-    }
-
-    lowValue.textContent =
-        `${low} dB`;
-
-    midValue.textContent =
-        `${mid} dB`;
-
-    highValue.textContent =
-        `${high} dB`;
-}
-
-
-function resetEQ() {
-
-    lowSlider.value = 0;
-    midSlider.value = 0;
-    highSlider.value = 0;
-
-    updateEQ();
-}
-
-
-lowSlider.addEventListener(
-    "input",
-    updateEQ
-);
-
-midSlider.addEventListener(
-    "input",
-    updateEQ
-);
-
-highSlider.addEventListener(
-    "input",
-    updateEQ
-);
-
-
-/* ===============================================================
-   TOAST
-   =============================================================== */
-
-function toast(message) {
-
-    const element =
-        document.createElement(
-            "div"
-        );
-
-    element.className =
-        "toast";
-
-    element.textContent =
-        message;
-
-    toastContainer.appendChild(
-        element
-    );
-
-    setTimeout(
-        () => {
-
-            element.remove();
-
-        },
-        3600
-    );
-}
-
-
-/* ===============================================================
-   EVENTS
-   =============================================================== */
-
-btnPlay.addEventListener(
-    "click",
-    togglePlay
-);
-
-heroPlay.addEventListener(
-    "click",
-    togglePlay
-);
-
-btnPrevious.addEventListener(
-    "click",
-    previousStation
-);
-
-heroPrevious.addEventListener(
-    "click",
-    previousStation
-);
-
-btnNext.addEventListener(
-    "click",
-    nextStation
-);
-
-heroNext.addEventListener(
-    "click",
-    nextStation
-);
-
-heroFavorite.addEventListener(
-    "click",
-    toggleFavorite
-);
-
-heroTimer.addEventListener(
-    "click",
-    openTimer
-);
-
-document
-    .getElementById("btnTheme")
-    .addEventListener(
-        "click",
-        toggleTheme
-    );
-
-document
-    .getElementById("btnShortcuts")
-    .addEventListener(
-        "click",
-        () => {
-            openModal(
-                "shortcutsModal"
-            );
-        }
-    );
-
-document
-    .getElementById("btnAddStation")
-    .addEventListener(
-        "click",
-        () => {
-            openModal(
-                "addStationModal"
-            );
-        }
-    );
-
-document
-    .getElementById("btnEQ")
-    .addEventListener(
-        "click",
-        () => {
-            openModal(
-                "eqModal"
-            );
-        }
-    );
-
-document
-    .getElementById("resetEQ")
-    .addEventListener(
-        "click",
-        resetEQ
-    );
-
-document
-    .getElementById("saveTimer")
-    .addEventListener(
-        "click",
-        () => {
-
-            const minutes =
-                Number(
-                    document
-                        .getElementById(
-                            "timerSelect"
-                        )
-                        .value
-                );
-
-            if (minutes === 0) {
-
-                stopTimer();
-
-                toast(
-                    "Timer wyłączony."
-                );
-
-            } else {
-
-                startTimer(
-                    minutes
-                );
-            }
-
-            closeModal(
-                "timerModal"
-            );
-        }
-    );
-
-document
-    .getElementById("saveStation")
-    .addEventListener(
-        "click",
-        saveNewStation
-    );
-
-
-/* ===============================================================
-   SEARCH
-   =============================================================== */
-
-searchInput.addEventListener(
-    "input",
-    () => {
-
-        renderStations(
-            searchInput.value
-        );
-    }
-);
-
-
-/* ===============================================================
-   AUDIO EVENTS
-   =============================================================== */
-
-audio.addEventListener(
-    "play",
-    () => {
-
-        isPlaying = true;
-
-        /*
-         * Jeszcze raz upewniamy się,
-         * że Media Session jest skonfigurowana
-         * po rozpoczęciu odtwarzania.
-         */
-
-        setupMediaSession();
+        updateStationUI();
 
         updatePlaybackUI();
 
         updateMediaSession();
 
-        renderStations(
-            searchInput.value
-        );
+        renderStations();
     }
-);
 
+    updateSleepInfo();
+
+})();
+
+/* =========================================================
+   MEDIA SESSION UPDATE
+   ========================================================= */
 
 audio.addEventListener(
-    "pause",
-    () => {
-
-        isPlaying = false;
-
-        updatePlaybackUI();
-
-        updateMediaSession();
-
-        renderStations(
-            searchInput.value
-        );
-    }
+    "loadedmetadata",
+    updateMediaSession
 );
-
-
-audio.addEventListener(
-    "error",
-    () => {
-
-        isPlaying = false;
-
-        updatePlaybackUI();
-
-        updateMediaSession();
-
-        renderStations(
-            searchInput.value
-        );
-
-        toast(
-            "Wystąpił problem ze strumieniem."
-        );
-    }
-);
-
-
-/* ===============================================================
-   KEYBOARD
-   =============================================================== */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        /*
-         * Nie przechwytujemy spacji podczas
-         * pisania w polu tekstowym.
-         */
-
-        const tag =
-            event.target.tagName;
-
-        const isTyping =
-            tag === "INPUT" ||
-            tag === "TEXTAREA" ||
-            tag === "SELECT";
-
-        if (
-            event.code === "Space" &&
-            !isTyping
-        ) {
-
-            event.preventDefault();
-
-            togglePlay();
-        }
-
-        if (
-            event.key === "ArrowLeft" &&
-            !isTyping
-        ) {
-
-            event.preventDefault();
-
-            previousStation();
-        }
-
-        if (
-            event.key === "ArrowRight" &&
-            !isTyping
-        ) {
-
-            event.preventDefault();
-
-            nextStation();
-        }
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            document
-                .querySelectorAll(
-                    ".modal-backdrop.show"
-                )
-                .forEach(
-                    modal => {
-                        modal.classList.remove(
-                            "show"
-                        );
-                    }
-                );
-        }
-    }
-);
-
-
-/* ===============================================================
-   INITIALIZATION
-   =============================================================== */
-
-setupMediaSession();
-
-updatePlaybackUI();
-
-updateStationUI();
-
-renderStations();
-
-updateEQ();
 
 </script>
 
