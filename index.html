@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b0b0d">
 
-    <title>Radio by ToMi 3.0.3</title>
+    <title>Radio by ToMi 3.0.5</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -470,7 +470,7 @@
 
 
         /* =====================================================
-           HERO CONTROLS 3.0.3
+           HERO CONTROLS 3.0.5
            ===================================================== */
 
         .hero-actions {
@@ -1803,7 +1803,7 @@
                 </span>
 
                 <span class="brand-version">
-                    3.0.3
+                    3.0.5
                 </span>
             </div>
 
@@ -1897,7 +1897,7 @@
 
 
             <!-- =============================================
-                 GŁÓWNE STEROWANIE 3.0.3
+                 GŁÓWNE STEROWANIE 3.0.5
                  ============================================= -->
 
             <div class="hero-actions">
@@ -2039,11 +2039,10 @@
 
 
     <footer class="footer">
-        Created by ToMi with AI · wersja 3.0.3
+        Created by ToMi with AI · wersja 3.0.5
     </footer>
 
 </main>
-
 
 <!-- =========================================================
      BOTTOM PLAYER
@@ -2591,7 +2590,7 @@
 <script>
 /* =========================================================
 
-   RADIO BY TOMI 3.0.3
+   RADIO BY TOMI 3.0.5
 
    ========================================================= */
 
@@ -2608,359 +2607,182 @@ function generateStationIconSVG(label) {
 }
 
 const stations = [
-
     {
-
         name: "RMF FM",
-
         genre: "Pop · Hits",
-
         url: "https://rs6-krk2.rmfstream.pl/rmf_fm",
-
         logo: "https://play-lh.googleusercontent.com/5QMOZJAwqTDbltpZtAhuHNhJCjpoeRyV-qpOS6I0RFIz-WMi04abc1S_5GTK6bCaTjrrOI3K49Aq85vzX43TiQ=w480-h960",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Radio ZET",
-
         genre: "Pop · Music",
-
-        url: "https://stream.open.fm/146",
-
+        url: "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_ZETAAC.aac",
         logo: "https://v.wpimg.pl/OTBjLmpwYDUjCDpeXwxtIGBQbgQZVWN2N0h2T19Bf2Q6RSMdFRkpOW8fPAEfFit5IxolQwcHLDAsRDwBX0csYXRTLVRJWn9nel5hWRVGfXkjCS5eXRN8YHZZe1UUEnZkIUQmHRdVMg",
-
         color: "#ea580c"
-
     },
-
     {
-
         name: "Radio Plus",
-
         genre: "Pop · Hits",
-
-        url: "https://pl05.cdn.eurozet.pl/plu-gdn.mp3",
-
+        url: "https://plus-waw-01.cdn.eurozet.pl/plu-waw.mp3",
         logo: "https://www.radioplus.pl/media/radioplus/desktop/images/radioplus-plug-icon.jpg",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Radio Gdańsk",
-
         genre: "News · Music",
-
         url: "https://stream.task.gda.pl:8443/rg1",
-
         logo: "https://www.radio.pl/300/polskieradiogdansk.png?version=ba15104473109e90d0d731e14d6d056454e62977",
-
         color: "#ea580c"
-
     },
-
     {
-
         name: "Radio Złote Przeboje",
-
         genre: "Oldies · Hits",
-
         url: "https://radiostream.pl/tuba8906-1.mp3",
-
         logo: "https://play-lh.googleusercontent.com/kl4oFQueuGsej8YXVsvgLt1n0ODktArsTVUmaleMm795nl_blT_NU62feJnt-_IiZtHr7tQ2PH39yuvSxcJr",
-
         color: "#f59e0b"
-
     },
-
     {
-
-        name: "Muzo FM",
-
-        genre: "Rock · Alternative",
-
-        url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv",
-
-        logo: "https://pbs.twimg.com/profile_images/1435159245926932482/54A0g2Sx_400x400.jpg",
-
-        color: "#dc2626"
-
-    },
-
-    {
-
         name: "TOK FM",
-
         genre: "News · Talk",
-
         url: "https://radiostream.pl/tuba10-1.mp3",
-
         logo: "https://play-lh.googleusercontent.com/EbPgdspx2CI5GdehTM4et3c4SNaS4KqzrdlfsPNyoded_ZFMK1Wn9AP1Fp15DtTT57j7qTPOZ5-N76gZzWJIQpw=w480-h960",
-
         color: "#ea580c"
-
     },
-
     {
-
         name: "Eska",
-
         genre: "Pop · Dance",
-
         url: "https://ic2.smcdn.pl/2110-1.mp3",
-
         logo: "https://play-lh.googleusercontent.com/AWuymPJZak_1mXkEcGf4R7IaLCCcZ_v3ipLUVu2T36KBVMUkyNwRtzXtGQAzOi754IO16o0Waxb3hqRTX8cj=w480-h960",
-
         color: "#fb923c"
-
     },
-
     {
-
         name: "Eska GO",
-
         genre: "Pop · Dance",
-
         url: "https://ic2.smcdn.pl/6200-1.mp3",
-
         logo: "https://yt3.googleusercontent.com/ytc/AIdro_n9wZ6-l9B_dBhJJ8rqW70nWcGzCWQoSrlXkz6-ycYE_fI=s900-c-k-c0x00ffffff-no-rj",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Eska Rock",
-
         genre: "Rock",
-
-        url: "https://ic2.smcdn.pl/3990-1.aac",
-
+        url: "https://n12-eu.rcs.revma.com/1nnezw8qz7zuv",
         logo: "https://play-lh.googleusercontent.com/Wbc2KfQ6Ubmix47KidoEhQ7zWq6jPtkSOfmHPbzzSVZXGvkzjvNK754FMZTh94iDoIz3RlVX3oGz-R4j4aaIL34",
-
         color: "#dc2626"
-
     },
-
+	{
+        name: "VOX FM",
+        genre: "Rock",
+        url: "https://ic2.smcdn.pl/3990-1.aac",
+        logo: "https://th.bing.com/th/id/R.22d88e0b41efcc50d8dd8ffc1a924405?rik=8QugnmPEP%2byXEA&pid=ImgRaw&r=0",
+        color: "#dc2626"
+    },	
     {
-
         name: "RMF MAXX",
-
         genre: "Dance · Pop",
-
         url: "https://rs6-krk2.rmfstream.pl/RMFMAXXX48",
-
         logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiRWfbSoirBlqexvaSPSxpU3efrxOhUmrnkw&s",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "RMF Classic",
-
         genre: "Classical · Film",
-
         url: "https://rs6-krk2.rmfstream.pl/RMFCLASSIC48",
-
         logo: "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/RMF_CLASSIC_-_logotyp.png/250px-RMF_CLASSIC_-_logotyp.png?utm_source=pl.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
-
         color: "#f59e0b"
-
     },
-
     {
-
         name: "RMF Maxx Club",
-
         genre: "Electronic · EDM",
-
         url: "https://rs6-krk2.rmfstream.pl/rmf_club",
-
         logo: "https://static.rmf.pl/portal/stations/covers/rmf-club/20251007132553_rmf-club_600.jpg",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Radio 357",
-
         genre: "Alternative · Rock",
-
         url: "https://stream.rcs.revma.com/ye5kghkgcm0uv",
-
         logo: "https://myradioonline.pl/public/uploads/radio_img/radio-357/play_250_250.webp",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Radio Nowy Świat",
-
         genre: "Alternative · Music",
-
         url: "http://stream.rcs.revma.com/ypqt40u0x1zuv",
-
         logo: "https://media.licdn.com/dms/image/v2/D4D22AQHigxwiLgtOjQ/feedshare-shrink_800/feedshare-shrink_800/0/1707212512358?e=2147483647&v=beta&t=HsnqVM5gbH5NXFto5OwJXQKE63VSfAVyCQExKf39DOQ",
-
         color: "#fb923c"
-
     },
-
     {
-
         name: "Antyradio",
-
         genre: "Rock",
-
-        url: "https://ant01.cdn.eurozet.pl/ant-net.mp3",
-
+        url: "https://an.cdn.eurozet.pl/ant-waw.mp3",
         logo: "https://www.radio.pl/300/antypoland.png?version=4ca187d0233e2428dce67d92cd267851ea89e3de",
-
         color: "#dc2626"
-
     },
-
     {
-
-        name: "Rock Radio",
-
-        genre: "Rock",
-
-        url: "https://stream.rcs.revma.com/rockradio",
-
-        logo: "https://cdn-profiles.tunein.com/s295302/images/logog.png?t=163674",
-
-        color: "#f97316"
-
-    },
-
-    {
-
         name: "Chillizet",
-
         genre: "Chill · Lounge",
-
-        url: "https://chillizet.livestream.com",
-
+        url: "https://r.dcs.redcdn.pl/sc/o2/Eurozet/live/chillizet.livx?audio=5",
         logo: "https://openfm-upload-api.wpcdn.pl/8d5f381e-a4e0-43d9-8c9a-627ed81da6f5.jpg",
-
         color: "#fb923c"
-
     },
-
     {
-
         name: "Radio Pogoda",
-
         genre: "Oldies · Easy Listening",
-
         url: "https://radiostream.pl/tuba145-1.mp3",
-
         logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkOlHaMXfrVOMlzqGjsrR-7Ly8kHt-pkRmSQ&s",
-
         color: "#f59e0b"
-
     },
-
     {
-
         name: "Radio Kaszëbë",
-
         genre: "Regional · Music",
-
         url: "https://stream4.nadaje.com:10125/kaszebe128",
-
         logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBXRktYoMxEacstxPfZwsF7wQJQJJIDbj_A8w2hnvWjQ&s",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Radio Yanosik",
-
         genre: "Music · Road",
-
         url: "https://n02-eu.rcs.revma.com/7vhveccrnquvv",
-
         logo: "https://static.mytuner.mobi/media/tvos_radios/995/radio-yanosik.a146e99c.png",
-
         color: "#f97316"
-
     },
-
     {
-
         name: "Radio Yanosik '80",
-
         genre: "80s · Hits",
-
         url: "https://n20-eu.rcs.revma.com/uwey4ye0gfcwv",
-
         logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-vYzP11AQigoBntsGlVUMxmYK6-7iObZ8E5aTUDZHFA&s",
-
         color: "#f59e0b"
-
     },
-
     {
-
         name: "Radio Yanosik Love",
-
         genre: "Love · Ballads",
-
         url: "https://n07-eu.rcs.revma.com/8fqn8rr6ktuvv",
-
         logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXlhA1Zo2a2FickRHz-v1ELBGgEN0LSOlDIQ&s",
-
         color: "#ea580c"
-
     },
-
     {
-
         name: "Radio Yanosik Rock",
-
         genre: "Rock",
-
         url: "https://n20-eu.rcs.revma.com/whxxccsdp7uvv",
-
         logo: "https://static.mytuner.mobi/media/tvos_radios/667/radio-yanosik-2.b2b0fdf8.png",
-
         color: "#dc2626"
-
     },
-
     {
-
         name: "Radio Yanosik X-Mas",
-
         genre: "Christmas · Seasonal",
-
         url: "https://n25-eu.rcs.revma.com/b667d2c0qxcwv",
-
         logo: "https://cdn-profiles.tunein.com/s349545/images/logog.png?t=1",
-
         color: "#dc2626"
-
+    },
+	{
+        name: "Dublin's Q102",
+        genre: "Rock",
+        url: "https://onic.dublin.live.stream.broadcasting.news/stream-q102",
+        logo: "https://media.info/l/o/6/64.1645844540.png",
+        color: "#f97316"
     }
-
 ];
-
 
 let customStations = [];
 
@@ -5199,7 +5021,7 @@ audio.addEventListener(
 
 
 /* =========================================================
-   MEDIA SESSION — RADIO CONTROLS 3.0.3
+   MEDIA SESSION — RADIO CONTROLS 3.0.5
    ========================================================= */
 
 /*
@@ -5367,7 +5189,7 @@ function updateMediaSession() {
                     "Radio na żywo",
 
                 album:
-                    "Radio by ToMi 3.0.3",
+                    "Radio by ToMi 3.0.5",
 
                 artwork: [
                     {
