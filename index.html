@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b0b0d">
 
-    <title>Radio by ToMi 3.0.5</title>
+    <title>Radio by ToMi 3.0.6</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -117,8 +117,12 @@
 
             color: var(--text);
 
-            padding-bottom:
-                calc(var(--player-height) + 25px);
+            /*
+             * Brak dodatkowego paddingu pod stopką.
+             * Player jest fixed i nie generuje już pustej
+             * przestrzeni na końcu dokumentu.
+             */
+            padding-bottom: 0;
 
             transition:
                 background .35s ease,
@@ -268,8 +272,8 @@
         }
 
         .icon-button {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
 
             display: grid;
             place-items: center;
@@ -300,7 +304,7 @@
             max-width: 1500px;
             margin: auto;
 
-            padding: 30px 24px 40px;
+            padding: 30px 24px 0;
         }
 
         .hero {
@@ -366,6 +370,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+
+            /*
+             * Grafika bez wewnętrznej ramki.
+             */
+            border: 0;
+            outline: 0;
         }
 
         .hero-art-placeholder {
@@ -387,16 +397,12 @@
                 #18181b;
         }
 
-        .playing-ring {
-            position: absolute;
-            inset: 15px;
-
-            border-radius: 20px;
-
-            border: 1px solid rgba(255,255,255,.12);
-
-            pointer-events: none;
-        }
+        /*
+         * USUNIĘTO wewnętrzny playing-ring.
+         *
+         * Nie nakładamy już żadnej ramki na główną
+         * grafikę radia.
+         */
 
         .hero-content {
             min-width: 0;
@@ -467,11 +473,6 @@
 
             max-width: 700px;
         }
-
-
-        /* =====================================================
-           HERO CONTROLS 3.0.5
-           ===================================================== */
 
         .hero-actions {
             display: flex;
@@ -587,8 +588,7 @@
 
             cursor: pointer;
 
-            transition:
-                .2s ease;
+            transition: .2s ease;
         }
 
         .hero-secondary-button:hover {
@@ -601,11 +601,6 @@
 
             transform: translateY(-1px);
         }
-
-
-        /* =====================================================
-           TIMER BUTTON
-           ===================================================== */
 
         .timer-button {
             position: relative;
@@ -678,7 +673,7 @@
             bottom: 0;
 
             width: var(--timer-progress, 0%);
-            height: 3px;
+            height: 2px;
 
             background: var(--accent);
 
@@ -692,11 +687,6 @@
             min-width: 54px;
             text-align: left;
         }
-
-
-        /* =====================================================
-           STANDARD BUTTONS
-           ===================================================== */
 
         .primary-button {
             min-height: 46px;
@@ -760,11 +750,6 @@
             border-color: rgba(249,115,22,.3);
             color: var(--accent);
         }
-
-
-        /* =====================================================
-           STATIONS
-           ===================================================== */
 
         .section {
             margin-top: 35px;
@@ -1049,7 +1034,6 @@
             color: var(--accent);
         }
 
-
         /* =====================================================
            BOTTOM PLAYER
            ===================================================== */
@@ -1137,11 +1121,24 @@
 
         .now-playing-info {
             min-width: 0;
+
+            /*
+             * Stała wysokość zapobiega przesuwaniu
+             * informacji przy zmianie stacji.
+             */
+            height: 38px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .now-playing-title {
+            height: 18px;
+
             font-size: 14px;
             font-weight: 800;
+            line-height: 18px;
 
             white-space: nowrap;
             overflow: hidden;
@@ -1149,11 +1146,14 @@
         }
 
         .now-playing-subtitle {
+            height: 16px;
+
             color: var(--muted);
 
             font-size: 12px;
+            line-height: 16px;
 
-            margin-top: 3px;
+            margin-top: 2px;
 
             white-space: nowrap;
             overflow: hidden;
@@ -1241,7 +1241,6 @@
             width: 100%;
             cursor: pointer;
         }
-
 
         /* =====================================================
            MODALS
@@ -1480,7 +1479,6 @@
             color: var(--accent);
         }
 
-
         /* =====================================================
            TOAST
            ===================================================== */
@@ -1547,7 +1545,7 @@
 
             margin: 20px auto 0;
 
-            padding: 25px 24px;
+            padding: 25px 24px 18px;
 
             color: var(--muted-dark);
 
@@ -1555,7 +1553,6 @@
 
             font-size: 11px;
         }
-
 
         /* =====================================================
            RESPONSIVE
@@ -1584,7 +1581,6 @@
             }
         }
 
-
         @media (max-width: 700px) {
 
             :root {
@@ -1597,7 +1593,7 @@
             }
 
             .main {
-                padding: 20px 15px 25px;
+                padding: 20px 15px 0;
             }
 
             .brand-version {
@@ -1693,11 +1689,6 @@
                 height: 46px;
             }
 
-            /*
-             * Poprzednia / play-pauza / następna
-             * pozostają widoczne również na telefonie.
-             */
-
             .now-playing-info {
                 max-width: 145px;
             }
@@ -1716,13 +1707,18 @@
             .toast {
                 max-width: none;
             }
-        }
 
+            .footer {
+                padding-bottom: 12px;
+            }
+        }
 
         @media (max-width: 390px) {
 
             .now-playing-info {
                 max-width: 105px;
+
+                height: 38px;
             }
 
             .now-playing-subtitle {
@@ -1784,7 +1780,6 @@
     </style>
 </head>
 
-
 <body>
 
 <header class="app-header">
@@ -1803,12 +1798,11 @@
                 </span>
 
                 <span class="brand-version">
-                    3.0.5
+                    3.0.6
                 </span>
             </div>
 
         </div>
-
 
         <div class="header-actions">
 
@@ -1845,7 +1839,6 @@
 
 </header>
 
-
 <main class="main">
 
     <section class="hero">
@@ -1865,10 +1858,7 @@
                 alt="Okładka stacji"
             >
 
-            <div class="playing-ring"></div>
-
         </div>
-
 
         <div class="hero-content">
 
@@ -1880,11 +1870,9 @@
 
             </div>
 
-
             <h1 id="heroStationName">
                 Wybierz swoją stację
             </h1>
-
 
             <p
                 id="heroDescription"
@@ -1895,15 +1883,7 @@
                 Radio by ToMi.
             </p>
 
-
-            <!-- =============================================
-                 GŁÓWNE STEROWANIE 3.0.5
-                 ============================================= -->
-
             <div class="hero-actions">
-
-
-                <!-- PIERWSZY WIERSZ -->
 
                 <div class="hero-control-row hero-playback-row">
 
@@ -1913,11 +1893,8 @@
                         title="Poprzednia stacja"
                         aria-label="Poprzednia stacja"
                     >
-                        <i
-                            class="fa-solid fa-backward-step"
-                        ></i>
+                        <i class="fa-solid fa-backward-step"></i>
                     </button>
-
 
                     <button
                         id="btnHeroPlay"
@@ -1925,11 +1902,8 @@
                         title="Odtwórz / pauza"
                         aria-label="Odtwórz / pauza"
                     >
-                        <i
-                            class="fa-solid fa-play"
-                        ></i>
+                        <i class="fa-solid fa-play"></i>
                     </button>
-
 
                     <button
                         id="btnHeroNext"
@@ -1937,15 +1911,10 @@
                         title="Następna stacja"
                         aria-label="Następna stacja"
                     >
-                        <i
-                            class="fa-solid fa-forward-step"
-                        ></i>
+                        <i class="fa-solid fa-forward-step"></i>
                     </button>
 
                 </div>
-
-
-                <!-- DRUGI WIERSZ -->
 
                 <div class="hero-control-row hero-secondary-row">
 
@@ -1954,15 +1923,12 @@
                         class="hero-secondary-button"
                         title="Dodaj do ulubionych"
                     >
-                        <i
-                            class="fa-regular fa-heart"
-                        ></i>
+                        <i class="fa-regular fa-heart"></i>
 
                         <span>
                             Dodaj do ulubionych
                         </span>
                     </button>
-
 
                     <button
                         id="btnSleep"
@@ -1992,9 +1958,6 @@
 
     </section>
 
-
-    <!-- STACJE -->
-
     <section class="section">
 
         <div class="section-header">
@@ -2011,12 +1974,9 @@
 
             </div>
 
-
             <div class="search-box">
 
-                <i
-                    class="fa-solid fa-magnifying-glass"
-                ></i>
+                <i class="fa-solid fa-magnifying-glass"></i>
 
                 <input
                     id="stationSearch"
@@ -2029,7 +1989,6 @@
 
         </div>
 
-
         <div
             id="stationGrid"
             class="station-grid"
@@ -2037,21 +1996,15 @@
 
     </section>
 
-
     <footer class="footer">
-        Created by ToMi with AI · wersja 3.0.5
+        Created by ToMi with AI · wersja 3.0.6
     </footer>
 
 </main>
 
-<!-- =========================================================
-     BOTTOM PLAYER
-     ========================================================= -->
-
 <div class="bottom-player">
 
     <div class="player-inner">
-
 
         <div class="now-playing">
 
@@ -2073,7 +2026,6 @@
 
             </div>
 
-
             <div class="now-playing-info">
 
                 <div
@@ -2094,7 +2046,6 @@
 
         </div>
 
-
         <div class="player-center">
 
             <button
@@ -2103,11 +2054,8 @@
                 title="Poprzednia stacja"
                 aria-label="Poprzednia stacja"
             >
-                <i
-                    class="fa-solid fa-backward-step"
-                ></i>
+                <i class="fa-solid fa-backward-step"></i>
             </button>
-
 
             <button
                 id="btnPlay"
@@ -2121,20 +2069,16 @@
                 ></i>
             </button>
 
-
             <button
                 id="btnNext"
                 class="player-button skip-button"
                 title="Następna stacja"
                 aria-label="Następna stacja"
             >
-                <i
-                    class="fa-solid fa-forward-step"
-                ></i>
+                <i class="fa-solid fa-forward-step"></i>
             </button>
 
         </div>
-
 
         <div class="player-right">
 
@@ -2157,7 +2101,6 @@
 
             </div>
 
-
             <button
                 id="btnEQ"
                 class="icon-button"
@@ -2172,19 +2115,13 @@
 
 </div>
 
-
-<!-- AUDIO -->
-
 <audio
     id="audio"
     preload="none"
     crossorigin="anonymous"
 ></audio>
 
-
-<!-- =========================================================
-     EQ MODAL
-     ========================================================= -->
+<!-- EQ -->
 
 <div
     id="eqModal"
@@ -2207,7 +2144,6 @@
             </button>
 
         </div>
-
 
         <div class="eq-row">
 
@@ -2234,7 +2170,6 @@
 
         </div>
 
-
         <div class="eq-row">
 
             <span class="eq-label">
@@ -2259,7 +2194,6 @@
             </span>
 
         </div>
-
 
         <div class="eq-row">
 
@@ -2286,31 +2220,20 @@
 
         </div>
 
-
         <button
             id="btnResetEQ"
             class="secondary-button"
-            style="
-                width:100%;
-                justify-content:center
-            "
+            style="width:100%;justify-content:center"
         >
-            <i
-                class="fa-solid fa-rotate-left"
-            ></i>
-
+            <i class="fa-solid fa-rotate-left"></i>
             Reset korektora
-
         </button>
 
     </div>
 
 </div>
 
-
-<!-- =========================================================
-     SLEEP MODAL
-     ========================================================= -->
+<!-- SLEEP -->
 
 <div
     id="sleepModal"
@@ -2334,7 +2257,6 @@
 
         </div>
 
-
         <div class="form-group">
 
             <label class="form-label">
@@ -2346,38 +2268,17 @@
                 class="form-select"
             >
 
-                <option value="0">
-                    Wyłączony
-                </option>
-
-                <option value="15">
-                    15 minut
-                </option>
-
-                <option value="30">
-                    30 minut
-                </option>
-
-                <option value="45">
-                    45 minut
-                </option>
-
-                <option value="60">
-                    60 minut
-                </option>
-
-                <option value="90">
-                    90 minut
-                </option>
-
-                <option value="120">
-                    120 minut
-                </option>
+                <option value="0">Wyłączony</option>
+                <option value="15">15 minut</option>
+                <option value="30">30 minut</option>
+                <option value="45">45 minut</option>
+                <option value="60">60 minut</option>
+                <option value="90">90 minut</option>
+                <option value="120">120 minut</option>
 
             </select>
 
         </div>
-
 
         <button
             id="btnSetSleep"
@@ -2392,10 +2293,7 @@
 
 </div>
 
-
-<!-- =========================================================
-     ADD STATION
-     ========================================================= -->
+<!-- ADD STATION -->
 
 <div
     id="stationModal"
@@ -2419,7 +2317,6 @@
 
         </div>
 
-
         <div class="form-group">
 
             <label class="form-label">
@@ -2434,7 +2331,6 @@
 
         </div>
 
-
         <div class="form-group">
 
             <label class="form-label">
@@ -2448,7 +2344,6 @@
             >
 
         </div>
-
 
         <div class="form-group">
 
@@ -2465,7 +2360,6 @@
 
         </div>
 
-
         <div class="form-group">
 
             <label class="form-label">
@@ -2481,7 +2375,6 @@
 
         </div>
 
-
         <button
             id="btnSaveStation"
             class="primary-button"
@@ -2495,10 +2388,7 @@
 
 </div>
 
-
-<!-- =========================================================
-     SHORTCUTS
-     ========================================================= -->
+<!-- SHORTCUTS -->
 
 <div
     id="shortcutsModal"
@@ -2522,55 +2412,40 @@
 
         </div>
 
-
         <div class="shortcuts">
 
             <div class="shortcut">
-                <span>
-                    Odtwarzanie / pauza
-                </span>
+                <span>Odtwarzanie / pauza</span>
                 <kbd>Space</kbd>
             </div>
 
             <div class="shortcut">
-                <span>
-                    Poprzednia stacja
-                </span>
+                <span>Poprzednia stacja</span>
                 <kbd>←</kbd>
             </div>
 
             <div class="shortcut">
-                <span>
-                    Następna stacja
-                </span>
+                <span>Następna stacja</span>
                 <kbd>→</kbd>
             </div>
 
             <div class="shortcut">
-                <span>
-                    Zwiększ głośność
-                </span>
+                <span>Zwiększ głośność</span>
                 <kbd>↑</kbd>
             </div>
 
             <div class="shortcut">
-                <span>
-                    Zmniejsz głośność
-                </span>
+                <span>Zmniejsz głośność</span>
                 <kbd>↓</kbd>
             </div>
 
             <div class="shortcut">
-                <span>
-                    Wyciszenie
-                </span>
+                <span>Wyciszenie</span>
                 <kbd>M</kbd>
             </div>
 
             <div class="shortcut">
-                <span>
-                    Zamknij okno
-                </span>
+                <span>Zamknij okno</span>
                 <kbd>Esc</kbd>
             </div>
 
@@ -2580,31 +2455,25 @@
 
 </div>
 
-
 <div
     id="toastContainer"
     class="toast-container"
 ></div>
 
-
 <script>
-/* =========================================================
-
-   RADIO BY TOMI 3.0.5
-
-   ========================================================= */
 
 /* =========================================================
-
-   STATION ICON
-
+   RADIO BY TOMI 3.0.6
    ========================================================= */
 
 function generateStationIconSVG(label) {
-
     return generateLogo(label);
-
 }
+
+
+/* =========================================================
+   STATIONS
+   ========================================================= */
 
 const stations = [
     {
@@ -2670,13 +2539,13 @@ const stations = [
         logo: "https://play-lh.googleusercontent.com/Wbc2KfQ6Ubmix47KidoEhQ7zWq6jPtkSOfmHPbzzSVZXGvkzjvNK754FMZTh94iDoIz3RlVX3oGz-R4j4aaIL34",
         color: "#dc2626"
     },
-	{
+    {
         name: "VOX FM",
         genre: "Rock",
         url: "https://ic2.smcdn.pl/3990-1.aac",
         logo: "https://th.bing.com/th/id/R.22d88e0b41efcc50d8dd8ffc1a924405?rik=8QugnmPEP%2byXEA&pid=ImgRaw&r=0",
         color: "#dc2626"
-    },	
+    },
     {
         name: "RMF MAXX",
         genre: "Dance · Pop",
@@ -2775,7 +2644,7 @@ const stations = [
         logo: "https://cdn-profiles.tunein.com/s349545/images/logog.png?t=1",
         color: "#dc2626"
     },
-	{
+    {
         name: "Dublin's Q102",
         genre: "Rock",
         url: "https://onic.dublin.live.stream.broadcasting.news/stream-q102",
@@ -2784,21 +2653,17 @@ const stations = [
     }
 ];
 
+
 let customStations = [];
 
 try {
-
-    customStations =
-        JSON.parse(
-            localStorage.getItem(
-                "radio_tomi_custom_stations"
-            ) || "[]"
-        );
-
+    customStations = JSON.parse(
+        localStorage.getItem(
+            "radio_tomi_custom_stations"
+        ) || "[]"
+    );
 } catch {
-
     customStations = [];
-
 }
 
 
@@ -2811,23 +2676,17 @@ let allStations = [
 let favorites = [];
 
 try {
-
-    favorites =
-        JSON.parse(
-            localStorage.getItem(
-                "radio_tomi_favorites"
-            ) || "[]"
-        );
-
+    favorites = JSON.parse(
+        localStorage.getItem(
+            "radio_tomi_favorites"
+        ) || "[]"
+    );
 } catch {
-
     favorites = [];
-
 }
 
 
 let currentStationIndex = -1;
-
 let isPlaying = false;
 
 
@@ -2836,11 +2695,8 @@ let isPlaying = false;
    ========================================================= */
 
 let sleepTimer = null;
-
 let sleepEnd = null;
-
 let sleepDuration = 0;
-
 let sleepInterval = null;
 
 
@@ -2849,15 +2705,10 @@ let sleepInterval = null;
    ========================================================= */
 
 let audioContext = null;
-
 let sourceNode = null;
-
 let analyser = null;
-
 let lowFilter = null;
-
 let midFilter = null;
-
 let highFilter = null;
 
 
@@ -2865,132 +2716,61 @@ let highFilter = null;
    ELEMENTS
    ========================================================= */
 
-const audio =
-    document.getElementById("audio");
+const audio = document.getElementById("audio");
+const stationGrid = document.getElementById("stationGrid");
+const stationSearch = document.getElementById("stationSearch");
 
+const btnPlay = document.getElementById("btnPlay");
+const playIcon = document.getElementById("playIcon");
 
-const stationGrid =
-    document.getElementById("stationGrid");
+const btnHeroPlay = document.getElementById("btnHeroPlay");
+const btnHeroPrev = document.getElementById("btnHeroPrev");
+const btnHeroNext = document.getElementById("btnHeroNext");
 
+const btnPrev = document.getElementById("btnPrev");
+const btnNext = document.getElementById("btnNext");
 
-const stationSearch =
-    document.getElementById("stationSearch");
+const volume = document.getElementById("volume");
+const volumeIcon = document.getElementById("volumeIcon");
 
-
-const btnPlay =
-    document.getElementById("btnPlay");
-
-
-const playIcon =
-    document.getElementById("playIcon");
-
-
-const btnHeroPlay =
-    document.getElementById("btnHeroPlay");
-
-
-const btnHeroPrev =
-    document.getElementById("btnHeroPrev");
-
-
-const btnHeroNext =
-    document.getElementById("btnHeroNext");
-
-
-const btnPrev =
-    document.getElementById("btnPrev");
-
-
-const btnNext =
-    document.getElementById("btnNext");
-
-
-const volume =
-    document.getElementById("volume");
-
-
-const volumeIcon =
-    document.getElementById("volumeIcon");
-
-
-const btnTheme =
-    document.getElementById("btnTheme");
-
-
-const themeIcon =
-    document.getElementById("themeIcon");
-
+const btnTheme = document.getElementById("btnTheme");
+const themeIcon = document.getElementById("themeIcon");
 
 const btnHeroFavorite =
-    document.getElementById(
-        "btnHeroFavorite"
-    );
-
+    document.getElementById("btnHeroFavorite");
 
 const heroStationName =
-    document.getElementById(
-        "heroStationName"
-    );
-
+    document.getElementById("heroStationName");
 
 const heroDescription =
-    document.getElementById(
-        "heroDescription"
-    );
-
+    document.getElementById("heroDescription");
 
 const heroArt =
-    document.getElementById(
-        "heroArt"
-    );
-
+    document.getElementById("heroArt");
 
 const heroArtPlaceholder =
-    document.getElementById(
-        "heroArtPlaceholder"
-    );
-
+    document.getElementById("heroArtPlaceholder");
 
 const playerStationName =
-    document.getElementById(
-        "playerStationName"
-    );
-
+    document.getElementById("playerStationName");
 
 const playerStationGenre =
-    document.getElementById(
-        "playerStationGenre"
-    );
-
+    document.getElementById("playerStationGenre");
 
 const playerArt =
-    document.getElementById(
-        "playerArt"
-    );
-
+    document.getElementById("playerArt");
 
 const playerArtPlaceholder =
-    document.getElementById(
-        "playerArtPlaceholder"
-    );
-
+    document.getElementById("playerArtPlaceholder");
 
 const btnSleep =
-    document.getElementById(
-        "btnSleep"
-    );
-
+    document.getElementById("btnSleep");
 
 const sleepTimerIcon =
-    document.getElementById(
-        "sleepTimerIcon"
-    );
-
+    document.getElementById("sleepTimerIcon");
 
 const sleepTimerText =
-    document.getElementById(
-        "sleepTimerText"
-    );
+    document.getElementById("sleepTimerText");
 
 
 /* =========================================================
@@ -3014,20 +2794,14 @@ function generateLogo(
             .join("")
             .toUpperCase();
 
-
     const canvas =
-        document.createElement(
-            "canvas"
-        );
-
+        document.createElement("canvas");
 
     canvas.width = 300;
     canvas.height = 300;
 
-
     const ctx =
         canvas.getContext("2d");
-
 
     const gradient =
         ctx.createLinearGradient(
@@ -3037,43 +2811,19 @@ function generateLogo(
             300
         );
 
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, "#18181b");
 
-    gradient.addColorStop(
-        0,
-        color
-    );
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 300, 300);
 
-    gradient.addColorStop(
-        1,
-        "#18181b"
-    );
-
-
-    ctx.fillStyle =
-        gradient;
-
-    ctx.fillRect(
-        0,
-        0,
-        300,
-        300
-    );
-
-
-    ctx.fillStyle =
-        "rgba(255,255,255,.96)";
-
+    ctx.fillStyle = "rgba(255,255,255,.96)";
 
     ctx.font =
         "800 105px -apple-system, BlinkMacSystemFont, Arial";
 
-
-    ctx.textAlign =
-        "center";
-
-    ctx.textBaseline =
-        "middle";
-
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     ctx.fillText(
         initials || "R",
@@ -3081,10 +2831,7 @@ function generateLogo(
         150
     );
 
-
-    return canvas.toDataURL(
-        "image/png"
-    );
+    return canvas.toDataURL("image/png");
 }
 
 
@@ -3092,9 +2839,7 @@ function generateLogo(
    LOGO URL
    ========================================================= */
 
-function getStationLogo(
-    station
-) {
+function getStationLogo(station) {
 
     if (station.logo) {
         return station.logo;
@@ -3140,16 +2885,10 @@ function toast(message) {
             "toastContainer"
         );
 
-
     const element =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
-
-    element.className =
-        "toast";
-
+    element.className = "toast";
 
     element.innerHTML = `
         <i
@@ -3162,11 +2901,7 @@ function toast(message) {
         ${escapeHtml(message)}
     `;
 
-
-    container.appendChild(
-        element
-    );
-
+    container.appendChild(element);
 
     setTimeout(() => {
         element.remove();
@@ -3181,26 +2916,11 @@ function toast(message) {
 function escapeHtml(value) {
 
     return String(value)
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 
@@ -3208,18 +2928,12 @@ function escapeHtml(value) {
    RENDER STATIONS
    ========================================================= */
 
-function renderStations(
-    filter = ""
-) {
+function renderStations(filter = "") {
 
     stationGrid.innerHTML = "";
 
-
     const query =
-        filter
-            .trim()
-            .toLowerCase();
-
+        filter.trim().toLowerCase();
 
     const visible =
         allStations
@@ -3229,77 +2943,54 @@ function renderStations(
                     index
                 })
             )
-            .filter(
-                ({ station }) => {
+            .filter(({ station }) => {
 
-                    if (!query) {
-                        return true;
-                    }
-
-
-                    return (
-                        station.name
-                            .toLowerCase()
-                            .includes(query) ||
-
-                        (
-                            station.genre ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(query)
-                    );
+                if (!query) {
+                    return true;
                 }
-            );
 
+                return (
+                    station.name
+                        .toLowerCase()
+                        .includes(query) ||
+
+                    (
+                        station.genre || ""
+                    )
+                        .toLowerCase()
+                        .includes(query)
+                );
+            });
 
     if (!visible.length) {
 
         stationGrid.innerHTML = `
             <div class="empty-state">
-
-                <i
-                    class="fa-solid fa-radio"
-                ></i>
-
+                <i class="fa-solid fa-radio"></i>
                 Nie znaleziono stacji.
-
             </div>
         `;
 
         return;
     }
 
-
     visible.forEach(
         ({ station, index }) => {
 
             const card =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             card.className =
                 "station-card fade-in";
 
-
             if (
-                index ===
-                currentStationIndex
+                index === currentStationIndex
             ) {
-
-                card.classList.add(
-                    "active"
-                );
+                card.classList.add("active");
             }
 
-
             const favorite =
-                favorites.includes(
-                    index
-                );
-
+                favorites.includes(index);
 
             card.innerHTML = `
 
@@ -3315,7 +3006,6 @@ function renderStations(
 
                 </div>
 
-
                 <div class="station-info">
 
                     <div class="station-name">
@@ -3324,20 +3014,16 @@ function renderStations(
 
                     <div class="station-genre">
                         ${escapeHtml(
-                            station.genre ||
-                            "Radio"
+                            station.genre || "Radio"
                         )}
                     </div>
 
                     ${
-                        index ===
-                        currentStationIndex &&
+                        index === currentStationIndex &&
                         isPlaying
                         ?
                         `
-                        <div
-                            class="station-playing"
-                        >
+                        <div class="station-playing">
 
                             <div class="mini-eq">
                                 <span></span>
@@ -3354,7 +3040,6 @@ function renderStations(
                     }
 
                 </div>
-
 
                 <button
                     class="
@@ -3379,7 +3064,6 @@ function renderStations(
                 </button>
             `;
 
-
             card.addEventListener(
                 "click",
                 event => {
@@ -3399,12 +3083,10 @@ function renderStations(
                 }
             );
 
-
             const favoriteButton =
                 card.querySelector(
                     "[data-favorite]"
                 );
-
 
             favoriteButton.addEventListener(
                 "click",
@@ -3412,16 +3094,11 @@ function renderStations(
 
                     event.stopPropagation();
 
-                    toggleFavorite(
-                        index
-                    );
+                    toggleFavorite(index);
                 }
             );
 
-
-            stationGrid.appendChild(
-                card
-            );
+            stationGrid.appendChild(card);
         }
     );
 }
@@ -3431,33 +3108,23 @@ function renderStations(
    FAVORITES
    ========================================================= */
 
-function toggleFavorite(
-    index
-) {
+function toggleFavorite(index) {
 
-    if (
-        favorites.includes(index)
-    ) {
+    if (favorites.includes(index)) {
 
         favorites =
             favorites.filter(
-                item =>
-                    item !== index
+                item => item !== index
             );
 
-        toast(
-            "Usunięto z ulubionych"
-        );
+        toast("Usunięto z ulubionych");
 
     } else {
 
         favorites.push(index);
 
-        toast(
-            "Dodano do ulubionych"
-        );
+        toast("Dodano do ulubionych");
     }
-
 
     saveFavorites();
 
@@ -3485,37 +3152,32 @@ function selectStation(
         return;
     }
 
+    /*
+     * Zatrzymujemy poprzedni stan logiczny przed
+     * zmianą stacji. Dzięki temu Dynamic Island
+     * nie pokazuje przez chwilę starego stanu.
+     */
+    isPlaying = false;
 
-    currentStationIndex =
-        index;
-
+    currentStationIndex = index;
 
     const station =
         allStations[index];
 
+    audio.pause();
 
-    audio.src =
-        station.url;
-
+    audio.src = station.url;
     audio.load();
-
 
     updateStationUI();
 
-    /*
-     * Aktualizujemy Media Session
-     * natychmiast po zmianie stacji,
-     * a nie dopiero po rozpoczęciu
-     * odtwarzania.
-     */
+    updatePlaybackUI();
 
     updateMediaSession();
-
 
     renderStations(
         stationSearch.value
     );
-
 
     if (autoplay) {
         playRadio();
@@ -3536,76 +3198,47 @@ function updateStationUI() {
         heroStationName.textContent =
             "Wybierz swoją stację";
 
-
         heroDescription.textContent =
             "Słuchaj ulubionych stacji radiowych w nowoczesnym interfejsie Radio by ToMi.";
-
 
         playerStationName.textContent =
             "Brak wybranej stacji";
 
-
         playerStationGenre.textContent =
             "Wybierz stację";
 
-
         return;
     }
-
 
     const station =
         allStations[
             currentStationIndex
         ];
 
-
     heroStationName.textContent =
         station.name;
-
 
     heroDescription.textContent =
         station.genre ||
         "Radio na żywo";
 
-
     playerStationName.textContent =
         station.name;
-
 
     playerStationGenre.textContent =
         station.genre ||
         "Radio na żywo";
 
-
     const logo =
-        getStationLogo(
-            station
-        );
+        getStationLogo(station);
 
+    heroArt.src = logo;
+    heroArt.classList.remove("hidden");
+    heroArtPlaceholder.classList.add("hidden");
 
-    heroArt.src =
-        logo;
-
-    heroArt.classList.remove(
-        "hidden"
-    );
-
-    heroArtPlaceholder.classList.add(
-        "hidden"
-    );
-
-
-    playerArt.src =
-        logo;
-
-    playerArt.classList.remove(
-        "hidden"
-    );
-
-    playerArtPlaceholder.classList.add(
-        "hidden"
-    );
-
+    playerArt.src = logo;
+    playerArt.classList.remove("hidden");
+    playerArtPlaceholder.classList.add("hidden");
 
     updateHeroFavorite();
 }
@@ -3622,9 +3255,7 @@ function updateHeroFavorite() {
     ) {
 
         btnHeroFavorite.innerHTML = `
-            <i
-                class="fa-regular fa-heart"
-            ></i>
+            <i class="fa-regular fa-heart"></i>
 
             <span>
                 Dodaj do ulubionych
@@ -3634,12 +3265,10 @@ function updateHeroFavorite() {
         return;
     }
 
-
     const favorite =
         favorites.includes(
             currentStationIndex
         );
-
 
     btnHeroFavorite.innerHTML =
         favorite
@@ -3656,9 +3285,7 @@ function updateHeroFavorite() {
         `
         :
         `
-            <i
-                class="fa-regular fa-heart"
-            ></i>
+            <i class="fa-regular fa-heart"></i>
 
             <span>
                 Dodaj do ulubionych
@@ -3683,25 +3310,21 @@ async function playRadio() {
         );
     }
 
-
     try {
-
-        await audio.play();
-
-
-        isPlaying = true;
-
-
-        updatePlaybackUI();
-
 
         setupAudioContext();
 
+        await audio.play();
+
+        isPlaying = true;
+
+        updatePlaybackUI();
+
+        updateMediaSession();
 
         if (
             audioContext &&
-            audioContext.state ===
-            "suspended"
+            audioContext.state === "suspended"
         ) {
 
             await audioContext.resume();
@@ -3712,6 +3335,8 @@ async function playRadio() {
         isPlaying = false;
 
         updatePlaybackUI();
+
+        updateMediaSession();
 
         toast(
             "Nie udało się uruchomić strumienia."
@@ -3731,6 +3356,8 @@ function pauseRadio() {
     isPlaying = false;
 
     updatePlaybackUI();
+
+    updateMediaSession();
 }
 
 
@@ -3741,11 +3368,8 @@ function pauseRadio() {
 function togglePlay() {
 
     if (isPlaying) {
-
         pauseRadio();
-
     } else {
-
         playRadio();
     }
 }
@@ -3764,27 +3388,23 @@ function updatePlaybackUI() {
         :
         "fa-solid fa-play";
 
-
-    btnHeroPlay.innerHTML =
-        `
-            <i
-                class="
-                    fa-solid
-                    ${
-                        isPlaying
-                        ? "fa-pause"
-                        : "fa-play"
-                    }
-                "
-            ></i>
-        `;
-
+    btnHeroPlay.innerHTML = `
+        <i
+            class="
+                fa-solid
+                ${
+                    isPlaying
+                    ? "fa-pause"
+                    : "fa-play"
+                }
+            "
+        ></i>
+    `;
 
     btnPlay.title =
         isPlaying
         ? "Pauza"
         : "Odtwórz";
-
 
     btnPlay.setAttribute(
         "aria-label",
@@ -3793,12 +3413,10 @@ function updatePlaybackUI() {
         : "Odtwórz"
     );
 
-
     btnHeroPlay.title =
         isPlaying
         ? "Pauza"
         : "Odtwórz";
-
 
     btnHeroPlay.setAttribute(
         "aria-label",
@@ -3807,6 +3425,25 @@ function updatePlaybackUI() {
         : "Odtwórz"
     );
 
+    /*
+     * Synchronizacja stanu z Dynamic Island.
+     */
+    if ("mediaSession" in navigator) {
+
+        try {
+
+            navigator.mediaSession.playbackState =
+                isPlaying
+                ? "playing"
+                : "paused";
+
+        } catch (error) {
+            console.debug(
+                "Media Session playbackState:",
+                error
+            );
+        }
+    }
 
     renderStations(
         stationSearch.value
@@ -3820,25 +3457,18 @@ function updatePlaybackUI() {
 
 function nextStation() {
 
-    if (
-        !allStations.length
-    ) {
+    if (!allStations.length) {
         return;
     }
-
 
     let index =
         currentStationIndex + 1;
 
-
     if (
-        index >=
-        allStations.length
+        index >= allStations.length
     ) {
-
         index = 0;
     }
-
 
     selectStation(
         index,
@@ -3849,23 +3479,17 @@ function nextStation() {
 
 function previousStation() {
 
-    if (
-        !allStations.length
-    ) {
+    if (!allStations.length) {
         return;
     }
-
 
     let index =
         currentStationIndex - 1;
 
-
     if (index < 0) {
-
         index =
             allStations.length - 1;
     }
-
 
     selectStation(
         index,
@@ -3881,14 +3505,9 @@ function previousStation() {
 function updateVolume() {
 
     const value =
-        Number(
-            volume.value
-        );
+        Number(volume.value);
 
-
-    audio.volume =
-        value;
-
+    audio.volume = value;
 
     if (value === 0) {
 
@@ -3905,7 +3524,6 @@ function updateVolume() {
         volumeIcon.className =
             "fa-solid fa-volume-high";
     }
-
 
     localStorage.setItem(
         "radio_tomi_volume",
@@ -3924,7 +3542,6 @@ function setupAudioContext() {
         return;
     }
 
-
     try {
 
         audioContext =
@@ -3933,71 +3550,34 @@ function setupAudioContext() {
                 window.webkitAudioContext
             )();
 
-
         sourceNode =
-            audioContext
-                .createMediaElementSource(
-                    audio
-                );
-
+            audioContext.createMediaElementSource(
+                audio
+            );
 
         lowFilter =
-            audioContext
-                .createBiquadFilter();
+            audioContext.createBiquadFilter();
 
-
-        lowFilter.type =
-            "lowshelf";
-
-
-        lowFilter.frequency.value =
-            180;
-
+        lowFilter.type = "lowshelf";
+        lowFilter.frequency.value = 180;
 
         midFilter =
-            audioContext
-                .createBiquadFilter();
+            audioContext.createBiquadFilter();
 
-
-        midFilter.type =
-            "peaking";
-
-
-        midFilter.frequency.value =
-            1000;
-
-
-        midFilter.Q.value =
-            1;
-
+        midFilter.type = "peaking";
+        midFilter.frequency.value = 1000;
+        midFilter.Q.value = 1;
 
         highFilter =
-            audioContext
-                .createBiquadFilter();
+            audioContext.createBiquadFilter();
 
-
-        highFilter.type =
-            "highshelf";
-
-
-        highFilter.frequency.value =
-            5000;
-
-
-        /*
-         * Analyser pozostaje dostępny
-         * dla EQ/audio processing,
-         * ale nie uruchamiamy wizualizera.
-         */
+        highFilter.type = "highshelf";
+        highFilter.frequency.value = 5000;
 
         analyser =
-            audioContext
-                .createAnalyser();
+            audioContext.createAnalyser();
 
-
-        analyser.fftSize =
-            256;
-
+        analyser.fftSize = 256;
 
         sourceNode
             .connect(lowFilter)
@@ -4007,7 +3587,6 @@ function setupAudioContext() {
             .connect(
                 audioContext.destination
             );
-
 
     } catch (error) {
 
@@ -4034,58 +3613,40 @@ function setEQ() {
         return;
     }
 
-
     lowFilter.gain.value =
         Number(
-            document
-                .getElementById(
-                    "eqLow"
-                )
-                .value
+            document.getElementById(
+                "eqLow"
+            ).value
         );
-
 
     midFilter.gain.value =
         Number(
-            document
-                .getElementById(
-                    "eqMid"
-                )
-                .value
+            document.getElementById(
+                "eqMid"
+            ).value
         );
-
 
     highFilter.gain.value =
         Number(
-            document
-                .getElementById(
-                    "eqHigh"
-                )
-                .value
+            document.getElementById(
+                "eqHigh"
+            ).value
         );
 
-
-    document
-        .getElementById(
-            "eqLowValue"
-        )
-        .textContent =
+    document.getElementById(
+        "eqLowValue"
+    ).textContent =
         `${lowFilter.gain.value} dB`;
 
-
-    document
-        .getElementById(
-            "eqMidValue"
-        )
-        .textContent =
+    document.getElementById(
+        "eqMidValue"
+    ).textContent =
         `${midFilter.gain.value} dB`;
 
-
-    document
-        .getElementById(
-            "eqHighValue"
-        )
-        .textContent =
+    document.getElementById(
+        "eqHighValue"
+    ).textContent =
         `${highFilter.gain.value} dB`;
 }
 
@@ -4098,9 +3659,7 @@ function openModal(id) {
 
     document
         .getElementById(id)
-        .classList.add(
-            "show"
-        );
+        .classList.add("show");
 }
 
 
@@ -4108,16 +3667,12 @@ function closeModal(id) {
 
     document
         .getElementById(id)
-        .classList.remove(
-            "show"
-        );
+        .classList.remove("show");
 }
 
 
 document
-    .querySelectorAll(
-        "[data-close]"
-    )
+    .querySelectorAll("[data-close]")
     .forEach(button => {
 
         button.addEventListener(
@@ -4133,9 +3688,7 @@ document
 
 
 document
-    .querySelectorAll(
-        ".modal-backdrop"
-    )
+    .querySelectorAll(".modal-backdrop")
     .forEach(backdrop => {
 
         backdrop.addEventListener(
@@ -4143,8 +3696,7 @@ document
             event => {
 
                 if (
-                    event.target ===
-                    backdrop
+                    event.target === backdrop
                 ) {
 
                     backdrop.classList.remove(
@@ -4160,9 +3712,7 @@ document
    SLEEP TIMER
    ========================================================= */
 
-function formatTimer(
-    milliseconds
-) {
+function formatTimer(milliseconds) {
 
     const totalSeconds =
         Math.max(
@@ -4172,38 +3722,30 @@ function formatTimer(
             )
         );
 
-
     const hours =
         Math.floor(
             totalSeconds / 3600
         );
-
 
     const minutes =
         Math.floor(
             (totalSeconds % 3600) / 60
         );
 
-
     const seconds =
         totalSeconds % 60;
-
 
     const mm =
         String(minutes)
             .padStart(2, "0");
 
-
     const ss =
         String(seconds)
             .padStart(2, "0");
 
-
     if (hours > 0) {
-
         return `${hours}:${mm}:${ss}`;
     }
-
 
     return `${minutes}:${ss}`;
 }
@@ -4216,25 +3758,20 @@ function updateSleepInfo() {
         sleepTimerText.textContent =
             "Timer";
 
-
         btnSleep.classList.remove(
             "timer-active"
         );
-
 
         btnSleep.style.setProperty(
             "--timer-progress",
             "0%"
         );
 
-
         sleepTimerIcon.className =
             "fa-solid fa-moon";
 
-
         return;
     }
-
 
     const remaining =
         Math.max(
@@ -4242,29 +3779,22 @@ function updateSleepInfo() {
             sleepEnd - Date.now()
         );
 
-
-    if (
-        remaining <= 0
-    ) {
+    if (remaining <= 0) {
 
         sleepTimerText.textContent =
             "Timer";
 
-
         btnSleep.classList.remove(
             "timer-active"
         );
-
 
         btnSleep.style.setProperty(
             "--timer-progress",
             "0%"
         );
 
-
         return;
     }
-
 
     const progress =
         sleepDuration > 0
@@ -4279,17 +3809,12 @@ function updateSleepInfo() {
         :
         0;
 
-
     sleepTimerText.textContent =
-        formatTimer(
-            remaining
-        );
-
+        formatTimer(remaining);
 
     btnSleep.classList.add(
         "timer-active"
     );
-
 
     btnSleep.style.setProperty(
         "--timer-progress",
@@ -4302,38 +3827,21 @@ function updateSleepInfo() {
         )}%`
     );
 
-
     sleepTimerIcon.className =
         "fa-solid fa-hourglass-half";
 }
 
 
-function setSleepTimer(
-    minutes
-) {
+function setSleepTimer(minutes) {
 
-    clearTimeout(
-        sleepTimer
-    );
+    clearTimeout(sleepTimer);
+    clearInterval(sleepInterval);
 
-
-    clearInterval(
-        sleepInterval
-    );
-
-
-    sleepTimer =
-        null;
-
-    sleepEnd =
-        null;
-
-    sleepDuration =
-        0;
-
+    sleepTimer = null;
+    sleepEnd = null;
+    sleepDuration = 0;
 
     updateSleepInfo();
-
 
     if (!minutes) {
 
@@ -4344,15 +3852,12 @@ function setSleepTimer(
         return;
     }
 
-
     sleepDuration =
         minutes * 60000;
-
 
     sleepEnd =
         Date.now() +
         sleepDuration;
-
 
     sleepTimer =
         setTimeout(
@@ -4360,25 +3865,16 @@ function setSleepTimer(
 
                 pauseRadio();
 
-
-                sleepEnd =
-                    null;
-
-                sleepDuration =
-                    0;
-
+                sleepEnd = null;
+                sleepDuration = 0;
 
                 clearInterval(
                     sleepInterval
                 );
 
-
-                sleepInterval =
-                    null;
-
+                sleepInterval = null;
 
                 updateSleepInfo();
-
 
                 toast(
                     "Timer zakończony — radio zatrzymane."
@@ -4388,16 +3884,13 @@ function setSleepTimer(
             sleepDuration
         );
 
-
     sleepInterval =
         setInterval(
             updateSleepInfo,
             1000
         );
 
-
     updateSleepInfo();
-
 
     toast(
         `Timer ustawiony na ${minutes} min`
@@ -4419,7 +3912,6 @@ function updateThemeUI() {
             .classList
             .contains("dark");
 
-
     themeIcon.className =
         dark
         ?
@@ -4427,14 +3919,12 @@ function updateThemeUI() {
         :
         "fa-solid fa-moon";
 
-
     btnTheme.title =
         dark
         ?
         "Przełącz na jasny motyw"
         :
         "Przełącz na ciemny motyw";
-
 
     document
         .querySelector(
@@ -4458,13 +3948,11 @@ btnTheme.addEventListener(
                 .classList
                 .contains("dark");
 
-
         if (dark) {
 
             document.documentElement
                 .classList
                 .remove("dark");
-
 
             localStorage.setItem(
                 "radio_tomi_theme",
@@ -4477,13 +3965,11 @@ btnTheme.addEventListener(
                 .classList
                 .add("dark");
 
-
             localStorage.setItem(
                 "radio_tomi_theme",
                 "dark"
             );
         }
-
 
         updateThemeUI();
     }
@@ -4495,66 +3981,45 @@ btnTheme.addEventListener(
    ========================================================= */
 
 document
-    .getElementById(
-        "btnAddStation"
-    )
+    .getElementById("btnAddStation")
     .addEventListener(
         "click",
         () =>
-            openModal(
-                "stationModal"
-            )
+            openModal("stationModal")
     );
 
 
 document
-    .getElementById(
-        "btnSaveStation"
-    )
+    .getElementById("btnSaveStation")
     .addEventListener(
         "click",
         () => {
 
             const name =
                 document
-                    .getElementById(
-                        "customName"
-                    )
+                    .getElementById("customName")
                     .value
                     .trim();
-
 
             const genre =
                 document
-                    .getElementById(
-                        "customGenre"
-                    )
+                    .getElementById("customGenre")
                     .value
                     .trim();
-
 
             const url =
                 document
-                    .getElementById(
-                        "customUrl"
-                    )
+                    .getElementById("customUrl")
                     .value
                     .trim();
-
 
             const logo =
                 document
-                    .getElementById(
-                        "customLogo"
-                    )
+                    .getElementById("customLogo")
                     .value
                     .trim();
 
-
-            if (
-                !name ||
-                !url
-            ) {
+            if (!name || !url) {
 
                 toast(
                     "Podaj nazwę i adres strumienia."
@@ -4562,7 +4027,6 @@ document
 
                 return;
             }
-
 
             const station = {
 
@@ -4582,58 +4046,40 @@ document
                     "#f97316"
             };
 
-
             customStations.push(
                 station
             );
-
 
             allStations = [
                 ...stations,
                 ...customStations
             ];
 
-
             saveCustomStations();
-
 
             renderStations(
                 stationSearch.value
             );
 
-
             closeModal(
                 "stationModal"
             );
 
+            document.getElementById(
+                "customName"
+            ).value = "";
 
-            document
-                .getElementById(
-                    "customName"
-                )
-                .value = "";
+            document.getElementById(
+                "customGenre"
+            ).value = "";
 
+            document.getElementById(
+                "customUrl"
+            ).value = "";
 
-            document
-                .getElementById(
-                    "customGenre"
-                )
-                .value = "";
-
-
-            document
-                .getElementById(
-                    "customUrl"
-                )
-                .value = "";
-
-
-            document
-                .getElementById(
-                    "customLogo"
-                )
-                .value = "";
-
+            document.getElementById(
+                "customLogo"
+            ).value = "";
 
             toast(
                 "Stacja została dodana."
@@ -4666,36 +4112,30 @@ btnPlay.addEventListener(
     togglePlay
 );
 
-
 btnHeroPlay.addEventListener(
     "click",
     togglePlay
 );
-
 
 btnPrev.addEventListener(
     "click",
     previousStation
 );
 
-
 btnNext.addEventListener(
     "click",
     nextStation
 );
-
 
 btnHeroPrev.addEventListener(
     "click",
     previousStation
 );
 
-
 btnHeroNext.addEventListener(
     "click",
     nextStation
 );
-
 
 btnHeroFavorite.addEventListener(
     "click",
@@ -4724,15 +4164,11 @@ volume.addEventListener(
    ========================================================= */
 
 document
-    .getElementById(
-        "btnEQ"
-    )
+    .getElementById("btnEQ")
     .addEventListener(
         "click",
         () =>
-            openModal(
-                "eqModal"
-            )
+            openModal("eqModal")
     );
 
 
@@ -4740,23 +4176,19 @@ document
     "eqLow",
     "eqMid",
     "eqHigh"
-].forEach(
-    id => {
+].forEach(id => {
 
-        document
-            .getElementById(id)
-            .addEventListener(
-                "input",
-                setEQ
-            );
-    }
-);
+    document
+        .getElementById(id)
+        .addEventListener(
+            "input",
+            setEQ
+        );
+});
 
 
 document
-    .getElementById(
-        "btnResetEQ"
-    )
+    .getElementById("btnResetEQ")
     .addEventListener(
         "click",
         () => {
@@ -4765,18 +4197,14 @@ document
                 "eqLow",
                 "eqMid",
                 "eqHigh"
-            ].forEach(
-                id => {
+            ].forEach(id => {
 
-                    document
-                        .getElementById(id)
-                        .value = 0;
-                }
-            );
-
+                document
+                    .getElementById(id)
+                    .value = 0;
+            });
 
             setEQ();
-
 
             toast(
                 "Korektor został zresetowany."
@@ -4792,16 +4220,12 @@ document
 btnSleep.addEventListener(
     "click",
     () =>
-        openModal(
-            "sleepModal"
-        )
+        openModal("sleepModal")
 );
 
 
 document
-    .getElementById(
-        "btnSetSleep"
-    )
+    .getElementById("btnSetSleep")
     .addEventListener(
         "click",
         () => {
@@ -4815,11 +4239,7 @@ document
                         .value
                 );
 
-
-            setSleepTimer(
-                minutes
-            );
-
+            setSleepTimer(minutes);
 
             closeModal(
                 "sleepModal"
@@ -4833,15 +4253,11 @@ document
    ========================================================= */
 
 document
-    .getElementById(
-        "btnShortcuts"
-    )
+    .getElementById("btnShortcuts")
     .addEventListener(
         "click",
         () =>
-            openModal(
-                "shortcutsModal"
-            )
+            openModal("shortcutsModal")
     );
 
 
@@ -4853,7 +4269,6 @@ document.addEventListener(
             document
                 .activeElement
                 ?.tagName;
-
 
         if (
             tag === "INPUT" ||
@@ -4868,15 +4283,11 @@ document.addEventListener(
             }
         }
 
-
-        if (
-            event.key === " "
-        ) {
+        if (event.key === " ") {
 
             event.preventDefault();
 
             togglePlay();
-
 
         } else if (
             event.key === "ArrowRight"
@@ -4884,20 +4295,17 @@ document.addEventListener(
 
             nextStation();
 
-
         } else if (
             event.key === "ArrowLeft"
         ) {
 
             previousStation();
 
-
         } else if (
             event.key === "ArrowUp"
         ) {
 
             event.preventDefault();
-
 
             volume.value =
                 Math.min(
@@ -4907,16 +4315,13 @@ document.addEventListener(
                     ) + .05
                 );
 
-
             updateVolume();
-
 
         } else if (
             event.key === "ArrowDown"
         ) {
 
             event.preventDefault();
-
 
             volume.value =
                 Math.max(
@@ -4926,24 +4331,18 @@ document.addEventListener(
                     ) - .05
                 );
 
-
             updateVolume();
 
-
         } else if (
-            event.key.toLowerCase()
-            === "m"
+            event.key.toLowerCase() === "m"
         ) {
 
-            if (
-                audio.volume > 0
-            ) {
+            if (audio.volume > 0) {
 
                 audio.dataset.previousVolume =
                     audio.volume;
 
-                volume.value =
-                    0;
+                volume.value = 0;
 
             } else {
 
@@ -4952,9 +4351,7 @@ document.addEventListener(
                     .8;
             }
 
-
             updateVolume();
-
 
         } else if (
             event.key === "Escape"
@@ -5001,6 +4398,8 @@ audio.addEventListener(
         isPlaying = false;
 
         updatePlaybackUI();
+
+        updateMediaSession();
     }
 );
 
@@ -5013,6 +4412,8 @@ audio.addEventListener(
 
         updatePlaybackUI();
 
+        updateMediaSession();
+
         toast(
             "Błąd odtwarzania strumienia."
         );
@@ -5021,24 +4422,8 @@ audio.addEventListener(
 
 
 /* =========================================================
-   MEDIA SESSION — RADIO CONTROLS 3.0.5
+   MEDIA SESSION — DYNAMIC ISLAND 3.0.6
    ========================================================= */
-
-/*
- * Radio jest strumieniem LIVE.
- *
- * Dynamic Island / ekran blokady powinny
- * używać:
- *
- *     poprzednia | play/pauza | następna
- *
- * a nie:
- *
- *     -10 s | play/pauza | +10 s
- *
- * Nie używamy funkcji przewijania,
- * ponieważ transmisja radiowa jest LIVE.
- */
 
 function setupMediaSession() {
 
@@ -5046,10 +4431,7 @@ function setupMediaSession() {
         return;
     }
 
-
     try {
-
-        /* PLAY */
 
         navigator.mediaSession.setActionHandler(
             "play",
@@ -5058,18 +4440,12 @@ function setupMediaSession() {
             }
         );
 
-
-        /* PAUZA */
-
         navigator.mediaSession.setActionHandler(
             "pause",
             () => {
                 pauseRadio();
             }
         );
-
-
-        /* POPRZEDNIA STACJA */
 
         navigator.mediaSession.setActionHandler(
             "previoustrack",
@@ -5078,9 +4454,6 @@ function setupMediaSession() {
             }
         );
 
-
-        /* NASTĘPNA STACJA */
-
         navigator.mediaSession.setActionHandler(
             "nexttrack",
             () => {
@@ -5088,63 +4461,31 @@ function setupMediaSession() {
             }
         );
 
-
         /*
-         * WAŻNE:
-         *
-         * Wyłączamy przewijanie.
-         *
-         * iOS/Safari może wtedy korzystać
-         * z akcji track zamiast seek.
+         * Radio jest transmisją LIVE.
+         * Nie udostępniamy przewijania +/-10 s.
          */
 
         try {
-
             navigator.mediaSession.setActionHandler(
                 "seekbackward",
                 null
             );
-
-        } catch (error) {
-
-            console.debug(
-                "Media Session seekbackward:",
-                error
-            );
-        }
-
+        } catch {}
 
         try {
-
             navigator.mediaSession.setActionHandler(
                 "seekforward",
                 null
             );
-
-        } catch (error) {
-
-            console.debug(
-                "Media Session seekforward:",
-                error
-            );
-        }
-
+        } catch {}
 
         try {
-
             navigator.mediaSession.setActionHandler(
                 "seekto",
                 null
             );
-
-        } catch (error) {
-
-            console.debug(
-                "Media Session seekto:",
-                error
-            );
-        }
-
+        } catch {}
 
     } catch (error) {
 
@@ -5163,20 +4504,45 @@ function setupMediaSession() {
 function updateMediaSession() {
 
     if (
-        !("mediaSession" in navigator) ||
-        currentStationIndex < 0
+        !("mediaSession" in navigator)
     ) {
         return;
     }
 
+    if (
+        currentStationIndex < 0 ||
+        !allStations[currentStationIndex]
+    ) {
+        try {
+            navigator.mediaSession.metadata = null;
+            navigator.mediaSession.playbackState = "none";
+        } catch {}
+
+        return;
+    }
 
     const station =
         allStations[
             currentStationIndex
         ];
 
+    const logo =
+        getStationLogo(station);
 
     try {
+
+        /*
+         * Aktualizujemy metadata przy każdej
+         * zmianie stacji.
+         *
+         * Dynamic Island / ekran blokady
+         * dostają:
+         *
+         * nazwa = title
+         * gatunek = artist
+         * Radio by ToMi = album
+         * logo = artwork
+         */
 
         navigator.mediaSession.metadata =
             new MediaMetadata({
@@ -5189,24 +4555,28 @@ function updateMediaSession() {
                     "Radio na żywo",
 
                 album:
-                    "Radio by ToMi 3.0.5",
+                    "Radio by ToMi",
 
                 artwork: [
                     {
-                        src:
-                            getStationLogo(
-                                station
-                            ),
-
-                        sizes:
-                            "300x300",
-
-                        type:
-                            "image/png"
+                        src: logo,
+                        sizes: "96x96"
+                    },
+                    {
+                        src: logo,
+                        sizes: "192x192"
+                    },
+                    {
+                        src: logo,
+                        sizes: "300x300"
                     }
                 ]
-
             });
+
+        navigator.mediaSession.playbackState =
+            isPlaying
+            ? "playing"
+            : "paused";
 
     } catch (error) {
 
@@ -5229,21 +4599,15 @@ function updateMediaSession() {
             "radio_tomi_volume"
         );
 
-
     if (
         savedVolume !== null
     ) {
 
         const value =
-            Number(
-                savedVolume
-            );
-
+            Number(savedVolume);
 
         if (
-            Number.isFinite(
-                value
-            )
+            Number.isFinite(value)
         ) {
 
             volume.value =
@@ -5257,7 +4621,6 @@ function updateMediaSession() {
         }
     }
 
-
     updateVolume();
 
     updateThemeUI();
@@ -5266,34 +4629,22 @@ function updateMediaSession() {
 
     updateStationUI();
 
-    /*
-     * Konfigurujemy Media Session
-     * podczas uruchamiania aplikacji.
-     */
-
     setupMediaSession();
-
-
-    /*
-     * Domyślnie wybieramy pierwszą
-     * stację, ale jej nie uruchamiamy.
-     */
 
     if (
         allStations.length
     ) {
 
-        currentStationIndex =
-            0;
-
+        currentStationIndex = 0;
 
         updateStationUI();
+
+        updatePlaybackUI();
 
         updateMediaSession();
 
         renderStations();
     }
-
 
     updateSleepInfo();
 
